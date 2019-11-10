@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "945453806910",
+    "firebase_url": "https://aladdin-ea1fb.firebaseio.com",
+    "project_id": "aladdin-ea1fb",
+    "storage_bucket": "aladdin-ea1fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945453806910:android:2690840af3d69cb17c686f",
+        "android_client_info": {
+          "package_name": "com.laon.aladdinmagic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945453806910-ufv46s89hdp5fvjvhnb9anrqg1r4030c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.laon.aladdinmagic",
+            "certificate_hash": "e0a3cbf8a635b9cadb9961d60f46e879b7fbf7c9"
+          }
+        },
+        {
+          "client_id": "945453806910-ob2il5l5a4hr5oipe5l19l7ku0rgekbb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4iuFK74CwAFK2y5tpEoqRP_KNItS8-lE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945453806910-ob2il5l5a4hr5oipe5l19l7ku0rgekbb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
