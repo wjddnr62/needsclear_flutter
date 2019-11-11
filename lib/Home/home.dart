@@ -182,9 +182,34 @@ class _Home extends State<Home> {
               height: 1,
               color: Color.fromARGB(255, 167, 167, 167),
             ),
-            whiteSpaceH(50),
-            Center(
-              child: Text("서비스 준비 중입니다."),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 30,
+              color: Color.fromARGB(255, 129, 129, 129),
+              padding: EdgeInsets.only(left: 10),
+              child: Center(
+                child: Text("알라딘매직", style: TextStyle(
+                  fontWeight: FontWeight.w600, color: white
+                ),),
+              ),
+            ),
+            whiteSpaceH(20),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed("/RecoList");
+              },
+              child: Row(
+                children: <Widget>[
+                  whiteSpaceW(10),
+                  Expanded(
+                    child: Text("추천인목록", style: TextStyle(
+                        color: black, fontWeight: FontWeight.w600
+                    ),),
+                  ),
+                  Icon(Icons.arrow_forward_ios, size: 20,),
+                  whiteSpaceW(10)
+                ],
+              ),
             )
           ],
         ),

@@ -32,6 +32,15 @@ class SaveData {
     _point = value;
   }
 
+  bool _recoCheck;
+
+
+  bool get recoCheck => _recoCheck;
+
+  set recoCheck(bool value) {
+    _recoCheck = value;
+  }
+
   String _phoneNumber;
   String _name;
   String _birthday;

@@ -1,4 +1,5 @@
 import 'package:aladdinmagic/Provider/userprovider.dart';
+import 'package:aladdinmagic/SignUp/signup.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -389,6 +390,7 @@ class _Login extends State<Login> {
                                 onTap: () {
                                   print("회원가입");
                                   Navigator.of(context).pushNamed('/SmsAuth');
+//                                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 0,)));
                                 },
                                 child: Text(
                                   "회원가입",

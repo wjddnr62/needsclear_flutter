@@ -75,7 +75,7 @@ class _Permission extends State<Permission> {
                           color: white,
                           border: Border.all(color: black, width: 1)
                         ),
-                        padding: EdgeInsets.only(left: 20),
+                        padding: EdgeInsets.only(left: 20, top: 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,

@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
 class SignUp extends StatefulWidget {
@@ -119,8 +120,18 @@ class _SignUp extends State<SignUp> {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             } else {
+                              DateTime now = DateTime.now();
+                              String formatDate =
+                                  DateFormat('yyyy.MM.dd').format(now);
+
                               if (reCoCheck) {
-                                userProvider.insertPoint(_saveData.reCoId, 500);
+                                userProvider
+                                    .insertPoint(_saveData.reCoId, 500, {
+                                  'recoCode': _recoCodeController.text,
+                                  'name': _nameController.text,
+                                  'phone': _saveData.phoneNumber,
+                                  'signDate': formatDate
+                                });
                                 print("insertPoint");
                                 reCoCheck = false;
                               }
@@ -135,9 +146,10 @@ class _SignUp extends State<SignUp> {
                                 'signRoot': selectBoxValue,
                                 'type': 0,
                                 'recoCode': reCoCode,
-                                'point': 0,
+                                'point': 1000,
                                 'recoPerson': 0,
-                                'recoPrice': 0
+                                'recoPrice': 0,
+                                'signDate': formatDate
                               }).then((value) {
                                 if (value == 0) {
                                   Navigator.of(context).pushNamedAndRemoveUntil(
@@ -175,23 +187,6 @@ class _SignUp extends State<SignUp> {
         });
   }
 
-  Future<int> checkReCoCode(reCoCode) async {
-    Firestore.instance
-        .collection("users")
-        .where('recoCode', isEqualTo: reCoCode)
-        .snapshots()
-        .listen((data) {
-      if (data.documents.length == 0) {
-        return 0;
-      } else {
-        final List<DocumentSnapshot> docs = data.documents;
-
-        _saveData.reCoId = docs[0].data['id'];
-        return 1;
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -211,7 +206,8 @@ class _SignUp extends State<SignUp> {
                   alignment: Alignment.topRight,
                   child: GestureDetector(
                     onTap: () {
-                      customDialog("화면을 닫으시는 경우\n회원가입이 중단됩니다.\n\n회원가입을\n중단하시겠습니까?", 0);
+                      customDialog(
+                          "화면을 닫으시는 경우\n회원가입이 중단됩니다.\n\n회원가입을\n중단하시겠습니까?", 0);
                     },
                     child: Icon(Icons.close),
                   ),
@@ -253,10 +249,8 @@ class _SignUp extends State<SignUp> {
                       },
                       onChanged: (value) {
                         print("value : " + value);
-                        userProvider
-                            .idDuplicate(value.trim())
-                            .then((value) {
-                              print("dupl : " + value.toString());
+                        userProvider.idDuplicate(value.trim()).then((value) {
+                          print("dupl : " + value.toString());
                           if (value != 0) {
                             idCheck = false;
                           } else {
@@ -373,7 +367,8 @@ class _SignUp extends State<SignUp> {
                   alignment: Alignment.topRight,
                   child: GestureDetector(
                     onTap: () {
-                      customDialog("화면을 닫으시는 경우\n회원가입이 중단됩니다.\n\n회원가입을\n중단하시겠습니까?", 0);
+                      customDialog(
+                          "화면을 닫으시는 경우\n회원가입이 중단됩니다.\n\n회원가입을\n중단하시겠습니까?", 0);
                     },
                     child: Icon(Icons.close),
                   ),
@@ -515,7 +510,13 @@ class _SignUp extends State<SignUp> {
                         isExpanded: true,
                         elevation: 2,
                         style: TextStyle(color: black),
-                        items: <String>['가입경로 선택', '알라딘박스'].map((value) {
+                        items: <String>[
+                          '가입경로 선택',
+                          '알라딘박스',
+                          '지인추천',
+                          '인터넷 검색',
+                          '기타'
+                        ].map((value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(
@@ -537,14 +538,28 @@ class _SignUp extends State<SignUp> {
                       controller: _recoCodeController,
                       textInputAction: TextInputAction.done,
                       maxLength: 10,
-                      onChanged: (value) {
-                        checkReCoCode(_recoCodeController.text).then((value) {
+                      onChanged: (value) async {
+                        await userProvider.checkReCoCode(_recoCodeController.text).then((value) {
+
+                          print("value : ${value}");
                           if (value != 0) {
                             reCoCheck = true;
-                          } else {
+                          } else if (value == 0) {
                             reCoCheck = false;
                           }
+
+                          print("recoCheck : " +reCoCheck.toString());
                         });
+
+                        print("value222 : ${value}");
+
+
+                        if ((_recoCodeController.text != null && _recoCodeController.text != "") &&
+                            !reCoCheck) {
+                          print("aa");
+                        } else {
+                          print("test");
+                        }
                       },
                       decoration: InputDecoration(
                           counterText: "",
@@ -684,7 +699,8 @@ class _SignUp extends State<SignUp> {
                         } else if (selectBoxValue == "가입경로 선택" ||
                             selectBoxValue == "") {
                           showToast(type: 0, msg: "가입경로를 선택해 주세요.");
-                        } else if (!reCoCheck) {
+                        } else if ((_recoCodeController.text != null && _recoCodeController.text != "") &&
+                            !reCoCheck) {
                           showToast(type: 0, msg: "추천코드가 올바르지 않습니다.");
                         } else if (!allAgree) {
                           showToast(type: 0, msg: "필수약관을 모두 동의해 주세요.");

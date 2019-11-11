@@ -78,7 +78,10 @@ class _SmsAuth extends State<SmsAuth> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    if (_timer != null) {
+      _timer.cancel();
+    }
+
     super.dispose();
   }
 
@@ -94,18 +97,25 @@ class _SmsAuth extends State<SmsAuth> {
 
     print("verificationId : " + verificationId + ", " + _authController.text);
 
-    _auth.currentUser().then((value) {
-      if (value.uid != null) {
-        print(value.uid);
-        msg = 'Successfully signed in, uid: ' + value.uid;
-        setState(() {
-          authCheck = true;
-        });
-        _timer.cancel();
-        _saveData.phoneNumber = _phoneController.text;
-        print("msg : " + msg);
-        showToast(type: 0, msg: "문자 인증에 성공하였습니다.");
-        movePage();
+    //테스트 할때만 주석풀고 진행 실제 폰은 아래 코드 있으면 안됨
+//    await _auth.signInWithCredential(credential);
+
+    await _auth.currentUser().then((value) {
+      if (value != null) {
+        if (value.uid != null) {
+          print(value.uid);
+          msg = 'Successfully signed in, uid: ' + value.uid;
+          setState(() {
+            authCheck = true;
+          });
+          _timer.cancel();
+          _saveData.phoneNumber = _phoneController.text;
+          print("msg : " + msg);
+          showToast(type: 0, msg: "문자 인증에 성공하였습니다.");
+          movePage();
+        } else {
+          showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
+        }
       } else {
         showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
       }
@@ -130,8 +140,10 @@ class _SmsAuth extends State<SmsAuth> {
 //        });
 //        _timer.cancel();
 //        _saveData.phoneNumber = _phoneController.text;
+//        showToast(type: 0, msg: "문자 인증에 성공하였습니다.");
 //        movePage();
 //      } else {
+//        showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
 //        msg = 'Sign in failed';
 //      }
   }
@@ -259,6 +271,11 @@ class _SmsAuth extends State<SmsAuth> {
                   whiteSpaceW(10),
                   RaisedButton(
                     onPressed: () async {
+                      if (_timer != null) {
+                        _timer.cancel();
+                      }
+                      _start = 120;
+                      oneMin = 59;
                       _sendCodeToPhoneNumber();
                       startTimer();
                       FocusScope.of(context).requestFocus(_authFocus);
@@ -313,6 +330,9 @@ class _SmsAuth extends State<SmsAuth> {
                   padding: EdgeInsets.only(right: 40, top: 10),
                   child: GestureDetector(
                     onTap: () {
+                      if (_timer != null) {
+                        _timer.cancel();
+                      }
                       _start = 120;
                       oneMin = 59;
                       _sendCodeToPhoneNumber();
@@ -332,16 +352,16 @@ class _SmsAuth extends State<SmsAuth> {
               whiteSpaceH(50),
               Align(
                 alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () {
+                child: RaisedButton(
+                  onPressed: () {
                     FocusScope.of(context).requestFocus(FocusNode());
                     _signInWithPhoneNumber();
                   },
+                  color: Color.fromARGB(255, 167, 167, 167),
+                  elevation: 0.0,
                   child: Container(
                     width: 150,
                     height: 50,
-                    decoration:
-                    BoxDecoration(color: Color.fromARGB(255, 167, 167, 167)),
                     child: Center(
                       child: Text("인증확인", style: TextStyle(
                           color: white, fontSize: 16, fontWeight: FontWeight.w600
