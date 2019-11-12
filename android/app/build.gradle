@@ -44,6 +44,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        versionCode 3
         applicationId "com.laon.aladdinmagic"
         minSdkVersion 16
         targetSdkVersion 28

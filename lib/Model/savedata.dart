@@ -7,6 +7,16 @@ class SaveData {
 
   SaveData._internal();
 
+  String _snsId;
+  String _snsEmail;
+
+
+  String get snsId => _snsId;
+
+  set snsId(String value) {
+    _snsId = value;
+  }
+
   String _reCoId;
 
   String get reCoId => _reCoId;
@@ -53,7 +63,14 @@ class SaveData {
   String _signRoot;
   String _recoCode;
   String _myRecoCode;
+  String _pushRecoCode;
 
+
+  String get pushRecoCode => _pushRecoCode;
+
+  set pushRecoCode(String value) {
+    _pushRecoCode = value;
+  }
 
   String get myRecoCode => _myRecoCode;
 
@@ -119,6 +136,12 @@ class SaveData {
 
   set recoPrice(int value) {
     _recoPrice = value;
+  }
+
+  String get snsEmail => _snsEmail;
+
+  set snsEmail(String value) {
+    _snsEmail = value;
   }
 
 

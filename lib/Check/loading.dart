@@ -1,11 +1,13 @@
-
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -15,12 +17,19 @@ class Loading extends StatefulWidget {
 class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
   var connectivityResult;
   bool networking = false;
+  bool appUpdate = false;
   SharedPreferences prefs;
 
   UserProvider userProvider = UserProvider();
 
   String id = "";
   String pass = "";
+  int type;
+
+  int storeVersionCode;
+  int nowVersionCode;
+
+  String projectCode;
 
   Future<int> sharedInit() async {
     prefs = await SharedPreferences.getInstance();
@@ -35,6 +44,8 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
       } else {
         id = prefs.getString("id");
         pass = prefs.getString("pass");
+        type = prefs.getInt("type");
+
         return 2;
       }
     }
@@ -49,37 +60,41 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
         print("moveLogin");
         Navigator.of(context).pushReplacementNamed("/Login");
       } else {
-        userProvider.login(id, pass).then((value) {
-          if (value == 1) {
+        if (type == 0) {
+          userProvider.login(id, pass, type).then((value) {
+            if (value == 1) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  "/Home", (Route<dynamic> route) => false);
+            }
+          });
+        } else {
+          userProvider.snsLogin(id, type).then((value) {
+            if (value == 1) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  "/Home", (Route<dynamic> route) => false);
+            }
+          });
+        }
 
-            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
-                    (Route<dynamic> route) => false);
-          }
-        });
         print("moveHome");
       }
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    // 자동 로그인 체크도 해야 함
-
+  movePage() {
     connectivityResult = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.mobile) {
         setState(() {
           networking = true;
-          autoLoginCheck();
+          getVersionCode();
           print("mobile");
         });
       } else if (result == ConnectivityResult.wifi) {
         setState(() {
           networking = true;
-          autoLoginCheck();
+          getVersionCode();
           print("wifi");
         });
       } else {
@@ -89,6 +104,148 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
         });
       }
     });
+  }
+
+  Future<String> loadVersion(context) async {
+    return await DefaultAssetBundle.of(context)
+        .loadString("assets/version.txt");
+  }
+
+  getVersionCode() {
+//    print("getVersionCode");
+//
+//    String nowCode;
+//    int versionCode;
+//
+//    await loadVersion(context).then((value) {
+//      nowCode = value;
+//      userProvider.getVersionCode().then((value) {
+//        versionCode = value;
+//
+//        print("code : ${nowCode}, ${versionCode}");
+//
+//        if (int.parse(nowCode) < versionCode) {
+//          print("storeUpdate");
+//          setState(() {
+//            appUpdate = true;
+//          });
+//        } else {
+//          autoLoginCheck();
+//          print("releaseVersion");
+//        }
+//      });
+//    });
+
+    autoLoginCheck();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    movePage();
+  }
+
+  appUpdateDialog() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height / 4,
+        left: 40,
+        right: 40,
+        bottom: MediaQuery.of(context).size.height / 3,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: black, width: 1),
+            color: Color.fromARGB(255, 219, 219, 219)),
+        child: Column(
+          children: <Widget>[
+            whiteSpaceH(25),
+            Text(
+              "알림",
+              style: TextStyle(
+                  color: black, fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            whiteSpaceH(25),
+            Padding(
+              padding: EdgeInsets.only(left: 25, right: 25),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 1,
+                color: black,
+              ),
+            ),
+            whiteSpaceH(25),
+            Text(
+              "앱 최신 버전이 있습니다.",
+              style: TextStyle(
+                  color: black, fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            whiteSpaceH(25),
+            Text(
+              "스토어로 이동하여 업데이트 하시겠습니까?",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: black, fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            whiteSpaceH(25),
+            Row(
+              children: <Widget>[
+                whiteSpaceW(20),
+                Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      SystemChannels.platform
+                          .invokeMethod('SystemNavigator.pop');
+                    },
+                    color: Color.fromARGB(255, 167, 167, 167),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 40,
+                      child: Center(
+                        child: Text(
+                          "취소",
+                          style: TextStyle(
+                              color: white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                whiteSpaceW(10),
+                Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      launch(
+                          "https://play.google.com/store/apps/details?id=com.laon.aladdinmagic");
+                    },
+                    color: Color.fromARGB(255, 167, 167, 167),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 40,
+                      child: Center(
+                        child: Text(
+                          "확인",
+                          style: TextStyle(
+                              color: white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                whiteSpaceW(20),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   networkDialog() {
@@ -169,6 +326,9 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
             ),
             networking == false
                 ? Positioned.fill(child: networkDialog())
+                : Container(),
+            appUpdate == true
+                ? Positioned.fill(child: appUpdateDialog())
                 : Container()
           ],
         ),

@@ -1,9 +1,11 @@
+import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/SignUp/signup.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -13,6 +15,7 @@ class Login extends StatefulWidget {
 
 class _Login extends State<Login> {
   UserProvider userProvider = UserProvider();
+  SaveData saveData = SaveData();
 
   SharedPreferences prefs;
 
@@ -25,12 +28,74 @@ class _Login extends State<Login> {
 
   bool autoLoginCheck = false;
 
-  sharedInit() async {
+  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+
+  kakaoLogin() async {
+    print("login");
+    final KakaoLoginResult result = await kakaoSignIn.logIn();
+    switch (result.status) {
+      case KakaoLoginStatus.loggedIn:
+        print('LoggedIn by the user.\n'
+            '- UserID is ${result.account.userID}\n'
+            '- UserEmail is ${result.account.userEmail} ');
+
+        userProvider.snsLogin(result.account.userID, 1).then((value) {
+          if (value == 0) {
+            customDialog("아이디 혹은 비밀번호를\n잘못 입력하셨거나\n등록되지 않은 회원 입니다.", 0);
+          } else {
+            if (autoLoginCheck) {
+              sharedInit(1, result.account.userID);
+            }
+
+            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
+                    (Route<dynamic> route) => false);
+          }
+        });
+
+        break;
+      case KakaoLoginStatus.loggedOut:
+        print('LoggedOut by the user.');
+        break;
+      case KakaoLoginStatus.error:
+        print('This is Kakao error message : ${result.errorMessage}');
+        if (result.errorMessage.contains("CANCELED_OPERATION")) {
+          showToast(type: 0, msg: "로그인을 취소하였습니다.");
+          Navigator.of(context).pop();
+        } else {
+          showToast(type: 0, msg: "로그인 중 오류가 발생하였습니다. 다시시도해주세요.");
+          Navigator.of(context).pop();
+        }
+        break;
+    }
+  }
+
+  Future<Null> _getAccountInfo() async {
+    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
+    if (result != null && result.status != KakaoLoginStatus.error) {
+      final KakaoAccountResult account = result.account;
+      final userID = account.userID;
+      final userEmail = account.userEmail;
+      final userPhoneNumber = account.userPhoneNumber;
+      final userDisplayID = account.userDisplayID;
+      final userNickname = account.userNickname;
+      // To-do Someting ...
+
+      print("userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
+    }
+  }
+
+  sharedInit(type, userID) async {
     prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt("autoLogin", 1);
-    await prefs.setString("id", _idController.text);
-    await prefs.setString("pass", _passController.text);
+    if (type == 0) {
+      await prefs.setString("id", _idController.text);
+      await prefs.setString("pass", _passController.text);
+    } else {
+      await prefs.setString("id", userID);
+    }
+
+    await prefs.setInt("type", type);
   }
 
   serviceDialog(msg) {
@@ -311,12 +376,12 @@ class _Login extends State<Login> {
                                 } else if (_passController.text == null || _passController.text == "") {
                                   showToast(type: 0, msg: "비밀번호를 입력해 주세요.");
                                 } else {
-                                  userProvider.login(_idController.text, _passController.text).then((value) {
+                                  userProvider.login(_idController.text, _passController.text, 0).then((value) {
                                     if (value == 0) {
                                       customDialog("아이디 혹은 비밀번호를\n잘못 입력하셨거나\n등록되지 않은 회원 입니다.", 0);
                                     } else {
                                       if (autoLoginCheck) {
-                                        sharedInit();
+                                        sharedInit(0, "");
                                       }
 
                                       Navigator.of(context).pushNamedAndRemoveUntil("/Home",
@@ -439,7 +504,9 @@ class _Login extends State<Login> {
                               child: GestureDetector(
                                 onTap: () {
                                   print("kakaoLogin");
-                                  serviceDialog("서비스 준비 중입니다.");
+//                                  serviceDialog("서비스 준비 중입니다.");
+
+                                  kakaoLogin();
                                 },
                                 child: Image.asset(
                                   "assets/icon/kakao_icon.png",

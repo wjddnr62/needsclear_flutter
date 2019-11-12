@@ -5,6 +5,7 @@ import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,6 +20,7 @@ class _Home extends State<Home> {
   SaveData saveData = SaveData();
   UserProvider userProvider = UserProvider();
   SharedPreferences prefs;
+  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -33,12 +35,40 @@ class _Home extends State<Home> {
     return Future.value(true);
   }
 
+
+
+  kakaoLogOut() async {
+    print("logout");
+    final KakaoLoginResult result = await kakaoSignIn.logOut();
+    print("logout");
+    switch (result.status) {
+      case KakaoLoginStatus.loggedIn:
+
+        print('LoggedIn by the user.\n'
+            '- UserID is ${result.account.userID}\n'
+            '- UserEmail is ${result.account.userEmail} ');
+
+        break;
+      case KakaoLoginStatus.loggedOut:
+        print('LoggedOut by the user.');
+        break;
+      case KakaoLoginStatus.error:
+        print('This is Kakao error message : ${result.errorMessage}');
+        break;
+    }
+    // To-do Someting ...
+  }
+
   sharedLogout() async {
     prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt("autoLogin", 0);
     await prefs.setString("id", "");
     await prefs.setString("pass", "");
+
+    if (saveData.type != 0) {
+      kakaoLogOut();
+    }
 
     Navigator.of(context).pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
   }

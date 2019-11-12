@@ -245,8 +245,9 @@ class _HowJoin extends State<HowJoin> {
                     whiteSpaceH(30),
                     GestureDetector(
                       onTap: () {
-                        serviceDialog("서비스 준비 중입니다.");
-//                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 1,)));
+//                        serviceDialog("서비스 준비 중입니다.");
+                      print("카카오톡 회원가입");
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 1,)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,

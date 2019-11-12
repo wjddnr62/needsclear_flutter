@@ -20,12 +20,13 @@ class UserProvider {
     });
   }
 
-  Future<int> login(id, pass) async {
+  Future<int> login(id, pass, type) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
 
     QuerySnapshot authQuery = await userCollection
         .where("id", isEqualTo: id)
         .where("pass", isEqualTo: pass)
+        .where("type", isEqualTo: type)
         .getDocuments();
 
     // 탈퇴대기, 택배기사 로그인 따로있음 추후 추가
@@ -41,6 +42,33 @@ class UserProvider {
       saveData.recoPerson = authQuery.documents[0].data['recoPerson'];
       saveData.recoPrice = authQuery.documents[0].data['recoPrice'];
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
+      saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
+      return 1;
+    }
+  }
+
+  Future<int> snsLogin(id, type) async {
+    CollectionReference userCollection = Firestore.instance.collection("users");
+
+    QuerySnapshot authQuery = await userCollection
+        .where("id", isEqualTo: id)
+        .where("type", isEqualTo: type)
+        .getDocuments();
+
+    // 탈퇴대기, 택배기사 로그인 따로있음 추후 추가
+
+    if (authQuery.documents.length == 0) {
+      return 0;
+    } else {
+      saveData.id = authQuery.documents[0].data['id'];
+      saveData.phoneNumber = authQuery.documents[0].data['phone'];
+      saveData.name = authQuery.documents[0].data['name'];
+      saveData.sex = authQuery.documents[0].data['sex'];
+      saveData.point = authQuery.documents[0].data['point'];
+      saveData.recoPerson = authQuery.documents[0].data['recoPerson'];
+      saveData.recoPrice = authQuery.documents[0].data['recoPrice'];
+      saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
+      saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
       return 1;
     }
   }
@@ -70,6 +98,14 @@ class UserProvider {
     await recoCollection.where("recoCode", isEqualTo: recoCode).getDocuments();
 
     return recoQuery.documents.length;
+  }
+
+  Future<int> getVersionCode() async {
+    CollectionReference versionCollection = Firestore.instance.collection("version");
+
+    QuerySnapshot versionQuery = await versionCollection.getDocuments();
+
+    return versionQuery.documents[0].data['versionCode'];
   }
 
   Future<int> idDuplicate(id) async {
