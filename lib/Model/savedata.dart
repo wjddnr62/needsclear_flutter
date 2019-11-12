@@ -7,6 +7,23 @@ class SaveData {
 
   SaveData._internal();
 
+  int _storeVersionCode;
+  String _nowVersionCode;
+  String _signDate;
+
+
+  String get signDate => _signDate;
+
+  set signDate(String value) {
+    _signDate = value;
+  }
+
+  int get storeVersionCode => _storeVersionCode;
+
+  set storeVersionCode(int value) {
+    _storeVersionCode = value;
+  }
+
   String _snsId;
   String _snsEmail;
 
@@ -142,6 +159,12 @@ class SaveData {
 
   set snsEmail(String value) {
     _snsEmail = value;
+  }
+
+  String get nowVersionCode => _nowVersionCode;
+
+  set nowVersionCode(String value) {
+    _nowVersionCode = value;
   }
 
 

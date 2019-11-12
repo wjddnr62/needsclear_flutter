@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:aladdinmagic/public/routes.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,8 @@ class _Splash extends State<Splash> {
   void navigationPage() {
     Navigator.of(context).pushReplacementNamed('/Loading');
   }
+
+  UserProvider userProvider = UserProvider();
 
 
   @override

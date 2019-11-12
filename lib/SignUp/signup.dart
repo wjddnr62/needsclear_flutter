@@ -184,7 +184,8 @@ class _SignUp extends State<SignUp> {
                                   'recoCode': _recoCodeController.text,
                                   'name': _nameController.text,
                                   'phone': _saveData.phoneNumber,
-                                  'signDate': formatDate
+                                  'signDate': formatDate,
+                                  'type': 0
                                 });
                                 print("insertPoint");
                                 reCoCheck = false;

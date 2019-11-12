@@ -43,6 +43,7 @@ class UserProvider {
       saveData.recoPrice = authQuery.documents[0].data['recoPrice'];
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
       saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
+      saveData.signDate = authQuery.documents[0].data['signDate'];
       return 1;
     }
   }
@@ -69,6 +70,7 @@ class UserProvider {
       saveData.recoPrice = authQuery.documents[0].data['recoPrice'];
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
       saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
+      saveData.signDate = authQuery.documents[0].data['signDate'];
       return 1;
     }
   }
@@ -104,6 +106,10 @@ class UserProvider {
     CollectionReference versionCollection = Firestore.instance.collection("version");
 
     QuerySnapshot versionQuery = await versionCollection.getDocuments();
+
+    saveData.storeVersionCode = versionQuery.documents[0].data['versionCode'];
+
+    print("saveData2 : ${saveData.storeVersionCode}");
 
     return versionQuery.documents[0].data['versionCode'];
   }
@@ -144,6 +150,40 @@ class UserProvider {
     Firestore.instance.collection("reco").add(recoLog).catchError((e) {
       print("addCallLogError : " + e.toString());
     });
+
+    return null;
+  }
+
+  deliveryInsertPoint(pushRecoCode, id, point, recoLog) async {
+    CollectionReference userCollection = Firestore.instance.collection("users");
+
+    QuerySnapshot userQuery =
+    await userCollection.where("id", isEqualTo: id).getDocuments();
+
+    int point = userQuery.documents[0].data['point'] + 300;
+    print("point : " + point.toString());
+
+    Firestore.instance
+        .collection("users")
+        .document(userQuery.documents[0].documentID)
+        .updateData(
+        {'point': point});
+
+    if (pushRecoCode != null && pushRecoCode != "") {
+      QuerySnapshot pushQuery = await userCollection.where("recoCode", isEqualTo: pushRecoCode).getDocuments();
+      int pushPoint = pushQuery.documents[0].data['point'] + 100;
+      Firestore.instance
+          .collection("users")
+          .document(pushQuery.documents[0].documentID)
+          .updateData(
+          {'point': pushPoint});
+
+      Firestore.instance.collection("reco").add(recoLog).catchError((e) {
+        print("addCallLogError : " + e.toString());
+      });
+    }
+
+
 
     return null;
   }

@@ -3,6 +3,7 @@
 import 'package:aladdinmagic/Check/loading.dart';
 import 'package:aladdinmagic/Check/permission.dart';
 import 'package:aladdinmagic/DrawerMenu/recolist.dart';
+import 'package:aladdinmagic/Home/delivery.dart';
 import 'package:aladdinmagic/Home/home.dart';
 import 'package:aladdinmagic/Home/reco.dart';
 import 'package:aladdinmagic/Login/login.dart';
@@ -20,4 +21,5 @@ final routes = {
   '/SignUp': (context) => SignUp(),
   '/Reco': (context) => Reco(),
   '/RecoList': (context) => RecoList(),
+  '/Delivery': (context) => Delivery(),
 };

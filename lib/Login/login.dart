@@ -60,10 +60,8 @@ class _Login extends State<Login> {
         print('This is Kakao error message : ${result.errorMessage}');
         if (result.errorMessage.contains("CANCELED_OPERATION")) {
           showToast(type: 0, msg: "로그인을 취소하였습니다.");
-          Navigator.of(context).pop();
         } else {
           showToast(type: 0, msg: "로그인 중 오류가 발생하였습니다. 다시시도해주세요.");
-          Navigator.of(context).pop();
         }
         break;
     }

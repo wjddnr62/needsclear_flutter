@@ -1,3 +1,4 @@
+import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -19,6 +20,8 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
   bool networking = false;
   bool appUpdate = false;
   SharedPreferences prefs;
+
+  SaveData saveData = SaveData();
 
   UserProvider userProvider = UserProvider();
 
@@ -107,36 +110,42 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
   }
 
   Future<String> loadVersion(context) async {
+    saveData.nowVersionCode = await DefaultAssetBundle.of(context)
+        .loadString("assets/version.txt");
+
+    print('saveData : ${saveData.nowVersionCode}');
+
     return await DefaultAssetBundle.of(context)
         .loadString("assets/version.txt");
   }
 
   getVersionCode() {
-//    print("getVersionCode");
-//
-//    String nowCode;
-//    int versionCode;
-//
-//    await loadVersion(context).then((value) {
-//      nowCode = value;
-//      userProvider.getVersionCode().then((value) {
-//        versionCode = value;
-//
-//        print("code : ${nowCode}, ${versionCode}");
-//
-//        if (int.parse(nowCode) < versionCode) {
-//          print("storeUpdate");
-//          setState(() {
-//            appUpdate = true;
-//          });
-//        } else {
-//          autoLoginCheck();
-//          print("releaseVersion");
-//        }
-//      });
-//    });
+    print("getVersionCode");
 
-    autoLoginCheck();
+    int nowCode;
+    int versionCode;
+
+    loadVersion(context).then((value) {
+      userProvider.getVersionCode().then((value) {
+        nowCode = int.parse(saveData.nowVersionCode);
+        versionCode = saveData.storeVersionCode;
+
+        print("code : ${nowCode}, ${versionCode}");
+
+        if (nowCode < versionCode) {
+          print("storeUpdate");
+          setState(() {
+            appUpdate = true;
+          });
+        } else {
+          autoLoginCheck();
+          print("releaseVersion");
+        }
+      });
+
+    });
+
+//    autoLoginCheck();
   }
 
   @override
