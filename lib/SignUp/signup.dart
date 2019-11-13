@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aladdinmagic/Login/login.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
@@ -9,10 +11,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class SignUp extends StatefulWidget {
   final int type; // type = 0 일반 가입, 1 = 카카오, 2 = 구글, 3 = 페이스북
@@ -35,14 +39,8 @@ class _SignUp extends State<SignUp> {
   bool nextPage = false;
   int sex = 0;
 
-//  GoogleSignIn _googleSignIn = GoogleSignIn(
-//    scopes: [
-//      'email',
-//      'https://www.googleapis.com/auth/contacts.readonly',
-//    ],
-//  );
-
   FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+  final facebookLogin = FacebookLogin();
 
   TextEditingController _idController = TextEditingController();
   TextEditingController _passController = TextEditingController();
@@ -75,33 +73,49 @@ class _SignUp extends State<SignUp> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   Future<void> _handleSignIn() async {
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-    await googleSignInAccount.authentication;
+    try {
+      final GoogleSignInAccount googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
 
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+      final AuthResult authResult =
+          await _auth.signInWithCredential(credential);
+      final FirebaseUser user = authResult.user;
 
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
 
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
+      final FirebaseUser currentUser = await _auth.currentUser();
+      assert(user.uid == currentUser.uid);
 
-    print("currentUser : ${currentUser.uid}");
+      if (user.uid == currentUser.uid) {
+        _saveData.id = currentUser.uid;
+        setState(() {
+          nextPage = true;
+        });
+      } else {
+        showToast(type: 0, msg: "구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+        Navigator.of(context).pop();
+      }
 
-//    try {
-//      await _googleSignIn.signIn();
-//
-//      print("googleId : ${_googleSignIn.currentUser.id}");
-//    } catch (error) {
-//      print("googleError : ${error}");
-//    }
+      print("currentUser : ${currentUser.uid}");
+    } catch (error) {
+      print("googleError : ${error}");
+      if (error.toString().contains("authentication") &&
+          error.toString().contains("null")) {
+        showToast(type: 0, msg: "구글 회원가입을 취소하였습니다.");
+        Navigator.of(context).pop();
+      } else {
+        showToast(type: 0, msg: "구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+        Navigator.of(context).pop();
+      }
+    }
   }
 
 //  Future<void> _handleSignOut() async {
@@ -204,7 +218,7 @@ class _SignUp extends State<SignUp> {
                               }
 
                               userProvider.addUsers({
-                                'id': signType == 0 ? _saveData.id : signType == 1 ? _saveData.snsId : "",
+                                'id': _saveData.id,
                                 'pass': signType == 0 ? _saveData.pass : "",
                                 'name': _nameController.text,
                                 'phone': _saveData.phoneNumber,
@@ -613,8 +627,9 @@ class _SignUp extends State<SignUp> {
                       textInputAction: TextInputAction.done,
                       maxLength: 10,
                       onChanged: (value) async {
-                        await userProvider.checkReCoCode(_recoCodeController.text).then((value) {
-
+                        await userProvider
+                            .checkReCoCode(_recoCodeController.text)
+                            .then((value) {
                           print("value : ${value}");
                           if (value != 0) {
                             reCoCheck = true;
@@ -622,13 +637,13 @@ class _SignUp extends State<SignUp> {
                             reCoCheck = false;
                           }
 
-                          print("recoCheck : " +reCoCheck.toString());
+                          print("recoCheck : " + reCoCheck.toString());
                         });
 
                         print("value222 : ${value}");
 
-
-                        if ((_recoCodeController.text != null && _recoCodeController.text != "") &&
+                        if ((_recoCodeController.text != null &&
+                                _recoCodeController.text != "") &&
                             !reCoCheck) {
                           print("aa");
                         } else {
@@ -658,7 +673,6 @@ class _SignUp extends State<SignUp> {
                             setState(() {
                               allAgree = value;
                               useCheck = value;
-                              locationCheck = value;
                               privacyCheck = value;
                             });
                           },
@@ -774,7 +788,8 @@ class _SignUp extends State<SignUp> {
                         } else if (selectBoxValue == "가입경로 선택" ||
                             selectBoxValue == "") {
                           showToast(type: 0, msg: "가입경로를 선택해 주세요.");
-                        } else if ((_recoCodeController.text != null && _recoCodeController.text != "") &&
+                        } else if ((_recoCodeController.text != null &&
+                                _recoCodeController.text != "") &&
                             !reCoCheck) {
                           showToast(type: 0, msg: "추천코드가 올바르지 않습니다.");
                         } else if (!allAgree) {
@@ -820,7 +835,8 @@ class _SignUp extends State<SignUp> {
       final userNickname = account.userNickname;
       // To-do Someting ...
 
-      print("userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
+      print(
+          "userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
     }
   }
 
@@ -835,7 +851,7 @@ class _SignUp extends State<SignUp> {
             '- UserID is ${result.account.userID}\n'
             '- UserEmail is ${result.account.userEmail} ');
 
-        _saveData.snsId = result.account.userID;
+        _saveData.id = result.account.userID;
         _saveData.snsEmail = result.account.userEmail;
 
         setState(() {
@@ -859,17 +875,45 @@ class _SignUp extends State<SignUp> {
     }
   }
 
-  Future<Null> _getAccessToken() async {
-    final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
-    print("accessToken : ${accessToken}");
-    if (accessToken != null) {
-      final token = accessToken.token;
-      print("token : ${token}");
-      // To-do Someting ...
+  fbLogin() async {
+    final result = await facebookLogin.logIn(['email', 'public_profile']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
+        final profile = json.decode(graphResponse.body);
+        print("id : ${profile['id']}");
+        print("token : ${result.accessToken.token}");
+        if (profile['id'] != null) {
+          _saveData.id = profile['id'];
+          setState(() {
+            nextPage = true;
+          });
+        }
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        showToast(type: 0, msg: "facebook 회원가입을 취소하였습니다.");
+        Navigator.of(context).pop();
+        break;
+      case FacebookLoginStatus.error:
+        showToast(type: 0, msg: "facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
+        print("fbError : " + result.errorMessage.toString());
+        Navigator.of(context).pop();
+        break;
     }
   }
 
-  snsNextPage() {
+//  Future<Null> _getAccessToken() async {
+//    final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
+//    print("accessToken : ${accessToken}");
+//    if (accessToken != null) {
+//      final token = accessToken.token;
+//      print("token : ${token}");
+//      // To-do Someting ...
+//    }
+//  }
+
+  snsNextPage(type) {
     return Column(
       children: <Widget>[
         Padding(
@@ -893,9 +937,7 @@ class _SignUp extends State<SignUp> {
             child: Text(
               "서비스 이용을 위해 기본정보 입력 및\n약관에 동의해 주세요.",
               style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: black,
-                  fontSize: 18),
+                  fontWeight: FontWeight.w600, color: black, fontSize: 18),
             ),
           ),
         ),
@@ -926,7 +968,7 @@ class _SignUp extends State<SignUp> {
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: mainColor)),
                     contentPadding:
-                    EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                        EdgeInsets.only(top: 10, bottom: 10, left: 5)),
               ),
               whiteSpaceH(20),
               TextFormField(
@@ -934,16 +976,14 @@ class _SignUp extends State<SignUp> {
                   DatePicker.showDatePicker(context,
                       minTime: DateTime(1930, 1, 1),
                       showTitleActions: true, onChanged: (date) {
-                        print(
-                            "change ${date.year}.${date.month}.${date.day}");
-                        _birthDayController.text =
+                    print("change ${date.year}.${date.month}.${date.day}");
+                    _birthDayController.text =
                         "${date.year}년${date.month}월${date.day}일";
-                      }, onConfirm: (date) {
-                        print(
-                            "confirm ${date.year}.${date.month}.${date.day}");
-                        _birthDayController.text =
+                  }, onConfirm: (date) {
+                    print("confirm ${date.year}.${date.month}.${date.day}");
+                    _birthDayController.text =
                         "${date.year}년${date.month}월${date.day}일";
-                      }, locale: LocaleType.ko);
+                  }, locale: LocaleType.ko);
                 },
                 controller: _birthDayController,
                 textInputAction: TextInputAction.next,
@@ -957,7 +997,7 @@ class _SignUp extends State<SignUp> {
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: mainColor)),
                     contentPadding:
-                    EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                        EdgeInsets.only(top: 10, bottom: 10, left: 5)),
               ),
               whiteSpaceH(30),
               Row(
@@ -1055,8 +1095,9 @@ class _SignUp extends State<SignUp> {
                 textInputAction: TextInputAction.done,
                 maxLength: 10,
                 onChanged: (value) async {
-                  await userProvider.checkReCoCode(_recoCodeController.text).then((value) {
-
+                  await userProvider
+                      .checkReCoCode(_recoCodeController.text)
+                      .then((value) {
                     print("value : ${value}");
                     if (value != 0) {
                       reCoCheck = true;
@@ -1064,7 +1105,6 @@ class _SignUp extends State<SignUp> {
                       reCoCheck = false;
                     }
                   });
-
                 },
                 decoration: InputDecoration(
                     counterText: "",
@@ -1075,14 +1115,13 @@ class _SignUp extends State<SignUp> {
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: mainColor)),
                     contentPadding:
-                    EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                        EdgeInsets.only(top: 10, bottom: 10, left: 5)),
               ),
               whiteSpaceH(30),
               Row(
                 children: <Widget>[
                   Checkbox(
-                    materialTapTargetSize:
-                    MaterialTapTargetSize.shrinkWrap,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: allAgree,
                     activeColor: mainColor,
                     onChanged: (value) {
@@ -1090,6 +1129,7 @@ class _SignUp extends State<SignUp> {
                         allAgree = value;
                         useCheck = value;
                         privacyCheck = value;
+                        locationCheck = value;
                       });
                     },
                   ),
@@ -1107,8 +1147,7 @@ class _SignUp extends State<SignUp> {
               Row(
                 children: <Widget>[
                   Checkbox(
-                    materialTapTargetSize:
-                    MaterialTapTargetSize.shrinkWrap,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: useCheck,
                     activeColor: mainColor,
                     onChanged: (value) {
@@ -1151,8 +1190,7 @@ class _SignUp extends State<SignUp> {
               Row(
                 children: <Widget>[
                   Checkbox(
-                    materialTapTargetSize:
-                    MaterialTapTargetSize.shrinkWrap,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: privacyCheck,
                     activeColor: mainColor,
                     onChanged: (value) {
@@ -1195,8 +1233,7 @@ class _SignUp extends State<SignUp> {
               Row(
                 children: <Widget>[
                   Checkbox(
-                    materialTapTargetSize:
-                    MaterialTapTargetSize.shrinkWrap,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     value: locationCheck,
                     activeColor: mainColor,
                     onChanged: (value) {
@@ -1248,13 +1285,14 @@ class _SignUp extends State<SignUp> {
                   } else if (selectBoxValue == "가입경로 선택" ||
                       selectBoxValue == "") {
                     showToast(type: 0, msg: "가입경로를 선택해 주세요.");
-                  } else if ((_recoCodeController.text != null && _recoCodeController.text != "") &&
+                  } else if ((_recoCodeController.text != null &&
+                          _recoCodeController.text != "") &&
                       !reCoCheck) {
                     showToast(type: 0, msg: "추천코드가 올바르지 않습니다.");
                   } else if (!allAgree) {
                     showToast(type: 0, msg: "필수약관을 모두 동의해 주세요.");
                   } else {
-                    customDialog("입력하신 정보로\n회원가입 하시겠습니까?", 2);
+                    customDialog("입력하신 정보로\n회원가입 하시겠습니까?", type);
                   }
                 },
                 child: Container(
@@ -1289,21 +1327,26 @@ class _SignUp extends State<SignUp> {
       return normalSign();
     } else if (type == 1) {
 //      kakaoLogOut();
-    if (!snsLogin) {
-      kakaoLogin();
-      snsLogin = true;
-    }
+      if (!snsLogin) {
+        kakaoLogin();
+        snsLogin = true;
+      }
 
-      return nextPage ? snsNextPage() : Container();
+      return nextPage ? snsNextPage(2) : Container();
     } else if (type == 2) {
-
       if (!snsLogin) {
         _handleSignIn();
         snsLogin = true;
       }
 
-      return Container();
+      return nextPage ? snsNextPage(3) : Container();
     } else if (type == 3) {
+      if (!snsLogin) {
+        fbLogin();
+        snsLogin = true;
+      }
+
+      return nextPage ? snsNextPage(4) : Container();
     } else {
       return Container();
     }

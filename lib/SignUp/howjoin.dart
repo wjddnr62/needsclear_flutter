@@ -279,8 +279,8 @@ class _HowJoin extends State<HowJoin> {
                     whiteSpaceH(30),
                     GestureDetector(
                       onTap: () {
-                        serviceDialog("서비스 준비 중입니다.");
-//                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 2,)));
+//                        serviceDialog("서비스 준비 중입니다.");
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 2,)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
@@ -312,8 +312,8 @@ class _HowJoin extends State<HowJoin> {
                     whiteSpaceH(30),
                     GestureDetector(
                       onTap: () {
-                        serviceDialog("서비스 준비 중입니다.");
-//                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 3,)));
+//                        serviceDialog("서비스 준비 중입니다.");
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 3,)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,

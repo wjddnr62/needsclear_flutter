@@ -5,7 +5,9 @@ import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,6 +23,7 @@ class _Home extends State<Home> {
   UserProvider userProvider = UserProvider();
   SharedPreferences prefs;
   FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+  GoogleSignIn googleSignIn = GoogleSignIn();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -35,6 +38,10 @@ class _Home extends State<Home> {
     return Future.value(true);
   }
 
+  Future<void> googleLogout() async {
+    print("googleLogout");
+    googleSignIn.disconnect();
+  }
 
   kakaoLogOut() async {
     print("logout");
@@ -57,6 +64,12 @@ class _Home extends State<Home> {
     // To-do Someting ...
   }
 
+  final facebookLogin = FacebookLogin();
+
+  fbLogout() async {
+    await facebookLogin.logOut();
+  }
+
   sharedLogout() async {
     prefs = await SharedPreferences.getInstance();
 
@@ -66,10 +79,12 @@ class _Home extends State<Home> {
 
     if (saveData.type != 0) {
       kakaoLogOut();
+      googleLogout();
+      fbLogout();
     }
 
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        "/Login", (Route<dynamic> route) => false);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
   }
 
   int viewPage = 0;
@@ -111,10 +126,7 @@ class _Home extends State<Home> {
         builder: (context) {
           return AlertDialog(
             content: Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height / 2.5,
+              height: MediaQuery.of(context).size.height / 2.5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -127,10 +139,7 @@ class _Home extends State<Home> {
                   ),
                   whiteSpaceH(20),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 1,
                     color: Color.fromARGB(255, 167, 167, 167),
                   ),
@@ -154,10 +163,7 @@ class _Home extends State<Home> {
                             }
                           },
                           child: Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
+                            width: MediaQuery.of(context).size.width,
                             height: 40,
                             decoration: BoxDecoration(
                                 color: Color.fromARGB(255, 167, 167, 167)),
@@ -198,10 +204,7 @@ class _Home extends State<Home> {
       drawer: Drawer(
         child: Column(
           children: <Widget>[
-            whiteSpaceH(MediaQuery
-                .of(context)
-                .padding
-                .top + 20),
+            whiteSpaceH(MediaQuery.of(context).padding.top + 20),
             Row(
               children: <Widget>[
                 whiteSpaceW(30),
@@ -209,14 +212,17 @@ class _Home extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("${saveData.name}>", style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18), textAlign: TextAlign.start,),
-                      Text("${saveData.phoneNumber.substring(0, 3)}-${saveData
-                          .phoneNumber.substring(3, 7)}-${saveData.phoneNumber
-                          .substring(7, 11)}")
+                      Text(
+                        "${saveData.name}>",
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18),
+                        textAlign: TextAlign.start,
+                      ),
+                      Text(
+                          "${saveData.phoneNumber.substring(0, 3)}-${saveData.phoneNumber.substring(3, 7)}-${saveData.phoneNumber.substring(7, 11)}")
                     ],
                   ),
                 ),
@@ -224,36 +230,35 @@ class _Home extends State<Home> {
                   onTap: () {
                     sharedLogout();
                   },
-                  child: Text("로그아웃", style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16), textAlign: TextAlign.start,),
+                  child: Text(
+                    "로그아웃",
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16),
+                    textAlign: TextAlign.start,
+                  ),
                 ),
                 whiteSpaceW(30)
               ],
             ),
             whiteSpaceH(20),
             Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               height: 1,
               color: Color.fromARGB(255, 167, 167, 167),
             ),
             Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               height: 30,
               color: Color.fromARGB(255, 129, 129, 129),
               padding: EdgeInsets.only(left: 10),
               child: Center(
-                child: Text("알라딘매직", style: TextStyle(
-                    fontWeight: FontWeight.w600, color: white
-                ),),
+                child: Text(
+                  "알라딘매직",
+                  style: TextStyle(fontWeight: FontWeight.w600, color: white),
+                ),
               ),
             ),
             whiteSpaceH(20),
@@ -265,11 +270,16 @@ class _Home extends State<Home> {
                 children: <Widget>[
                   whiteSpaceW(10),
                   Expanded(
-                    child: Text("추천인목록", style: TextStyle(
-                        color: black, fontWeight: FontWeight.w600
-                    ),),
+                    child: Text(
+                      "추천인목록",
+                      style:
+                          TextStyle(color: black, fontWeight: FontWeight.w600),
+                    ),
                   ),
-                  Icon(Icons.arrow_forward_ios, size: 20,),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                  ),
                   whiteSpaceW(10)
                 ],
               ),
@@ -308,20 +318,14 @@ class _Home extends State<Home> {
       body: WillPopScope(
           child: SingleChildScrollView(
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          width: MediaQuery.of(context).size.width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {},
@@ -332,7 +336,7 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "알라딘매직",
                                 hintStyle:
-                                TextStyle(fontSize: 14, color: black),
+                                    TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
@@ -343,10 +347,7 @@ class _Home extends State<Home> {
                       ),
                       Expanded(
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          width: MediaQuery.of(context).size.width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {},
@@ -356,7 +357,7 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "제휴서비스",
                                 hintStyle:
-                                TextStyle(fontSize: 14, color: black),
+                                    TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
@@ -367,10 +368,7 @@ class _Home extends State<Home> {
                       ),
                       Expanded(
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          width: MediaQuery.of(context).size.width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {},
@@ -380,7 +378,7 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "이벤트",
                                 hintStyle:
-                                TextStyle(fontSize: 14, color: black),
+                                    TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
@@ -391,10 +389,7 @@ class _Home extends State<Home> {
                       ),
                       Expanded(
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          width: MediaQuery.of(context).size.width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {},
@@ -404,7 +399,7 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "고객지원",
                                 hintStyle:
-                                TextStyle(fontSize: 14, color: black),
+                                    TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
@@ -417,18 +412,12 @@ class _Home extends State<Home> {
                   ),
                   whiteSpaceH(0.5),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 1,
                     color: Color.fromARGB(255, 219, 219, 219),
                   ),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 120,
                     color: Color.fromARGB(255, 245, 245, 245),
                     child: Column(
@@ -455,7 +444,7 @@ class _Home extends State<Home> {
                             child: RichText(
                               text: TextSpan(
                                   text:
-                                  "${numberFormat.format(saveData.point)}",
+                                      "${numberFormat.format(saveData.point)}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: mainColor,
@@ -475,10 +464,7 @@ class _Home extends State<Home> {
                     ),
                   ),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 1,
                     color: Color.fromARGB(255, 219, 219, 219),
                   ),
@@ -519,10 +505,7 @@ class _Home extends State<Home> {
                             Navigator.of(context).pushNamed("/Reco");
                           },
                           child: Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
+                            width: MediaQuery.of(context).size.width,
                             height: 120,
                             color: Colors.black87,
                             child: Column(
@@ -573,10 +556,7 @@ class _Home extends State<Home> {
                         child: GestureDetector(
                           onTap: () {},
                           child: Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
+                            width: MediaQuery.of(context).size.width,
                             height: 120,
                             color: mainColor,
                             child: Column(
@@ -621,14 +601,8 @@ class _Home extends State<Home> {
                     ],
                   ),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .width + 115,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width + 115,
                     decoration: BoxDecoration(
                         border: Border.all(
                             width: 2,
@@ -638,10 +612,7 @@ class _Home extends State<Home> {
                       physics: NeverScrollableScrollPhysics(),
                       children: List.generate(12, (index) {
                         return Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                               color: white,
                               border: Border.all(
@@ -679,7 +650,8 @@ class _Home extends State<Home> {
                                   await launch(
                                       "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko");
                                 } else if (resourceName[index] == "택배") {
-                                  Navigator.of(context).pushReplacementNamed("/Delivery");
+                                  Navigator.of(context)
+                                      .pushReplacementNamed("/Delivery");
                                 } else {
                                   customDialog("서비스 준비 중입니다.", 0);
                                 }
@@ -708,10 +680,7 @@ class _Home extends State<Home> {
                     ),
                   ),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     height: 120,
                     color: white,
                   )

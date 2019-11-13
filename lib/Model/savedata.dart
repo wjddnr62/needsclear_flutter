@@ -24,15 +24,15 @@ class SaveData {
     _storeVersionCode = value;
   }
 
-  String _snsId;
+//  String _snsId;
   String _snsEmail;
 
 
-  String get snsId => _snsId;
-
-  set snsId(String value) {
-    _snsId = value;
-  }
+//  String get snsId => _snsId;
+//
+//  set snsId(String value) {
+//    _snsId = value;
+//  }
 
   String _reCoId;
 
