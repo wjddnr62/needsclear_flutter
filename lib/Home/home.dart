@@ -90,33 +90,33 @@ class _Home extends State<Home> {
   int viewPage = 0;
 
   List<String> resource = [
-    'assets/resource/laundry.png',
+    'assets/resource/drive.png',
+    'assets/resource/flower.png',
+    'assets/resource/quick.png',
     'assets/resource/aladdinbox.png',
     'assets/resource/woogos.png',
-    'assets/resource/movie.png',
-    'assets/resource/flower.png',
-    'assets/resource/drive.png',
-    'assets/resource/quick.png',
-    'assets/resource/car.png',
-    'assets/resource/more.png',
-    'assets/resource/insurance.png',
     'assets/resource/delivery.png',
-    'assets/resource/premise.png'
+    'assets/resource/premise.png',
+    'assets/resource/insurance.png',
+    'assets/resource/laundry.png',
+    'assets/resource/car.png',
+    'assets/resource/rent.png',
+    'assets/resource/movie.png',
   ];
 
   List<String> resourceName = [
-    '세탁신청',
+    '대리운전',
+    '꽃배달',
+    '퀵서비스',
     '알라딘박스',
     '우고스',
-    '영화표 예매',
-    '꽃배달',
-    '대리운전',
-    '퀵서비스',
-    '렌트카',
-    '제휴서비스\n더보기',
-    '자동차 보험',
     '택배',
-    '후불상조'
+    '후불상조',
+    '자동차 보험',
+    '세탁신청',
+    '렌트카',
+    '렌탈 서비스',
+    '영화표 예매',
   ];
 
   customDialog(msg, type) {
@@ -652,6 +652,8 @@ class _Home extends State<Home> {
                                 } else if (resourceName[index] == "택배") {
                                   Navigator.of(context)
                                       .pushReplacementNamed("/Delivery");
+                                } else if (resourceName[index] == "자동차 보험") {
+                                  await launch("https://esti.goodcar-direct.com/CB500002");
                                 } else {
                                   customDialog("서비스 준비 중입니다.", 0);
                                 }
