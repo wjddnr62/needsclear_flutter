@@ -226,7 +226,7 @@ class _SignUp extends State<SignUp> {
                                 'sex': sex,
                                 'signRoot': selectBoxValue,
                                 'type': signType,
-                                'recoCode': reCoCode,
+                                'recoCode': _saveData.phoneNumber,
                                 'point': 1000,
                                 'recoPerson': 0,
                                 'recoPrice': 0,
