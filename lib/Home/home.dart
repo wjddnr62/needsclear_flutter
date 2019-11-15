@@ -654,6 +654,10 @@ class _Home extends State<Home> {
                                       .pushReplacementNamed("/Delivery");
                                 } else if (resourceName[index] == "자동차 보험") {
                                   await launch("https://esti.goodcar-direct.com/CB500002");
+                                } else if (resourceName[index] == "우고스") {
+                                  await launch("http://www.woogos.com");
+                                } else if (resourceName[index] == "후불상조") {
+                                  await launch("https://www.dhsangjo.xyz");
                                 } else {
                                   customDialog("서비스 준비 중입니다.", 0);
                                 }
