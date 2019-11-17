@@ -1093,7 +1093,8 @@ class _SignUp extends State<SignUp> {
               TextFormField(
                 controller: _recoCodeController,
                 textInputAction: TextInputAction.done,
-                maxLength: 10,
+                keyboardType: TextInputType.phone,
+                maxLength: 11,
                 onChanged: (value) async {
                   await userProvider
                       .checkReCoCode(_recoCodeController.text)
