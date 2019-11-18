@@ -98,9 +98,9 @@ class _Home extends State<Home> {
     'assets/resource/delivery.png',
     'assets/resource/premise.png',
     'assets/resource/insurance.png',
+    'assets/resource/rent.png',
     'assets/resource/laundry.png',
     'assets/resource/car.png',
-    'assets/resource/rent.png',
     'assets/resource/movie.png',
   ];
 
@@ -113,9 +113,9 @@ class _Home extends State<Home> {
     '택배',
     '후불상조',
     '자동차 보험',
+    '렌탈 서비스',
     '세탁신청',
     '렌트카',
-    '렌탈 서비스',
     '영화표 예매',
   ];
 
@@ -451,7 +451,7 @@ class _Home extends State<Home> {
                                       fontSize: 28),
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: "원",
+                                        text: "Point",
                                         style: TextStyle(
                                             fontSize: 18,
                                             color: black,
@@ -468,35 +468,44 @@ class _Home extends State<Home> {
                     height: 1,
                     color: Color.fromARGB(255, 219, 219, 219),
                   ),
-                  whiteSpaceH(10),
-                  Row(
-                    children: <Widget>[
-                      whiteSpaceW(5),
-                      Icon(Icons.person),
-                      Expanded(
-                        child: Text("피추천인"),
-                      ),
-                      Text("${saveData.recoPerson}명"),
-                      whiteSpaceW(10)
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed("/RecoList");
+                    },
+                    child: Column(
+                      children: <Widget>[
+                        whiteSpaceH(10),
+                        Row(
+                          children: <Widget>[
+                            whiteSpaceW(5),
+                            Icon(Icons.person),
+                            Expanded(
+                              child: Text("피추천인"),
+                            ),
+                            Text("${saveData.recoPerson}명"),
+                            whiteSpaceW(10)
+                          ],
+                        ),
+                        whiteSpaceH(3),
+                        Row(
+                          children: <Widget>[
+                            whiteSpaceW(7),
+                            Image.asset(
+                              "assets/resource/save_payment.png",
+                              width: 20,
+                            ),
+                            whiteSpaceW(2),
+                            Expanded(
+                              child: Text("피추천인 적립"),
+                            ),
+                            Text("${numberFormat.format(saveData.recoPrice)}원"),
+                            whiteSpaceW(10)
+                          ],
+                        ),
+                        whiteSpaceH(10),
+                      ],
+                    ),
                   ),
-                  whiteSpaceH(3),
-                  Row(
-                    children: <Widget>[
-                      whiteSpaceW(7),
-                      Image.asset(
-                        "assets/resource/save_payment.png",
-                        width: 20,
-                      ),
-                      whiteSpaceW(2),
-                      Expanded(
-                        child: Text("피추천인 적립"),
-                      ),
-                      Text("${numberFormat.format(saveData.recoPrice)}원"),
-                      whiteSpaceW(10)
-                    ],
-                  ),
-                  whiteSpaceH(10),
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -653,11 +662,14 @@ class _Home extends State<Home> {
                                   Navigator.of(context)
                                       .pushReplacementNamed("/Delivery");
                                 } else if (resourceName[index] == "자동차 보험") {
-                                  await launch("https://esti.goodcar-direct.com/CB500002");
+                                  await launch(
+                                      "https://esti.goodcar-direct.com/CB500002");
                                 } else if (resourceName[index] == "우고스") {
                                   await launch("http://www.woogos.com");
                                 } else if (resourceName[index] == "후불상조") {
                                   await launch("https://www.dhsangjo.xyz");
+                                } else if (resourceName[index] == "렌탈 서비스") {
+                                  await launch("http://rs222.tbmrs.com/index.do");
                                 } else {
                                   customDialog("서비스 준비 중입니다.", 0);
                                 }

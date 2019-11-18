@@ -655,7 +655,7 @@ class _SignUp extends State<SignUp> {
                           hintStyle: TextStyle(
                               fontSize: 14,
                               color: Color.fromARGB(255, 167, 167, 167)),
-                          hintText: "추천코드를 입력해 주세요(선택사항)",
+                          hintText: "추천인 휴대폰번호를 입력해 주세요(선택사항)",
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: mainColor)),
                           contentPadding:
@@ -791,7 +791,7 @@ class _SignUp extends State<SignUp> {
                         } else if ((_recoCodeController.text != null &&
                                 _recoCodeController.text != "") &&
                             !reCoCheck) {
-                          showToast(type: 0, msg: "추천코드가 올바르지 않습니다.");
+                          showToast(type: 0, msg: "추천인 휴대폰번호가 올바르지 않습니다.");
                         } else if (!allAgree) {
                           showToast(type: 0, msg: "필수약관을 모두 동의해 주세요.");
                         } else {
@@ -1112,7 +1112,7 @@ class _SignUp extends State<SignUp> {
                     hintStyle: TextStyle(
                         fontSize: 14,
                         color: Color.fromARGB(255, 167, 167, 167)),
-                    hintText: "추천코드를 입력해 주세요(선택사항)",
+                    hintText: "추천인 휴대폰번호를 입력해 주세요(선택사항)",
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: mainColor)),
                     contentPadding:
@@ -1289,7 +1289,7 @@ class _SignUp extends State<SignUp> {
                   } else if ((_recoCodeController.text != null &&
                           _recoCodeController.text != "") &&
                       !reCoCheck) {
-                    showToast(type: 0, msg: "추천코드가 올바르지 않습니다.");
+                    showToast(type: 0, msg: "추천인 휴대폰번호가 올바르지 않습니다.");
                   } else if (!allAgree) {
                     showToast(type: 0, msg: "필수약관을 모두 동의해 주세요.");
                   } else {
