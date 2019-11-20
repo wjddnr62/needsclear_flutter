@@ -3,9 +3,12 @@
 import 'package:aladdinmagic/Check/loading.dart';
 import 'package:aladdinmagic/Check/permission.dart';
 import 'package:aladdinmagic/DrawerMenu/recolist.dart';
+import 'package:aladdinmagic/DrawerMenu/settings.dart';
 import 'package:aladdinmagic/Home/delivery.dart';
 import 'package:aladdinmagic/Home/home.dart';
 import 'package:aladdinmagic/Home/reco.dart';
+import 'package:aladdinmagic/Login/findid.dart';
+import 'package:aladdinmagic/Login/findpass.dart';
 import 'package:aladdinmagic/Login/login.dart';
 import 'package:aladdinmagic/SignUp/howjoin.dart';
 import 'package:aladdinmagic/SignUp/signup.dart';
@@ -22,4 +25,7 @@ final routes = {
   '/Reco': (context) => Reco(),
   '/RecoList': (context) => RecoList(),
   '/Delivery': (context) => Delivery(),
+  '/FindId': (context) => FindId(),
+  '/FindPass': (context) => FindPass(),
+  '/Settings': (context) => Settings()
 };

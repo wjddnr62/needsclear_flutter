@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/SignUp/signup.dart';
+import 'package:aladdinmagic/SignUp/smsauth.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -261,6 +262,8 @@ class _Login extends State<Login> {
   void initState() {
     super.initState();
 
+// royalCodeUpdate
+//    userProvider.royalCodeUpdate();
   }
 
   customDialog(msg, type) {
@@ -506,6 +509,7 @@ class _Login extends State<Login> {
                               child: GestureDetector(
                                 onTap: () {
                                   print("아이디찾기");
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SmsAuth(type: 1)));
                                 },
                                 child: Text(
                                   "아이디찾기",
@@ -526,6 +530,7 @@ class _Login extends State<Login> {
                               child: GestureDetector(
                                 onTap: () {
                                   print("비밀번호찾기");
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SmsAuth(type: 2)));
                                 },
                                 child: Text(
                                   "비밀번호찾기",
@@ -546,7 +551,7 @@ class _Login extends State<Login> {
                               child: GestureDetector(
                                 onTap: () {
                                   print("회원가입");
-                                  Navigator.of(context).pushNamed('/SmsAuth');
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SmsAuth(type: 0)));
 //                                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignUp(type: 0,)));
                                 },
                                 child: Text(

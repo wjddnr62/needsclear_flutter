@@ -348,7 +348,7 @@ class _SignUp extends State<SignUp> {
                           hintStyle: TextStyle(
                               fontSize: 14,
                               color: Color.fromARGB(255, 167, 167, 167)),
-                          hintText: "아이디를 입력해 주세요(20자 이내)",
+                          hintText: "아이디를 입력해 주세요(6자이상~20자 이내)",
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: mainColor)),
                           contentPadding:
@@ -401,6 +401,8 @@ class _SignUp extends State<SignUp> {
                           showToast(
                               type: 0,
                               msg: "아이디를 입력해 주세요."); // 이미 사용중인 아이디 체크 필요
+                        } else if (_idController.text.length < 6) {
+                          showToast(type: 0, msg: "아이디를 6자리 이상 입력해주세요.");
                         } else if (!idCheck) {
                           showToast(type: 0, msg: "이미 사용중인 아이디 입니다.");
                         } else if (_passController.text == null ||
@@ -625,29 +627,32 @@ class _SignUp extends State<SignUp> {
                     TextFormField(
                       controller: _recoCodeController,
                       textInputAction: TextInputAction.done,
-                      maxLength: 10,
+                      maxLength: 11,
                       onChanged: (value) async {
-                        await userProvider
-                            .checkReCoCode(_recoCodeController.text)
-                            .then((value) {
-                          print("value : ${value}");
-                          if (value != 0) {
-                            reCoCheck = true;
-                          } else if (value == 0) {
-                            reCoCheck = false;
-                          }
-
-                          print("recoCheck : " + reCoCheck.toString());
-                        });
-
-                        print("value222 : ${value}");
-
-                        if ((_recoCodeController.text != null &&
-                                _recoCodeController.text != "") &&
-                            !reCoCheck) {
-                          print("aa");
+                        if (value.length == 4) {
+                          await userProvider
+                              .checkRoyalCode(_recoCodeController.text)
+                              .then((value) {
+                            print("value : ${value}");
+                            if (value != 0) {
+                              reCoCheck = true;
+                            } else if (value == 0) {
+                              reCoCheck = false;
+                            }
+                            print("recoCheck : " + reCoCheck.toString());
+                          });
                         } else {
-                          print("test");
+                          await userProvider
+                              .checkReCoCode(_recoCodeController.text)
+                              .then((value) {
+                            print("value : ${value}");
+                            if (value != 0) {
+                              reCoCheck = true;
+                            } else if (value == 0) {
+                              reCoCheck = false;
+                            }
+                            print("recoCheck : " + reCoCheck.toString());
+                          });
                         }
                       },
                       decoration: InputDecoration(

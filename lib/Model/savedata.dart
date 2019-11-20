@@ -26,9 +26,15 @@ class SaveData {
 
 //  String _snsId;
   String _snsEmail;
+  
+  String _findId;
 
 
-//  String get snsId => _snsId;
+  String get findId => _findId;
+
+  set findId(String value) {
+    _findId = value;
+  } //  String get snsId => _snsId;
 //
 //  set snsId(String value) {
 //    _snsId = value;

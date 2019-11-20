@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:aladdinmagic/Model/savedata.dart';
+import 'package:aladdinmagic/Provider/userprovider.dart';
+import 'package:aladdinmagic/Util/customDialog.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -8,18 +10,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SmsAuth extends StatefulWidget {
+  int type;
+
+  SmsAuth({Key key, this.type}) : super(key: key);
+
   @override
   _SmsAuth createState() => _SmsAuth();
 }
 
 class _SmsAuth extends State<SmsAuth> {
+  UserProvider userProvider = UserProvider();
+
+  int type = 0;
+
   SaveData _saveData = SaveData();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _authController = TextEditingController();
+  TextEditingController _idController = TextEditingController();
 
+  FocusNode _phoneFocus = FocusNode();
   FocusNode _authFocus = FocusNode();
 
   String verificationId;
@@ -37,7 +49,7 @@ class _SmsAuth extends State<SmsAuth> {
       _auth.signInWithCredential(phoneAuthCredential);
       setState(() {
         msg =
-            'Received phone auth credential: ${phoneAuthCredential.toString()}';
+        'Received phone auth credential: ${phoneAuthCredential.toString()}';
         print("verificationCom : " + msg);
       });
     };
@@ -46,7 +58,8 @@ class _SmsAuth extends State<SmsAuth> {
         (AuthException authException) {
       setState(() {
         msg =
-            'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}';
+        'Phone number verification failed. Code: ${authException
+            .code}. Message: ${authException.message}';
         print("failed : " + msg);
       });
     };
@@ -74,6 +87,16 @@ class _SmsAuth extends State<SmsAuth> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.type != null && widget.type != 0) {
+      type = widget.type;
+    }
+
+    if (type == 2) {
+      if (_saveData.findId != null && _saveData.findId != "" && _saveData.findId.isNotEmpty) {
+        _idController.text = _saveData.findId;
+      }
+    }
   }
 
   @override
@@ -86,7 +109,13 @@ class _SmsAuth extends State<SmsAuth> {
   }
 
   movePage() {
-    Navigator.of(context).pushReplacementNamed("/HowJoin");
+    if (type == 0) {
+      Navigator.of(context).pushReplacementNamed("/HowJoin");
+    } else if (type == 1) {
+      Navigator.of(context).pushReplacementNamed("/FindId");
+    } else if (type == 2) {
+      Navigator.of(context).pushReplacementNamed("/FindPass");
+    }
   }
 
   _signInWithPhoneNumber() async {
@@ -109,9 +138,12 @@ class _SmsAuth extends State<SmsAuth> {
             authCheck = true;
           });
           _timer.cancel();
-          _saveData.phoneNumber = _phoneController.text;
-          print("msg : " + msg);
           showToast(type: 0, msg: "문자 인증에 성공하였습니다.");
+
+          if (type == 0) {
+            _saveData.phoneNumber = _phoneController.text;
+          }
+          print("msg : " + msg);
           movePage();
         } else {
           showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
@@ -152,15 +184,16 @@ class _SmsAuth extends State<SmsAuth> {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-      (Timer timer) => setState(
-        () {
-          if (_start < 1) {
-            timer.cancel();
-          } else {
-            _start = _start - 1;
-          }
-        },
-      ),
+          (Timer timer) =>
+          setState(
+                () {
+              if (_start < 1) {
+                timer.cancel();
+              } else {
+                _start = _start - 1;
+              }
+            },
+          ),
     );
   }
 
@@ -197,6 +230,17 @@ class _SmsAuth extends State<SmsAuth> {
     }
   }
 
+  authStart() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    _start = 120;
+    oneMin = 59;
+    _sendCodeToPhoneNumber();
+    startTimer();
+    FocusScope.of(context).requestFocus(_authFocus);
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -205,9 +249,18 @@ class _SmsAuth extends State<SmsAuth> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).padding.top,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height -
+              MediaQuery
+                  .of(context)
+                  .padding
+                  .top,
           child: Column(
             children: <Widget>[
               Padding(
@@ -228,7 +281,9 @@ class _SmsAuth extends State<SmsAuth> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    "회원가입을 위해 가입하실\n휴대폰번호를 인증해 주세요.",
+                    type == 0 ? "회원가입을 위해 가입하실\n휴대폰번호를 인증해 주세요." : type == 1
+                        ? "아이디를 찾기 위해 회원가입 시 사용하신\n휴대폰번호를 인증해 주세요."
+                        : "회원가입 하신 아이디 및\n휴대폰번호를 인증해 주세요.",
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: black,
@@ -238,17 +293,42 @@ class _SmsAuth extends State<SmsAuth> {
               ),
               whiteSpaceH(10),
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 height: 1,
                 color: Color.fromARGB(255, 167, 167, 167),
               ),
               whiteSpaceH(50),
+              type == 2 ? Padding(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  controller: _idController,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: (value) async {
+                    FocusScope.of(context).requestFocus(_phoneFocus);
+                  },
+                  decoration: InputDecoration(
+                      hintStyle: TextStyle(
+                          fontSize: 14,
+                          color: Color.fromARGB(255, 167, 167, 167)),
+                      hintText: "아이디를 입력해 주세요.",
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: mainColor)),
+                      contentPadding: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 5, right: 10)),
+                ),
+              ) : Container(),
+              type == 2 ? whiteSpaceH(20) : Container(),
               Row(
                 children: <Widget>[
                   whiteSpaceW(20),
                   Expanded(
                     child: TextFormField(
                       controller: _phoneController,
+                      focusNode: _phoneFocus,
                       textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
@@ -261,24 +341,56 @@ class _SmsAuth extends State<SmsAuth> {
                           hintStyle: TextStyle(
                               fontSize: 14,
                               color: Color.fromARGB(255, 167, 167, 167)),
-                          hintText: "휴대폰번호 입력해 주세요.",
+                          hintText: "휴대폰번호를 입력해 주세요.",
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: mainColor)),
                           contentPadding:
-                              EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                          EdgeInsets.only(top: 10, bottom: 10, left: 5)),
                     ),
                   ),
                   whiteSpaceW(10),
                   RaisedButton(
                     onPressed: () async {
-                      if (_timer != null) {
-                        _timer.cancel();
+                      if (_phoneController.text.isEmpty ||
+                          _phoneController.text == "" ||
+                          _phoneController.text == null) {
+                        showToast(type: 0, msg: "휴대폰번호를 입력해 주세요.");
+                      } else {
+                        if (type == 1) {
+                          userProvider.checkPhoneNumber(_phoneController.text)
+                              .then((value) {
+                            if (value == 0) {
+                              customDialog(
+                                  "가입된 휴대폰번호가 아닙니다.\n휴대폰번호를 확인해 주세요.", 0,
+                                  context);
+                            } else {
+                              authStart();
+                            }
+                          });
+                        } else if (type == 2) {
+                          if (_idController.text.isEmpty ||
+                              _idController.text == "" ||
+                              _idController.text == null) {
+                            showToast(type: 0, msg: "아이디를 입력해 주세요.");
+                          } else {
+                            userProvider.checkUser(_idController.text).then((value) {
+                              if (value == 0) {
+                                customDialog("가입되지 않은 회원정보 입니다.\n아이디 또는 휴대폰번호를 확인해주세요.", 0, context);
+                              } else {
+                                userProvider.checkPhoneNumber(_phoneController.text).then((value) {
+                                  if (value == 0) {
+                                    customDialog("가입되지 않은 회원정보 입니다.\n아이디 또는 휴대폰번호를 확인해주세요.", 0, context);
+                                  } else {
+                                    authStart();
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        } else {
+                          authStart();
+                        }
                       }
-                      _start = 120;
-                      oneMin = 59;
-                      _sendCodeToPhoneNumber();
-                      startTimer();
-                      FocusScope.of(context).requestFocus(_authFocus);
                     },
                     color: Color.fromARGB(255, 167, 167, 167),
                     shape: RoundedRectangleBorder(
@@ -364,7 +476,8 @@ class _SmsAuth extends State<SmsAuth> {
                     height: 50,
                     child: Center(
                       child: Text("인증확인", style: TextStyle(
-                          color: white, fontSize: 16, fontWeight: FontWeight.w600
+                          color: white, fontSize: 16, fontWeight: FontWeight
+                          .w600
                       ),),
                     ),
                   ),

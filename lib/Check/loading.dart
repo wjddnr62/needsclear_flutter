@@ -54,6 +54,14 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
     }
   }
 
+  notFindUserData() async {
+    prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt("autoLogin", 0);
+    await prefs.setString("id", "");
+    await prefs.setString("pass", "");
+  }
+
   autoLoginCheck() {
     sharedInit().then((result) {
       if (result == 0) {
@@ -68,6 +76,9 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
             if (value == 1) {
               Navigator.of(context).pushNamedAndRemoveUntil(
                   "/Home", (Route<dynamic> route) => false);
+            } else {
+              notFindUserData();
+              Navigator.of(context).pushReplacementNamed("/Login");
             }
           });
         } else {
@@ -75,6 +86,9 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
             if (value == 1) {
               Navigator.of(context).pushNamedAndRemoveUntil(
                   "/Home", (Route<dynamic> route) => false);
+            } else {
+              notFindUserData();
+              Navigator.of(context).pushReplacementNamed("/Login");
             }
           });
         }
@@ -119,13 +133,13 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
         .loadString("assets/version.txt");
   }
 
-  getVersionCode() {
+  getVersionCode() async {
     print("getVersionCode");
 
     int nowCode;
     int versionCode;
 
-    loadVersion(context).then((value) {
+    await loadVersion(context).then((value) {
       userProvider.getVersionCode().then((value) {
         nowCode = int.parse(saveData.nowVersionCode);
         versionCode = saveData.storeVersionCode;

@@ -30,7 +30,7 @@ class _RecoList extends State<RecoList> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: true,
         backgroundColor: white,
         appBar: AppBar(
           backgroundColor: white,
@@ -80,8 +80,8 @@ class _RecoList extends State<RecoList> {
                     Expanded(
                       child: Text(
                         "성  명",
-                        style:
-                        TextStyle(fontWeight: FontWeight.w600, color: white),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: white),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -93,8 +93,8 @@ class _RecoList extends State<RecoList> {
                     Expanded(
                       child: Text(
                         "전화번호",
-                        style:
-                        TextStyle(fontWeight: FontWeight.w600, color: white),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: white),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -106,8 +106,8 @@ class _RecoList extends State<RecoList> {
                     Expanded(
                       child: Text(
                         "가입일",
-                        style:
-                        TextStyle(fontWeight: FontWeight.w600, color: white),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: white),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -124,7 +124,11 @@ class _RecoList extends State<RecoList> {
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
                     return Container(
-                      height: MediaQuery.of(context).size.height - 40 - 90 - MediaQuery.of(context).padding.top - 60,
+                      height: MediaQuery.of(context).size.height -
+                          40 -
+                          90 -
+                          MediaQuery.of(context).padding.top -
+                          60,
                       child: ListView(
                         children: snapshot.data.documents
                             .map((DocumentSnapshot document) {
@@ -134,13 +138,22 @@ class _RecoList extends State<RecoList> {
                               children: <Widget>[
                                 whiteSpaceW(30),
                                 Expanded(
-                                  child: Text(document['name'], textAlign: TextAlign.center,),
+                                  child: Text(
+                                    document['name'],
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                                 Expanded(
-                                  child: Text(document['phone'], textAlign: TextAlign.center,),
+                                  child: Text(
+                                    document['phone'],
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                                 Expanded(
-                                  child: Text(document['signDate'], textAlign: TextAlign.center,),
+                                  child: Text(
+                                    document['signDate'],
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                                 whiteSpaceW(30)
                               ],
