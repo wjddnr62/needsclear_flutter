@@ -5,8 +5,10 @@ import 'package:aladdinmagic/public/colors.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,6 +35,53 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
   int nowVersionCode;
 
   String projectCode;
+
+  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+  GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<void> googleLogout() async {
+    print("googleLogout");
+    googleSignIn.disconnect();
+  }
+
+  kakaoLogOut() async {
+    print("logout");
+    final KakaoLoginResult result = await kakaoSignIn.logOut();
+    print("logout");
+    switch (result.status) {
+      case KakaoLoginStatus.loggedIn:
+        print('LoggedIn by the user.\n'
+            '- UserID is ${result.account.userID}\n'
+            '- UserEmail is ${result.account.userEmail} ');
+
+        break;
+      case KakaoLoginStatus.loggedOut:
+        print('LoggedOut by the user.');
+        break;
+      case KakaoLoginStatus.error:
+        print('This is Kakao error message : ${result.errorMessage}');
+        break;
+    }
+    // To-do Someting ...
+  }
+
+  final facebookLogin = FacebookLogin();
+
+  fbLogout() async {
+    await facebookLogin.logOut();
+  }
+
+  sharedLogout() async {
+    prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt("autoLogin", 0);
+    await prefs.setString("id", "");
+    await prefs.setString("pass", "");
+
+    kakaoLogOut();
+    googleLogout();
+    fbLogout();
+  }
 
   Future<int> sharedInit() async {
     prefs = await SharedPreferences.getInstance();
@@ -66,9 +115,11 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
     sharedInit().then((result) {
       if (result == 0) {
         print("movePermission");
+        sharedLogout();
         Navigator.of(context).pushReplacementNamed("/Permission");
       } else if (result == 1) {
         print("moveLogin");
+        sharedLogout();
         Navigator.of(context).pushReplacementNamed("/Login");
       } else {
         if (type == 0) {

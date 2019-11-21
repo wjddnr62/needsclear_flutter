@@ -36,6 +36,8 @@ class _Login extends State<Login> {
 
   bool autoLoginCheck = false;
 
+  int passEdit = 0;
+
   FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
 
   kakaoLogin() async {
@@ -266,6 +268,96 @@ class _Login extends State<Login> {
 //    userProvider.royalCodeUpdate();
   }
 
+  passFinderDialog() {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            content: Container(
+              height: MediaQuery.of(context).size.height / 2.5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "알림",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: black,
+                        fontSize: 16),
+                  ),
+                  whiteSpaceH(20),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 1,
+                    color: Color.fromARGB(255, 167, 167, 167),
+                  ),
+                  whiteSpaceH(20),
+                  Text(
+                    "비밀번호를 5회 이상 틀렸습니다.\n비밀번호 찾기를 하시겠습니까?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: black,
+                        fontSize: 16),
+                  ),
+                  whiteSpaceH(30),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 167, 167, 167)),
+                            child: Center(
+                              child: Text(
+                                "취소",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      whiteSpaceW(5),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SmsAuth(type: 2)));
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 167, 167, 167)),
+                            child: Center(
+                              child: Text(
+                                "비밀번호 찾기",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   customDialog(msg, type) {
     return showDialog(
         context: context,
@@ -473,7 +565,12 @@ class _Login extends State<Login> {
                                 } else {
                                   userProvider.login(_idController.text, _passController.text, 0).then((value) {
                                     if (value == 0) {
-                                      customDialog("아이디 혹은 비밀번호를\n잘못 입력하셨거나\n등록되지 않은 회원 입니다.", 0);
+                                      if (passEdit >= 5) {
+                                        passFinderDialog();
+                                      } else {
+                                        passEdit += 1;
+                                        customDialog("아이디 혹은 비밀번호를\n잘못 입력하셨거나\n등록되지 않은 회원 입니다.", 0);
+                                      }
                                     } else {
                                       if (autoLoginCheck) {
                                         sharedInit(0, "");

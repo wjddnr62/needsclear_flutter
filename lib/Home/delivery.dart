@@ -4,6 +4,7 @@ import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Delivery extends StatefulWidget {
   @override
@@ -63,7 +64,8 @@ class _Delivery extends State<Delivery> {
                           onTap: () {
                             if (type == 0) {
                               Navigator.of(context).pop();
-                              Navigator.of(context).pushReplacementNamed('/Home');
+                              Navigator.of(context)
+                                  .pushReplacementNamed('/Home');
                             }
                           },
                           child: Container(
@@ -91,7 +93,6 @@ class _Delivery extends State<Delivery> {
           );
         });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +137,8 @@ class _Delivery extends State<Delivery> {
                       Text(
                         "발송인",
                         textAlign: TextAlign.center,
-                        style:
-                        TextStyle(color: black, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: black, fontWeight: FontWeight.w600),
                       ),
                       whiteSpaceW(10),
                       Expanded(
@@ -147,15 +148,17 @@ class _Delivery extends State<Delivery> {
                           autofocus: true,
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.text,
+                          maxLength: 10,
                           decoration: InputDecoration(
+                              counterText: "",
                               hintStyle: TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 167, 167, 167)),
                               hintText: "발송인 이름을 입력해 주세요.",
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: mainColor)),
-                              contentPadding:
-                              EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                              contentPadding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 5)),
                         ),
                       ),
                     ],
@@ -164,10 +167,10 @@ class _Delivery extends State<Delivery> {
                   Row(
                     children: <Widget>[
                       Text(
-                        "발송인",
+                        "택배정보",
                         textAlign: TextAlign.center,
-                        style:
-                        TextStyle(color: black, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: black, fontWeight: FontWeight.w600),
                       ),
                       whiteSpaceW(10),
                       Expanded(
@@ -256,15 +259,17 @@ class _Delivery extends State<Delivery> {
                           focusNode: invoiceFocus,
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.number,
+                          maxLength: 20,
                           decoration: InputDecoration(
+                              counterText: "",
                               hintStyle: TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 167, 167, 167)),
                               hintText: "송장번호 입력",
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: mainColor)),
-                              contentPadding:
-                              EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                              contentPadding: EdgeInsets.only(
+                                  top: 10, bottom: 10, left: 5)),
                         ),
                       ),
                     ],
@@ -283,17 +288,40 @@ class _Delivery extends State<Delivery> {
                           invoice.text.length < 10) {
                         showToast(type: 0, msg: "송장번호를 10자 이상 입력해 주세요.");
                       } else {
-                        userProvider.deliveryInsertPoint(
-                            saveData.pushRecoCode, saveData.id, 300, {
-                          'recoCode': saveData.pushRecoCode,
-                          'name': saveData.name,
-                          'phone': saveData.phoneNumber,
-                          'signDate': saveData.signDate,
-                          'type': 1
-                        });
+                        DateTime now = DateTime.now();
+                        String saveMonth = DateFormat('yyyy.MM').format(now);
+                        String date = DateFormat('yyyy.MM.dd').format(now);
 
-                        customDialog(
-                            "택배 적립이 신청되었습니다.\n\n신청내역을 확인 후 매월 말일 적립금이 지급됩니다.", 0);
+                        userProvider
+                            .deliverySaveCheck(saveData.id)
+                            .then((value) {
+                          if (value == 1) {
+                            userProvider.deliveryInsertPoint(
+                                saveData.pushRecoCode, saveData.id, 300, {
+                              'id': saveData.id,
+                              'name': saveData.name,
+                              // 유저 이름
+                              'phone': saveData.phoneNumber,
+                              // 유저 폰번호
+                              'type': 0,
+                              // 0 = 적립, 1 = 사용
+                              'saveMonth': saveMonth,
+                              // 택배 한달 5회 확인용 날짜 택배 적립만 들어감
+                              'date': date,
+                              // 적립, 사용된 날짜
+                              'savePlace': 0,
+                              // 0 = 알라딘매직 운영팀
+                              'saveType': 2,
+                              'point': 300,
+                            });
+
+                            customDialog(
+                                "택배 적립이 신청되었습니다.\n\n신청내역을 확인 후 매월 말일 적립금이 지급됩니다.",
+                                0);
+                          } else {
+                            showToast(type: 0, msg: "한달에 최대 5번까지만 신청 가능합니다.");
+                          }
+                        });
                       }
                     },
                     child: Container(

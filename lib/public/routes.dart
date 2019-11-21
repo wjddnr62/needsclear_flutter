@@ -2,7 +2,10 @@
 
 import 'package:aladdinmagic/Check/loading.dart';
 import 'package:aladdinmagic/Check/permission.dart';
+import 'package:aladdinmagic/DrawerMenu/memberw.dart';
+import 'package:aladdinmagic/DrawerMenu/memberwfin.dart';
 import 'package:aladdinmagic/DrawerMenu/recolist.dart';
+import 'package:aladdinmagic/DrawerMenu/savebreakdown.dart';
 import 'package:aladdinmagic/DrawerMenu/settings.dart';
 import 'package:aladdinmagic/Home/delivery.dart';
 import 'package:aladdinmagic/Home/home.dart';
@@ -27,5 +30,8 @@ final routes = {
   '/Delivery': (context) => Delivery(),
   '/FindId': (context) => FindId(),
   '/FindPass': (context) => FindPass(),
-  '/Settings': (context) => Settings()
+  '/Settings': (context) => Settings(),
+  '/MemberW': (context) => MemberW(),
+  '/MemberWFin': (context) => MemberWFin(),
+  '/SaveBreakDown': (context) => SaveBreakDown(),
 };

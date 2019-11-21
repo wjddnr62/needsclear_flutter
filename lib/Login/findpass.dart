@@ -5,6 +5,7 @@ import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FindPass extends StatefulWidget {
   @override
@@ -20,6 +21,16 @@ class _FindPass extends State<FindPass> {
 
   FocusNode _passFocus = FocusNode();
   FocusNode _rePassFocus = FocusNode();
+
+  SharedPreferences prefs;
+
+  sharedLogout() async {
+    prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt("autoLogin", 0);
+    await prefs.setString("id", "");
+    await prefs.setString("pass", "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +123,7 @@ class _FindPass extends State<FindPass> {
                       if (_passController.text == _rePassController.text) {
                         userProvider.userPasswordUpdate(saveData.findId, _passController.text).then((value) {
                           if (value == 0) {
+                            sharedLogout();
                             customDialog("비밀번호가 변경되었습니다.\n\n변경하신 비밀번호로\n로그인을 해주세요.", 1, context);
                           }
                         });

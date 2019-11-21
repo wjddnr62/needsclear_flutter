@@ -2,15 +2,21 @@ import 'dart:async';
 
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class UserProvider {
   SaveData saveData = SaveData();
 
-  Future<int> addUsers(userData) async {
+  Future<int> addUsers(userData, saveLog) async {
     Firestore.instance.collection("users").add(userData).catchError((e) {
       print('addUserError : ' + e.toString());
       return e;
     });
+
+    Firestore.instance.collection("saveLog").add(saveLog).catchError((e) {
+      print("addCallLogError : " + e.toString());
+    });
+
     return 0;
   }
 
@@ -145,6 +151,34 @@ class UserProvider {
     }
   }
 
+  Future<int> checkAllUser(phone) async {
+  CollectionReference phoneCollection =
+  Firestore.instance.collection("users");
+
+  QuerySnapshot phoneQuery =
+      await phoneCollection.where("phone", isEqualTo: phone).getDocuments();
+
+  final List<DocumentSnapshot> docs = phoneQuery.documents;
+
+  if (phoneQuery.documents.length == 0) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
+Future<int> deleteUser(id) async {
+  CollectionReference userCollection = Firestore.instance.collection("users");
+
+  QuerySnapshot userQuery = await userCollection
+      .where("id", isEqualTo: id)
+      .getDocuments();
+
+  await Firestore.instance.collection("users").document(userQuery.documents[0].documentID).delete();
+
+  return 0;
+}
+
   Future<int> checkReCoCode(reCoCode) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
 
@@ -218,6 +252,10 @@ class UserProvider {
   }
 
   insertPoint(id, point, recoLog) async {
+    DateTime now = DateTime.now();
+    String formatDate =
+    DateFormat('yyyy.MM.dd').format(now);
+
     CollectionReference userCollection = Firestore.instance.collection("users");
 
     QuerySnapshot userQuery =
@@ -239,16 +277,46 @@ class UserProvider {
       print("addCallLogError : " + e.toString());
     });
 
+    Firestore.instance.collection("saveLog").add({
+      'id': userQuery.documents[0].data['id'],
+      'name': userQuery.documents[0].data['name'], // 유저 이름
+      'phone': userQuery.documents[0].data['phone'], // 유저 폰번호
+      'type': 0, // 0 = 적립, 1 = 사용
+      'date': formatDate, // 적립, 사용된 날짜
+      'savePlace': 0, // 0 = 알라딘매직 운영팀
+      'saveType': 1,
+      'point': 500,
+    }).catchError((e) {
+      print("addCallLogError2 : " + e.toString());
+    });
+
     return null;
   }
+  
+  Future<int> deliverySaveCheck(id) async {
+    DateTime now = DateTime.now();
+    String formatDate =
+    DateFormat('yyyy.MM').format(now);
 
-  deliveryInsertPoint(pushRecoCode, id, point, recoLog) async {
+    CollectionReference recoCollection = Firestore.instance.collection("reco");
+
+    QuerySnapshot recoQuery = await recoCollection.where("id", isEqualTo: id).where("saveDate", isEqualTo: formatDate).getDocuments();
+
+    if (recoQuery.documents.length >= 5) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  deliveryInsertPoint(pushRecoCode, id, point, saveLog) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
 
     QuerySnapshot userQuery =
         await userCollection.where("id", isEqualTo: id).getDocuments();
 
     int point = userQuery.documents[0].data['point'] + 300;
+    saveData.point = point;
     print("point : " + point.toString());
 
     Firestore.instance
@@ -266,11 +334,29 @@ class UserProvider {
           .document(pushQuery.documents[0].documentID)
           .updateData({'point': pushPoint});
 
-      Firestore.instance.collection("reco").add(recoLog).catchError((e) {
+      Firestore.instance.collection("saveLog").add(saveLog).catchError((e) {
         print("addCallLogError : " + e.toString());
       });
     }
     return null;
+  }
+
+  Future<int> getSavePoint(id, type) async {
+    CollectionReference saveCollection = Firestore.instance.collection("saveLog");
+
+    QuerySnapshot saveQuery = await saveCollection.where("id", isEqualTo: id).where("type", isEqualTo: type).getDocuments();
+
+    int point = 0;
+
+    if (saveQuery.documents.length == 0) {
+      return 0;
+    } else {
+      for (int i = 0 ; i < saveQuery.documents.length; i++) {
+        point += saveQuery.documents[i].data['point'];
+      }
+
+      return point;
+    }
   }
 
   Future<int> userPasswordUpdate(id, pass) async {

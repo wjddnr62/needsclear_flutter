@@ -199,7 +199,6 @@ class _SignUp extends State<SignUp> {
                                   'name': _nameController.text,
                                   'phone': _saveData.phoneNumber,
                                   'signDate': formatDate,
-                                  'type': 0
                                 });
                                 print("insertPoint");
                                 reCoCheck = false;
@@ -232,6 +231,21 @@ class _SignUp extends State<SignUp> {
                                 'recoPrice': 0,
                                 'signDate': formatDate,
                                 'pushRecoCode': _recoCodeController.text
+                              }, {
+                                'id': _saveData.id,
+                                'name': _nameController.text,
+                                // 유저 이름
+                                'phone': _saveData.phoneNumber,
+                                // 유저 폰번호
+                                'type': 0,
+                                // 0 = 적립, 1 = 사용
+                                'date': formatDate,
+                                // 적립, 사용된 날짜
+                                'savePlace': 0,
+                                // 0 = 알라딘매직 운영팀
+                                'saveType': 0,
+                                // 0 = 회원가입 적립, 1 = 추천인 회원가입, 2 = 택배 적립
+                                'point': 1000,
                               }).then((value) {
                                 if (value == 0) {
                                   Navigator.of(context).pushNamedAndRemoveUntil(
@@ -885,7 +899,8 @@ class _SignUp extends State<SignUp> {
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
+        final graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
         final profile = json.decode(graphResponse.body);
         print("id : ${profile['id']}");
         print("token : ${result.accessToken.token}");
@@ -901,7 +916,8 @@ class _SignUp extends State<SignUp> {
         Navigator.of(context).pop();
         break;
       case FacebookLoginStatus.error:
-        showToast(type: 0, msg: "facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
+        showToast(
+            type: 0, msg: "facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
         print("fbError : " + result.errorMessage.toString());
         Navigator.of(context).pop();
         break;
