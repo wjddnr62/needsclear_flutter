@@ -96,14 +96,14 @@ class _Home extends State<Home> {
     'assets/resource/flower.png',
     'assets/resource/quick.png',
     'assets/resource/aladdinbox.png',
-    'assets/resource/woogos.png',
+    'assets/resource/smartPhone2.png',
+    'assets/resource/internet2.png',
     'assets/resource/delivery.png',
     'assets/resource/premise.png',
     'assets/resource/insurance.png',
     'assets/resource/rent.png',
     'assets/resource/laundry.png',
     'assets/resource/car.png',
-    'assets/resource/movie.png',
   ];
 
   List<String> resourceName = [
@@ -111,15 +111,21 @@ class _Home extends State<Home> {
     '꽃배달',
     '퀵서비스',
     '알라딘박스',
-    '알라딘매직',
+    '휴대폰가입',
+    '인터넷가입',
     '택배',
     '후불상조',
     '자동차 보험',
     '렌탈 서비스',
     '세탁신청',
     '렌트카',
-    '영화표 예매',
   ];
+
+  ScrollController _scrollController = ScrollController();
+
+  onTopScroll() {
+    _scrollController.animateTo(_scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
 
   customDialog(msg, type) {
     return showDialog(
@@ -220,8 +226,7 @@ class _Home extends State<Home> {
                   padding: EdgeInsets.only(right: 20, bottom: 20),
                   child: RichText(
                     text: TextSpan(
-                        text:
-                        "${numberFormat.format(saveData.point)}",
+                        text: "${numberFormat.format(saveData.point)}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: mainColor,
@@ -398,8 +403,7 @@ class _Home extends State<Home> {
           height: MediaQuery.of(context).size.width + 115,
           decoration: BoxDecoration(
               border: Border.all(
-                  width: 2,
-                  color: Color.fromARGB(255, 245, 245, 245))),
+                  width: 2, color: Color.fromARGB(255, 245, 245, 245))),
           child: GridView.count(
             crossAxisCount: 3,
             physics: NeverScrollableScrollPhysics(),
@@ -409,8 +413,7 @@ class _Home extends State<Home> {
                 decoration: BoxDecoration(
                     color: white,
                     border: Border.all(
-                        width: 2,
-                        color: Color.fromARGB(255, 245, 245, 245))),
+                        width: 2, color: Color.fromARGB(255, 245, 245, 245))),
                 child: Center(
                   child: GestureDetector(
                     onTap: () async {
@@ -443,8 +446,7 @@ class _Home extends State<Home> {
                         await launch(
                             "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko");
                       } else if (resourceName[index] == "택배") {
-                        Navigator.of(context)
-                            .pushReplacementNamed("/Delivery");
+                        Navigator.of(context).pushReplacementNamed("/Delivery");
                       } else if (resourceName[index] == "자동차 보험") {
                         await launch(
                             "https://esti.goodcar-direct.com/CB500002");
@@ -452,17 +454,25 @@ class _Home extends State<Home> {
                         await launch("https://www.dhsangjo.xyz");
                       } else if (resourceName[index] == "렌탈 서비스") {
                         await launch("http://rs222.tbmrs.com/index.do");
-                      } else {
+                      } else if (resourceName[index] == "휴대폰가입") {
+                        await launch("http://aladin.oig.kr/phone/index.html");
+                      }
+                      else if (resourceName[index] == "인터넷가입") {
+                        await launch("http://aladin.oig.kr/internet/index.html");
+                      }
+                      else {
                         customDialog("서비스 준비 중입니다.", 0);
                       }
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset(
-                          "${resource[index]}",
-                          width: 70,
-                        ),
+                        resource[index] != ""
+                            ? Image.asset(
+                                "${resource[index]}",
+                                width: 70,
+                              )
+                            : Container(),
                         Text(
                           "${resourceName[index]}",
                           textAlign: TextAlign.center,
@@ -479,6 +489,61 @@ class _Home extends State<Home> {
             }),
           ),
         ),
+        viewPage != 1 ? Container(
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: white,
+              border: Border.all(
+                  width: 1, color: Color.fromARGB(255, 245, 245, 245))),
+        ) : Container(),
+        viewPage != 1 ? GestureDetector(
+          onTap: () {
+            setState(() {
+              viewPage = 1;
+              FocusScope.of(context).requestFocus(pFocus);
+              onTopScroll();
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 5, right: 5),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+//            color: mainColor,
+              decoration: BoxDecoration(
+                  color: Color(0xFFD74f15),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.add,
+                      size: 36,
+                      color: white,
+                    ),
+                    whiteSpaceW(10),
+                    Text(
+                      "제휴 서비스 더보기",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ) : Container(),
+        viewPage != 1 ? Container(
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: white,
+              border: Border.all(
+                  width: 2, color: Color.fromARGB(255, 245, 245, 245))),
+        ) : Container(),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 120,
@@ -575,7 +640,7 @@ class _Home extends State<Home> {
                     child: Text(
                       "적립금내역",
                       style:
-                      TextStyle(color: black, fontWeight: FontWeight.w600),
+                          TextStyle(color: black, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Icon(
@@ -634,7 +699,7 @@ class _Home extends State<Home> {
                     child: Text(
                       "설정",
                       style:
-                      TextStyle(color: black, fontWeight: FontWeight.w600),
+                          TextStyle(color: black, fontWeight: FontWeight.w600),
                     ),
                   ),
                   Icon(
@@ -678,6 +743,7 @@ class _Home extends State<Home> {
       ),
       body: WillPopScope(
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Container(
               width: MediaQuery.of(context).size.width,
               child: Column(
@@ -796,24 +862,31 @@ class _Home extends State<Home> {
                     height: 1,
                     color: Color.fromARGB(255, 219, 219, 219),
                   ),
-                  viewPage == 0 ? Column(
-                    children: <Widget>[
-                      saveMoneyView(),
-                      pService()
-                    ],
-                  ) : Container(),
+                  viewPage == 0
+                      ? Column(
+                          children: <Widget>[saveMoneyView(), pService()],
+                        )
+                      : Container(),
                   viewPage == 1 ? pService() : Container(),
-                  viewPage == 2 ? Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Center(
-                        child: Text("이벤트가 존재하지 않습니다.", textAlign: TextAlign.center, style: TextStyle(
-                            color: black, fontWeight: FontWeight.w600, fontSize: 20
-                        ),),
-                      ),
-                    ),
-                  ) : Container()
+                  viewPage == 2
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height / 3),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: Text(
+                                "이벤트가 존재하지 않습니다.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: black,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container()
                 ],
               ),
             ),
