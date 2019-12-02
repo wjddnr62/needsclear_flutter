@@ -121,10 +121,43 @@ class _Home extends State<Home> {
     '렌트카',
   ];
 
+  List<String> resourcePlus = [
+    'assets/resource/drive.png',
+    'assets/resource/flower.png',
+    'assets/resource/quick.png',
+    'assets/resource/aladdinbox.png',
+    'assets/resource/smartPhone2.png',
+    'assets/resource/internet2.png',
+    'assets/resource/delivery.png',
+    'assets/resource/premise.png',
+    'assets/resource/insurance.png',
+    'assets/resource/rent.png',
+    'assets/resource/movie.png',
+    'assets/resource/laundry.png',
+    'assets/resource/car.png',
+  ];
+
+  List<String> resourceNamePlus = [
+    '대리운전',
+    '꽃배달',
+    '퀵서비스',
+    '알라딘박스',
+    '휴대폰가입',
+    '인터넷가입',
+    '택배',
+    '후불상조',
+    '자동차 보험',
+    '렌탈 서비스',
+    '영화표 예매',
+    '세탁신청',
+    '렌트카',
+  ];
+
   ScrollController _scrollController = ScrollController();
 
   onTopScroll() {
-    _scrollController.animateTo(_scrollController.position.minScrollExtent, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+    _scrollController.animateTo(_scrollController.position.minScrollExtent,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
   customDialog(msg, type) {
@@ -395,155 +428,181 @@ class _Home extends State<Home> {
     );
   }
 
+  serviceList(index, type) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          color: white,
+          border:
+              Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
+      child: Center(
+        child: GestureDetector(
+          onTap: () async {
+            // type 0 = 꽃배달, 1 = 퀵서비스, 2 = 대리운전
+            String name;
+            String image;
+            if (type == 0) {
+              name = resourceName[index];
+              image = resource[index];
+            } else {
+              name = resourceNamePlus[index];
+              image = resourcePlus[index];
+            }
+
+            if (name == "꽃배달") {
+              userProvider.addCallLog({
+                'id': saveData.id,
+                'phone': saveData.phoneNumber,
+                'call': "18005139",
+                'type': 0
+              });
+              await launch("tel:18005139");
+            } else if (name == "퀵서비스") {
+              userProvider.addCallLog({
+                'id': saveData.id,
+                'phone': saveData.phoneNumber,
+                'call': "15888290",
+                'type': 1
+              });
+              await launch("tel:15888290");
+            } else if (name == "대리운전") {
+              userProvider.addCallLog({
+                'id': saveData.id,
+                'phone': saveData.phoneNumber,
+                'call': "18009455",
+                'type': 2
+              });
+              await launch("tel:18009455");
+            } else if (name == "알라딘박스") {
+              await launch(
+                  "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko");
+            } else if (name == "택배") {
+              Navigator.of(context).pushReplacementNamed("/Delivery");
+            } else if (name == "자동차 보험") {
+              await launch("https://esti.goodcar-direct.com/CB500002");
+            } else if (name == "후불상조") {
+              await launch("https://www.dhsangjo.xyz");
+            } else if (name == "렌탈 서비스") {
+              await launch(
+                "http://rs222.tbmrs.com/index.do",
+              );
+            } else if (name == "휴대폰가입") {
+              await launch("http://aladin.oig.kr/phone/index.html");
+            } else if (name == "인터넷가입") {
+              await launch("http://aladin.oig.kr/internet/index.html");
+            } else {
+              customDialog("서비스 준비 중입니다.", 0);
+            }
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset(
+                "${type == 0 ? resource[index] : resourcePlus[index]}",
+                width: 70,
+              ),
+              Text(
+                "${type == 0 ? resourceName[index] : resourceNamePlus[index]}",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: black, fontSize: 14, fontWeight: FontWeight.w600),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   pService() {
     return Column(
       children: <Widget>[
         Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width + 115,
+          height: viewPage == 0
+              ? MediaQuery.of(context).size.width + 115
+              : MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               border: Border.all(
                   width: 2, color: Color.fromARGB(255, 245, 245, 245))),
           child: GridView.count(
             crossAxisCount: 3,
             physics: NeverScrollableScrollPhysics(),
-            children: List.generate(12, (index) {
-              return Container(
+            children: viewPage == 0
+                ? List.generate(12, (index) {
+                    return serviceList(index, 0);
+                  })
+                : viewPage == 1
+                    ? List.generate(
+                        resourcePlus.length,
+                        (idx) {
+                          return serviceList(idx, 1);
+                        },
+                      )
+                    : Container(),
+          ),
+        ),
+        viewPage != 1
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: white,
+                    border: Border.all(
+                        width: 1, color: Color.fromARGB(255, 245, 245, 245))),
+              )
+            : Container(),
+        viewPage != 1
+            ? GestureDetector(
+                onTap: () {
+                  setState(() {
+                    viewPage = 1;
+                    FocusScope.of(context).requestFocus(pFocus);
+                    onTopScroll();
+                  });
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 60,
+//            color: mainColor,
+                    decoration: BoxDecoration(
+                        color: Color(0xFFD74f15),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.add,
+                            size: 36,
+                            color: white,
+                          ),
+                          whiteSpaceW(10),
+                          Text(
+                            "제휴 서비스 더보기",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
+        viewPage != 1
+            ? Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     color: white,
                     border: Border.all(
                         width: 2, color: Color.fromARGB(255, 245, 245, 245))),
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () async {
-                      // type 0 = 꽃배달, 1 = 퀵서비스, 2 = 대리운전
-                      if (resourceName[index] == "꽃배달") {
-                        userProvider.addCallLog({
-                          'id': saveData.id,
-                          'phone': saveData.phoneNumber,
-                          'call': "18005139",
-                          'type': 0
-                        });
-                        await launch("tel:18005139");
-                      } else if (resourceName[index] == "퀵서비스") {
-                        userProvider.addCallLog({
-                          'id': saveData.id,
-                          'phone': saveData.phoneNumber,
-                          'call': "15888290",
-                          'type': 1
-                        });
-                        await launch("tel:15888290");
-                      } else if (resourceName[index] == "대리운전") {
-                        userProvider.addCallLog({
-                          'id': saveData.id,
-                          'phone': saveData.phoneNumber,
-                          'call': "18009455",
-                          'type': 2
-                        });
-                        await launch("tel:18009455");
-                      } else if (resourceName[index] == "알라딘박스") {
-                        await launch(
-                            "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko");
-                      } else if (resourceName[index] == "택배") {
-                        Navigator.of(context).pushReplacementNamed("/Delivery");
-                      } else if (resourceName[index] == "자동차 보험") {
-                        await launch(
-                            "https://esti.goodcar-direct.com/CB500002");
-                      } else if (resourceName[index] == "후불상조") {
-                        await launch("https://www.dhsangjo.xyz");
-                      } else if (resourceName[index] == "렌탈 서비스") {
-                        await launch("http://rs222.tbmrs.com/index.do");
-                      } else if (resourceName[index] == "휴대폰가입") {
-                        await launch("http://aladin.oig.kr/phone/index.html");
-                      }
-                      else if (resourceName[index] == "인터넷가입") {
-                        await launch("http://aladin.oig.kr/internet/index.html");
-                      }
-                      else {
-                        customDialog("서비스 준비 중입니다.", 0);
-                      }
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        resource[index] != ""
-                            ? Image.asset(
-                                "${resource[index]}",
-                                width: 70,
-                              )
-                            : Container(),
-                        Text(
-                          "${resourceName[index]}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-        viewPage != 1 ? Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              color: white,
-              border: Border.all(
-                  width: 1, color: Color.fromARGB(255, 245, 245, 245))),
-        ) : Container(),
-        viewPage != 1 ? GestureDetector(
-          onTap: () {
-            setState(() {
-              viewPage = 1;
-              FocusScope.of(context).requestFocus(pFocus);
-              onTopScroll();
-            });
-          },
-          child: Padding(
-            padding: EdgeInsets.only(left: 5, right: 5),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 60,
-//            color: mainColor,
-              decoration: BoxDecoration(
-                  color: Color(0xFFD74f15),
-                  borderRadius: BorderRadius.circular(5)),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.add,
-                      size: 36,
-                      color: white,
-                    ),
-                    whiteSpaceW(10),
-                    Text(
-                      "제휴 서비스 더보기",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ) : Container(),
-        viewPage != 1 ? Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              color: white,
-              border: Border.all(
-                  width: 2, color: Color.fromARGB(255, 245, 245, 245))),
-        ) : Container(),
+              )
+            : Container(),
         Container(
           width: MediaQuery.of(context).size.width,
           height: 120,
@@ -886,7 +945,8 @@ class _Home extends State<Home> {
                             ),
                           ),
                         )
-                      : Container()
+                      : Container(),
+                  viewPage == 3 ? Container() : Container()
                 ],
               ),
             ),

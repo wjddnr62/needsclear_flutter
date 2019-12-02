@@ -44,8 +44,7 @@ customDialog(msg, type, context) {
                           if (type == 0) {
                             Navigator.of(context).pop();
                           } else if (type == 1) {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pushNamedAndRemoveUntil("/Login", (Route<dynamic> route) => false);
                           }
                         },
                         child: Container(
