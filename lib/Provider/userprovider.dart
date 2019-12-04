@@ -152,32 +152,77 @@ class UserProvider {
   }
 
   Future<int> checkAllUser(phone) async {
-  CollectionReference phoneCollection =
-  Firestore.instance.collection("users");
+    CollectionReference phoneCollection =
+    Firestore.instance.collection("users");
 
-  QuerySnapshot phoneQuery =
-      await phoneCollection.where("phone", isEqualTo: phone).getDocuments();
+    QuerySnapshot phoneQuery =
+    await phoneCollection.where("phone", isEqualTo: phone).getDocuments();
 
-  final List<DocumentSnapshot> docs = phoneQuery.documents;
+    final List<DocumentSnapshot> docs = phoneQuery.documents;
 
-  if (phoneQuery.documents.length == 0) {
-    return 0;
-  } else {
-    return 1;
+    if (phoneQuery.documents.length == 0) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
-}
 
-Future<int> deleteUser(id) async {
-  CollectionReference userCollection = Firestore.instance.collection("users");
+  Future<int> deleteUser(phone) async {
+    CollectionReference userCollection = Firestore.instance.collection("users");
+    CollectionReference saveLogCollection =
+    Firestore.instance.collection("saveLog");
+    CollectionReference recoCollection = Firestore.instance.collection("reco");
 
-  QuerySnapshot userQuery = await userCollection
-      .where("id", isEqualTo: id)
-      .getDocuments();
+    QuerySnapshot userQuery =
+    await userCollection.where("phone", isEqualTo: phone).getDocuments();
 
-  await Firestore.instance.collection("users").document(userQuery.documents[0].documentID).delete();
+    QuerySnapshot saveLogQuery =
+    await saveLogCollection.where("phone", isEqualTo: phone).getDocuments();
 
-  return 0;
-}
+    QuerySnapshot recoQuery =
+    await recoCollection.where("phone", isEqualTo: phone).getDocuments();
+
+    QuerySnapshot recoQuery2 =
+    await recoCollection.where("recoCode", isEqualTo: phone).getDocuments();
+
+    final List<DocumentSnapshot> docs = userQuery.documents;
+    final List<DocumentSnapshot> saveLogDocs = saveLogQuery.documents;
+    final List<DocumentSnapshot> recoDocs = recoQuery.documents;
+    final List<DocumentSnapshot> recoDocs2 = recoQuery2.documents;
+
+    print('deleteLength : ${docs.length}');
+
+    for (int i = 0; i < docs.length; i++) {
+      print("deleteUser ${docs[i].data['name']}");
+      await Firestore.instance
+          .collection("users")
+          .document(docs[i].documentID)
+          .delete();
+    }
+
+    for (int i = 0; i < saveLogDocs.length; i++) {
+      await Firestore.instance
+          .collection("saveLog")
+          .document(saveLogDocs[i].documentID)
+          .delete();
+    }
+
+    for (int i = 0; i < recoDocs.length; i++) {
+      await Firestore.instance
+          .collection("reco")
+          .document(recoDocs[i].documentID)
+          .delete();
+    }
+
+    for (int i = 0; i < recoDocs2.length; i++) {
+      await Firestore.instance
+          .collection("reco")
+          .document(recoDocs2[i].documentID)
+          .delete();
+    }
+
+    return 0;
+  }
 
   Future<int> checkReCoCode(reCoCode) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
@@ -253,8 +298,7 @@ Future<int> deleteUser(id) async {
 
   insertPoint(id, point, recoLog) async {
     DateTime now = DateTime.now();
-    String formatDate =
-    DateFormat('yyyy.MM.dd').format(now);
+    String formatDate = DateFormat('yyyy.MM.dd').format(now);
 
     CollectionReference userCollection = Firestore.instance.collection("users");
 
@@ -292,15 +336,17 @@ Future<int> deleteUser(id) async {
 
     return null;
   }
-  
+
   Future<int> deliverySaveCheck(id) async {
     DateTime now = DateTime.now();
-    String formatDate =
-    DateFormat('yyyy.MM').format(now);
+    String formatDate = DateFormat('yyyy.MM').format(now);
 
     CollectionReference recoCollection = Firestore.instance.collection("reco");
 
-    QuerySnapshot recoQuery = await recoCollection.where("id", isEqualTo: id).where("saveDate", isEqualTo: formatDate).getDocuments();
+    QuerySnapshot recoQuery = await recoCollection
+        .where("id", isEqualTo: id)
+        .where("saveDate", isEqualTo: formatDate)
+        .getDocuments();
 
     if (recoQuery.documents.length >= 5) {
       return 0;
@@ -342,16 +388,20 @@ Future<int> deleteUser(id) async {
   }
 
   Future<int> getSavePoint(id, type) async {
-    CollectionReference saveCollection = Firestore.instance.collection("saveLog");
+    CollectionReference saveCollection =
+    Firestore.instance.collection("saveLog");
 
-    QuerySnapshot saveQuery = await saveCollection.where("id", isEqualTo: id).where("type", isEqualTo: type).getDocuments();
+    QuerySnapshot saveQuery = await saveCollection
+        .where("id", isEqualTo: id)
+        .where("type", isEqualTo: type)
+        .getDocuments();
 
     int point = 0;
 
     if (saveQuery.documents.length == 0) {
       return 0;
     } else {
-      for (int i = 0 ; i < saveQuery.documents.length; i++) {
+      for (int i = 0; i < saveQuery.documents.length; i++) {
         point += saveQuery.documents[i].data['point'];
       }
 
@@ -362,8 +412,10 @@ Future<int> deleteUser(id) async {
   Future<int> userPasswordUpdate(id, pass) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
 
-    QuerySnapshot userQuery =
-        await userCollection.where("id", isEqualTo: id).where("type", isEqualTo: 0).getDocuments();
+    QuerySnapshot userQuery = await userCollection
+        .where("id", isEqualTo: id)
+        .where("type", isEqualTo: 0)
+        .getDocuments();
 
     if (userQuery.documents.length != 0) {
       Firestore.instance

@@ -295,7 +295,7 @@ class _Home extends State<Home> {
                   whiteSpaceW(5),
                   Icon(Icons.person),
                   Expanded(
-                    child: Text("피추천인"),
+                    child: Text("추천인"),
                   ),
                   Text("${saveData.recoPerson}명"),
                   whiteSpaceW(10)
@@ -311,7 +311,7 @@ class _Home extends State<Home> {
                   ),
                   whiteSpaceW(2),
                   Expanded(
-                    child: Text("피추천인 적립"),
+                    child: Text("추천인 적립금"),
                   ),
                   Text("${numberFormat.format(saveData.recoPrice)} point"),
                   whiteSpaceW(10)

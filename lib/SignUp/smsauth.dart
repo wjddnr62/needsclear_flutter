@@ -175,7 +175,8 @@ class _SmsAuth extends State<SmsAuth> {
                             DateTime now = DateTime.now();
                             String formatDate =
                             DateFormat('yyyy-MM-dd').format(now);
-                            userProvider.deleteUser(_saveData.id).then((value) {
+                            userProvider.deleteUser(_saveData.phoneNumber)
+                                .then((value) {
                               if (value == 0) {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => MemberWFin(date: formatDate,)));
                               }
@@ -227,8 +228,8 @@ class _SmsAuth extends State<SmsAuth> {
 
     print("verificationId : " + verificationId + ", " + _authController.text);
 
-    //테스트 할때만 주석풀고 진행 실제 폰은 아래 코드 있으면 안됨
-//    await _auth.signInWithCredential(credential);
+    // TODO : 테스트 할때만 주석풀고 진행 실제 폰은 아래 코드 있으면 안됨
+    // await _auth.signInWithCredential(credential);
 
     await _auth.currentUser().then((value) {
       if (value != null) {
