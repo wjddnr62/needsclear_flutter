@@ -11,6 +11,14 @@ class SaveData {
   String _nowVersionCode;
   String _signDate;
 
+  String _royalCode;
+
+
+  String get royalCode => _royalCode;
+
+  set royalCode(String value) {
+    _royalCode = value;
+  }
 
   String get signDate => _signDate;
 

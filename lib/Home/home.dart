@@ -285,21 +285,26 @@ class _Home extends State<Home> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed("/RecoList");
+//            Navigator.of(context).pushNamed("/RecoList");
           },
           child: Column(
             children: <Widget>[
               whiteSpaceH(10),
-              Row(
-                children: <Widget>[
-                  whiteSpaceW(5),
-                  Icon(Icons.person),
-                  Expanded(
-                    child: Text("추천인"),
-                  ),
-                  Text("${saveData.recoPerson}명"),
-                  whiteSpaceW(10)
-                ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed("/RecoList");
+                },
+                child: Row(
+                  children: <Widget>[
+                    whiteSpaceW(5),
+                    Icon(Icons.person),
+                    Expanded(
+                      child: Text("추천인"),
+                    ),
+                    Text("${saveData.recoPerson}명"),
+                    whiteSpaceW(10)
+                  ],
+                ),
               ),
               whiteSpaceH(3),
               Row(

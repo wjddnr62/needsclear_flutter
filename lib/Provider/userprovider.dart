@@ -50,6 +50,7 @@ class UserProvider {
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
       saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
       saveData.signDate = authQuery.documents[0].data['signDate'];
+      saveData.royalCode = authQuery.documents[0].data['royalCode'];
       return 1;
     }
   }
@@ -77,6 +78,7 @@ class UserProvider {
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
       saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
       saveData.signDate = authQuery.documents[0].data['signDate'];
+      saveData.royalCode = authQuery.documents[0].data['royalCode'];
       return 1;
     }
   }
