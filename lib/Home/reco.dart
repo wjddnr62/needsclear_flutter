@@ -15,6 +15,8 @@ class _Reco extends State {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    print("royalCode : ${saveData.royalCode}");
+
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
@@ -58,7 +60,9 @@ class _Reco extends State {
           ),
           whiteSpaceH(20),
           Text(
-            "내 추천코드 : ${saveData.myRecoCode}",
+            saveData.royalCode != null
+                ? "내 추천코드 : ${saveData.royalCode}"
+                : "내 추천코드 : ${saveData.myRecoCode.substring(2, 11)}",
             textAlign: TextAlign.center,
             style: TextStyle(color: black, fontWeight: FontWeight.w600),
           ),
@@ -68,7 +72,13 @@ class _Reco extends State {
             child: GestureDetector(
               onTap: () {
                 // 이미지는 base64로 convert 하여 보내면 됨
-                Share.share("생활서비스의 모든것 알라딘매직\n새로운 경험을 지금 시작해 보세요.\nhttps://play.google.com/store/apps/details?id=com.laon.aladdinmagic\n추천인 : ${saveData.myRecoCode}", );
+                Share.share(
+                  saveData.royalCode != null
+                      ? "생활서비스의 모든것 알라딘매직\n새로운 경험을 지금 시작해 보세요.\nhttps://play.google.com/store/apps/details?id=com.laon.aladdinmagic\n추천인 : ${saveData
+                      .royalCode}"
+                      : "생활서비스의 모든것 알라딘매직\n새로운 경험을 지금 시작해 보세요.\nhttps://play.google.com/store/apps/details?id=com.laon.aladdinmagic\n추천인 : ${saveData
+                      .myRecoCode.substring(2, 11)}",
+                );
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,

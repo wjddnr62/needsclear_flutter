@@ -2,7 +2,6 @@ import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/main.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:bubble/bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -266,7 +265,7 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                             return Container(
                               height: MediaQuery.of(context).size.height / 1.5,
                               child: ListView(
-                                physics: NeverScrollableScrollPhysics(),
+//                                physics: NeverScrollableScrollPhysics(),
                                 children: snapshot.data.documents
                                     .map((DocumentSnapshot document) {
                                   return GestureDetector(
@@ -278,7 +277,11 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                                           Row(
                                             children: <Widget>[
                                               whiteSpaceW(10),
-                                              Expanded(
+                                              Container(
+                                                width: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width / 3,
                                                 child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -317,18 +320,47 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                                                   ],
                                                 ),
                                               ),
-                                              Text(
-                                                numberFormat.format(
-                                                        document['point']) +
-                                                    "원",
-                                                style: TextStyle(
-                                                    color: document['type'] == 0
-                                                        ? Colors.blueAccent
-                                                        : Colors.redAccent,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16),
+                                              whiteSpaceW(10),
+                                              document['getPointType'] != null
+                                                  ? Expanded(
+                                                child: Text(
+                                                  document['getPointType'] ==
+                                                      0
+                                                      ? "본인"
+                                                      : "추천",
+                                                  style: TextStyle(
+                                                      color: black,
+                                                      fontWeight:
+                                                      FontWeight.w600,
+                                                      fontSize: 16),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              )
+                                                  : Expanded(
+                                                child: Container(),
                                               ),
-                                              whiteSpaceW(20),
+                                              whiteSpaceW(10),
+                                              Container(
+                                                width: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width / 3,
+                                                child: Text(
+                                                  numberFormat.format(
+                                                      document['point']) +
+                                                      "원",
+                                                  style: TextStyle(
+                                                      color: document['type'] ==
+                                                          0
+                                                          ? Colors.blueAccent
+                                                          : Colors.redAccent,
+                                                      fontWeight: FontWeight
+                                                          .w600,
+                                                      fontSize: 14),
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                              ),
+                                              whiteSpaceW(10),
                                             ],
                                           ),
                                           whiteSpaceH(15),

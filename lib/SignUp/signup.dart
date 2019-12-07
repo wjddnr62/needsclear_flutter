@@ -1,22 +1,20 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Login/login.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
-import 'package:intl/intl.dart';
-import 'package:random_string/random_string.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:random_string/random_string.dart';
 
 class SignUp extends StatefulWidget {
   final int type; // type = 0 일반 가입, 1 = 카카오, 2 = 구글, 3 = 페이스북
@@ -195,7 +193,9 @@ class _SignUp extends State<SignUp> {
                               if (reCoCheck) {
                                 userProvider
                                     .insertPoint(_saveData.reCoId, 500, {
-                                  'recoCode': _recoCodeController.text,
+                                  'recoCode': _recoCodeController.text.length ==
+                                      4 ? _recoCodeController.text : "01" +
+                                      _recoCodeController.text,
                                   'name': _nameController.text,
                                   'phone': _saveData.phoneNumber,
                                   'signDate': formatDate,
@@ -231,6 +231,9 @@ class _SignUp extends State<SignUp> {
                                 'recoPrice': 0,
                                 'signDate': formatDate,
                                 'pushRecoCode': _recoCodeController.text
+                                    .length == 4
+                                    ? _recoCodeController.text
+                                    : "01" + _recoCodeController.text
                               }, {
                                 'id': _saveData.id,
                                 'name': _nameController.text,
@@ -657,7 +660,7 @@ class _SignUp extends State<SignUp> {
                           });
                         } else {
                           await userProvider
-                              .checkReCoCode(_recoCodeController.text)
+                              .checkReCoCode("01" + _recoCodeController.text)
                               .then((value) {
                             print("value : ${value}");
                             if (value != 0) {
@@ -1131,7 +1134,7 @@ class _SignUp extends State<SignUp> {
                     });
                   } else {
                     await userProvider
-                        .checkReCoCode(_recoCodeController.text)
+                        .checkReCoCode("01" + _recoCodeController.text)
                         .then((value) {
                       print("value : ${value}");
                       if (value != 0) {

@@ -95,7 +95,9 @@ class _SmsAuth extends State<SmsAuth> {
     }
 
     if (type == 2) {
-      if (_saveData.findId != null && _saveData.findId != "" && _saveData.findId.isNotEmpty) {
+      if (_saveData.findId != null &&
+          _saveData.findId != "" &&
+          _saveData.findId.isNotEmpty) {
         _idController.text = _saveData.findId;
       }
     }
@@ -149,7 +151,8 @@ class _SmsAuth extends State<SmsAuth> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushReplacementNamed("/Settings");
+                            Navigator.of(context)
+                                .pushReplacementNamed("/Settings");
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width,
@@ -175,9 +178,15 @@ class _SmsAuth extends State<SmsAuth> {
                             DateTime now = DateTime.now();
                             String formatDate =
                             DateFormat('yyyy-MM-dd').format(now);
-                            userProvider.deleteUser(_saveData.id).then((value) {
+                            userProvider
+                                .deleteUser(_saveData.phoneNumber)
+                                .then((value) {
                               if (value == 0) {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => MemberWFin(date: formatDate,)));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        MemberWFin(
+                                          date: formatDate,
+                                        )));
                               }
                             });
                           },
@@ -227,8 +236,8 @@ class _SmsAuth extends State<SmsAuth> {
 
     print("verificationId : " + verificationId + ", " + _authController.text);
 
-    //테스트 할때만 주석풀고 진행 실제 폰은 아래 코드 있으면 안됨
-//    await _auth.signInWithCredential(credential);
+    // TODO : 테스트 할때만 주석풀고 진행 실제 폰은 아래 코드 있으면 안됨
+    // await _auth.signInWithCredential(credential);
 
     await _auth.currentUser().then((value) {
       if (value != null) {
@@ -379,7 +388,8 @@ class _SmsAuth extends State<SmsAuth> {
                     child: GestureDetector(
                       onTap: () {
                         if (type == 3) {
-                          Navigator.of(context).pushReplacementNamed("/MemberW");
+                          Navigator.of(context)
+                              .pushReplacementNamed("/MemberW");
                         } else {
                           Navigator.of(context).pop();
                         }
@@ -394,9 +404,13 @@ class _SmsAuth extends State<SmsAuth> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 20, right: 20),
                     child: Text(
-                      type == 0 ? "회원가입을 위해 가입하실\n휴대폰번호를 인증해 주세요." : type == 1
+                      type == 0
+                          ? "회원가입을 위해 가입하실\n휴대폰번호를 인증해 주세요."
+                          : type == 1
                           ? "아이디를 찾기 위해 회원가입 시 사용하신\n휴대폰번호를 인증해 주세요."
-                          : type == 3 ? "회원탈퇴를 위해 가입하신 휴대폰번호를 인증해주세요." : "회원가입 하신 아이디 및\n휴대폰번호를 인증해 주세요.",
+                          : type == 3
+                          ? "회원탈퇴를 위해 가입하신 휴대폰번호를 인증해주세요."
+                          : "회원가입 하신 아이디 및\n휴대폰번호를 인증해 주세요.",
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: black,
@@ -414,7 +428,8 @@ class _SmsAuth extends State<SmsAuth> {
                   color: Color.fromARGB(255, 167, 167, 167),
                 ),
                 whiteSpaceH(50),
-                type == 2 ? Padding(
+                type == 2
+                    ? Padding(
                   padding: EdgeInsets.only(left: 20, right: 20),
                   child: TextFormField(
                     controller: _idController,
@@ -433,7 +448,8 @@ class _SmsAuth extends State<SmsAuth> {
                         contentPadding: EdgeInsets.only(
                             top: 10, bottom: 10, left: 5, right: 10)),
                   ),
-                ) : Container(),
+                )
+                    : Container(),
                 type == 2 ? whiteSpaceH(20) : Container(),
                 Row(
                   children: <Widget>[
@@ -470,11 +486,13 @@ class _SmsAuth extends State<SmsAuth> {
                           showToast(type: 0, msg: "휴대폰번호를 입력해 주세요.");
                         } else {
                           if (type == 1) {
-                            userProvider.checkPhoneNumber(_phoneController.text)
+                            userProvider
+                                .checkPhoneNumber(_phoneController.text)
                                 .then((value) {
                               if (value == 0) {
                                 customDialog(
-                                    "가입된 휴대폰번호가 아닙니다.\n휴대폰번호를 확인해 주세요.", 0,
+                                    "가입된 휴대폰번호가 아닙니다.\n휴대폰번호를 확인해 주세요.",
+                                    0,
                                     context);
                               } else {
                                 authStart();
@@ -486,13 +504,23 @@ class _SmsAuth extends State<SmsAuth> {
                                 _idController.text == null) {
                               showToast(type: 0, msg: "아이디를 입력해 주세요.");
                             } else {
-                              userProvider.checkUser(_idController.text).then((value) {
+                              userProvider
+                                  .checkUser(_idController.text)
+                                  .then((value) {
                                 if (value == 0) {
-                                  customDialog("가입되지 않은 회원정보 입니다.\n아이디 또는 휴대폰번호를 확인해주세요.", 0, context);
+                                  customDialog(
+                                      "가입되지 않은 회원정보 입니다.\n아이디 또는 휴대폰번호를 확인해주세요.",
+                                      0,
+                                      context);
                                 } else {
-                                  userProvider.checkPhoneNumber(_phoneController.text).then((value) {
+                                  userProvider
+                                      .checkPhoneNumber(_phoneController.text)
+                                      .then((value) {
                                     if (value == 0) {
-                                      customDialog("가입되지 않은 회원정보 입니다.\n아이디 또는 휴대폰번호를 확인해주세요.", 0, context);
+                                      customDialog(
+                                          "가입되지 않은 회원정보 입니다.\n아이디 또는 휴대폰번호를 확인해주세요.",
+                                          0,
+                                          context);
                                     } else {
                                       authStart();
                                     }
@@ -501,17 +529,27 @@ class _SmsAuth extends State<SmsAuth> {
                               });
                             }
                           } else if (type == 3) {
-                            userProvider.checkAllUser(_phoneController.text).then((value) {
-                              if (value == 1) {
-                                authStart();
-                              } else {
-                                customDialog(
-                                    "가입된 휴대폰번호가 아닙니다.\n휴대폰번호를 확인해 주세요.", 0,
-                                    context);
-                              }
-                            });
+                            if (_saveData.phoneNumber !=
+                                _phoneController.text) {
+                              customDialog("본인 휴대폰번호가 아닙니다.\n휴대폰번호를 확인해주세요.", 0,
+                                  context);
+                            } else {
+                              userProvider
+                                  .checkAllUser(_phoneController.text)
+                                  .then((value) {
+                                if (value == 1) {
+                                  authStart();
+                                } else {
+                                  customDialog(
+                                      "가입된 휴대폰번호가 아닙니다.\n휴대폰번호를 확인해주세요.",
+                                      0, context);
+                                }
+                              });
+                            }
                           } else {
-                            userProvider.checkAllUser(_phoneController.text).then((value) {
+                            userProvider
+                                .checkAllUser(_phoneController.text)
+                                .then((value) {
                               if (value == 1) {
                                 showToast(type: 0, msg: "이미 가입되어있는 회원입니다.");
                               } else {
@@ -604,10 +642,13 @@ class _SmsAuth extends State<SmsAuth> {
                       width: 150,
                       height: 50,
                       child: Center(
-                        child: Text("인증확인", style: TextStyle(
-                            color: white, fontSize: 16, fontWeight: FontWeight
-                            .w600
-                        ),),
+                        child: Text(
+                          "인증확인",
+                          style: TextStyle(
+                              color: white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   ),
