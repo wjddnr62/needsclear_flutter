@@ -347,6 +347,9 @@ class _SignUp extends State<SignUp> {
                       onFieldSubmitted: (value) {
                         FocusScope.of(context).requestFocus(_passFocus);
                       },
+                      inputFormatters: [
+                        BlacklistingTextInputFormatter(RegExp("[ ]"))
+                      ],
                       onChanged: (value) {
                         print("value : " + value);
                         userProvider.idDuplicate(value.trim()).then((value) {
@@ -379,6 +382,9 @@ class _SignUp extends State<SignUp> {
                       onFieldSubmitted: (value) {
                         FocusScope.of(context).requestFocus(_rePassFocus);
                       },
+                      inputFormatters: [
+                        BlacklistingTextInputFormatter(RegExp("[ ]"))
+                      ],
                       obscureText: true,
                       maxLength: 12,
                       decoration: InputDecoration(
@@ -399,6 +405,9 @@ class _SignUp extends State<SignUp> {
                       textInputAction: TextInputAction.done,
                       obscureText: true,
                       maxLength: 12,
+                      inputFormatters: [
+                        BlacklistingTextInputFormatter(RegExp("[ ]"))
+                      ],
                       decoration: InputDecoration(
                           counterText: "",
                           hintStyle: TextStyle(
@@ -607,8 +616,63 @@ class _SignUp extends State<SignUp> {
                       ],
                     ),
                     whiteSpaceH(30),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
+                    TextFormField(
+                      controller: _recoCodeController,
+                      textInputAction: TextInputAction.done,
+                      maxLength: 11,
+                      onChanged: (value) async {
+                        if (value.length == 4) {
+                          await userProvider
+                              .checkRoyalCode(_recoCodeController.text)
+                              .then((value) {
+                            print("value : ${value}");
+                            if (value != 0) {
+                              reCoCheck = true;
+                            } else if (value == 0) {
+                              reCoCheck = false;
+                            }
+                            print("recoCheck : " + reCoCheck.toString());
+                          });
+                        } else {
+                          await userProvider
+                              .checkReCoCode("01" + _recoCodeController.text)
+                              .then((value) {
+                            print("value : ${value}");
+                            if (value != 0) {
+                              reCoCheck = true;
+                              selectBoxValue = "지인추천";
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            } else if (value == 0) {
+                              reCoCheck = false;
+                              selectBoxValue = "가입경로 선택";
+                            }
+                            print("recoCheck : " + reCoCheck.toString());
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                          counterText: "",
+                          hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Color.fromARGB(255, 167, 167, 167)),
+                          hintText: "추천인 번호를 입력해 주세요(선택사항)",
+                          helperText: "알맞은 추천인 번호를 입력하면 가입경로가 지인추천으로 가입됩니다.",
+                          helperStyle: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: Color.fromARGB(255, 167, 167, 167)
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: mainColor)),
+                          contentPadding:
+                          EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                    ),
+                    whiteSpaceH(20),
+                    !reCoCheck ? Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
                       child: DropdownButton<String>(
                         isExpanded: true,
                         elevation: 2,
@@ -639,49 +703,54 @@ class _SignUp extends State<SignUp> {
                           });
                         },
                       ),
-                    ),
-                    whiteSpaceH(20),
-                    TextFormField(
-                      controller: _recoCodeController,
-                      textInputAction: TextInputAction.done,
-                      maxLength: 11,
-                      onChanged: (value) async {
-                        if (value.length == 4) {
-                          await userProvider
-                              .checkRoyalCode(_recoCodeController.text)
-                              .then((value) {
-                            print("value : ${value}");
-                            if (value != 0) {
-                              reCoCheck = true;
-                            } else if (value == 0) {
-                              reCoCheck = false;
-                            }
-                            print("recoCheck : " + reCoCheck.toString());
-                          });
-                        } else {
-                          await userProvider
-                              .checkReCoCode("01" + _recoCodeController.text)
-                              .then((value) {
-                            print("value : ${value}");
-                            if (value != 0) {
-                              reCoCheck = true;
-                            } else if (value == 0) {
-                              reCoCheck = false;
-                            }
-                            print("recoCheck : " + reCoCheck.toString());
-                          });
-                        }
-                      },
-                      decoration: InputDecoration(
-                          counterText: "",
-                          hintStyle: TextStyle(
-                              fontSize: 14,
-                              color: Color.fromARGB(255, 167, 167, 167)),
-                          hintText: "추천인 번호를 입력해 주세요(선택사항)",
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: mainColor)),
-                          contentPadding:
-                              EdgeInsets.only(top: 10, bottom: 10, left: 5)),
+                    ) : Stack(
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          padding: EdgeInsets.only(left: 5),
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            elevation: 2,
+                            style: TextStyle(color: black),
+                            items: <String>[
+                              '가입경로 선택',
+                              '알라딘박스',
+                              'ABO 회원',
+                              'ABM 회원',
+                              '대리점 회원',
+                              '총판 회원',
+                              '지인추천',
+                              '인터넷 검색',
+                              '기타'
+                            ].map((value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: TextStyle(color: black),
+                                ),
+                              );
+                            }).toList(),
+                            value: selectBoxValue,
+                            onChanged: (value) {
+                              setState(() {
+                                selectBoxValue = value;
+                              });
+                            },
+                          ),
+                        ),
+                        Container(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: 60,
+                            color: Color.fromARGB(10, 255, 255, 255)
+                        )
+                      ],
                     ),
                     whiteSpaceH(30),
                     Row(

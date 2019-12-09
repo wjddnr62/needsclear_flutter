@@ -10,6 +10,7 @@ import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -26,18 +27,38 @@ class _Home extends State<Home> {
   SharedPreferences prefs;
   FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
   GoogleSignIn googleSignIn = GoogleSignIn();
+  WebViewController _webViewController;
+  String initialUrl = "";
+
+  bool firstLoad = false;
+  String loadCompleteUrl;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Future<bool> onWillPop() {
-    DateTime now = DateTime.now();
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-      currentBackPressTime = now;
-      showToast(msg: "한번 더 누르면 종료됩니다.", type: 0);
-      return Future.value(false);
+    if (loadCompleteUrl == null) {
+      DateTime now = DateTime.now();
+      if (currentBackPressTime == null ||
+          now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+        currentBackPressTime = now;
+        showToast(msg: "한번 더 누르면 종료됩니다.", type: 0);
+        return Future.value(false);
+      }
+      return Future.value(true);
+    } else {
+      _webViewController.currentUrl().then((value) {
+        if (value != loadCompleteUrl) {
+          _webViewController.goBack();
+        } else {
+          setState(() {
+            viewPage = 0;
+            loadCompleteUrl = null;
+            firstLoad = false;
+          });
+        }
+      });
+      return null;
     }
-    return Future.value(true);
   }
 
   Future<void> googleLogout() async {
@@ -433,6 +454,23 @@ class _Home extends State<Home> {
     );
   }
 
+  webView(url) {
+    return WebView(
+      initialUrl: url,
+      javascriptMode: JavascriptMode.unrestricted,
+      onWebViewCreated: (_webController) {
+        _webController.clearCache();
+        _webViewController = _webController;
+      },
+      onPageFinished: (url) {
+        if (firstLoad == false) {
+          loadCompleteUrl = url;
+          firstLoad = true;
+        }
+      },
+    );
+  }
+
   serviceList(index, type) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -479,22 +517,47 @@ class _Home extends State<Home> {
               });
               await launch("tel:18009455");
             } else if (name == "알라딘박스") {
-              await launch(
-                  "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko");
+              setState(() {
+                initialUrl =
+                "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko";
+                viewPage = 4;
+              });
+//              await launch(
+//                  "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko");
             } else if (name == "택배") {
               Navigator.of(context).pushReplacementNamed("/Delivery");
             } else if (name == "자동차 보험") {
-              await launch("https://esti.goodcar-direct.com/CB500002");
+              setState(() {
+                initialUrl = "https://esti.goodcar-direct.com/CB500002";
+                viewPage = 4;
+              });
+//              await launch("https://esti.goodcar-direct.com/CB500002");
             } else if (name == "후불상조") {
-              await launch("https://www.dhsangjo.xyz");
+              setState(() {
+                initialUrl = "https://www.dhsangjo.xyz";
+                viewPage = 4;
+              });
+//              await launch("https://www.dhsangjo.xyz");
             } else if (name == "렌탈 서비스") {
-              await launch(
-                "http://rs222.tbmrs.com/index.do",
-              );
+              setState(() {
+                initialUrl = "http://rs222.tbmrs.com/index.do";
+                viewPage = 4;
+              });
+//              await launch(
+//                "http://rs222.tbmrs.com/index.do",
+//              );
             } else if (name == "휴대폰가입") {
-              await launch("http://aladin.oig.kr/phone/index.html");
+              setState(() {
+                initialUrl = "http://aladin.oig.kr/phone/index.html";
+                viewPage = 4;
+              });
+//              await launch("http://aladin.oig.kr/phone/index.html");
             } else if (name == "인터넷가입") {
-              await launch("http://aladin.oig.kr/internet/index.html");
+              setState(() {
+                initialUrl = "http://aladin.oig.kr/internet/index.html";
+                viewPage = 4;
+              });
+//              await launch("http://aladin.oig.kr/internet/index.html");
             } else {
               customDialog("서비스 준비 중입니다.", 0);
             }
@@ -628,201 +691,227 @@ class _Home extends State<Home> {
     if (viewPage == 0) {
       FocusScope.of(context).requestFocus(mainFocus);
     }
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: white,
-      resizeToAvoidBottomInset: true,
-      drawer: Drawer(
-        child: Column(
-          children: <Widget>[
-            whiteSpaceH(MediaQuery.of(context).padding.top + 20),
-            Row(
+    return WillPopScope(
+        child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: white,
+          resizeToAvoidBottomInset: true,
+          drawer: Drawer(
+            child: Column(
               children: <Widget>[
-                whiteSpaceW(30),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "${saveData.name}>",
+                whiteSpaceH(MediaQuery
+                    .of(context)
+                    .padding
+                    .top + 20),
+                Row(
+                  children: <Widget>[
+                    whiteSpaceW(30),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "${saveData.name}>",
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18),
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                              "${saveData.phoneNumber.substring(
+                                  0, 3)}-${saveData.phoneNumber.substring(
+                                  3, 7)}-${saveData.phoneNumber.substring(
+                                  7, 11)}")
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        sharedLogout();
+                      },
+                      child: Text(
+                        "로그아웃",
                         style: TextStyle(
                             decoration: TextDecoration.underline,
                             color: black,
                             fontWeight: FontWeight.w600,
-                            fontSize: 18),
+                            fontSize: 16),
                         textAlign: TextAlign.start,
                       ),
-                      Text(
-                          "${saveData.phoneNumber.substring(0, 3)}-${saveData.phoneNumber.substring(3, 7)}-${saveData.phoneNumber.substring(7, 11)}")
+                    ),
+                    whiteSpaceW(30)
+                  ],
+                ),
+                whiteSpaceH(20),
+                Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: 1,
+                  color: Color.fromARGB(255, 167, 167, 167),
+                ),
+                Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: 30,
+                  color: Color.fromARGB(255, 129, 129, 129),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      "알라딘매직",
+                      style:
+                      TextStyle(fontWeight: FontWeight.w600, color: white),
+                    ),
+                  ),
+                ),
+                whiteSpaceH(20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed("/SaveBreakDown");
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      whiteSpaceW(10),
+                      Expanded(
+                        child: Text(
+                          "적립금내역",
+                          style: TextStyle(
+                              color: black, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                      ),
+                      whiteSpaceW(10)
                     ],
                   ),
                 ),
+                whiteSpaceH(20),
                 GestureDetector(
                   onTap: () {
-                    sharedLogout();
+                    Navigator.of(context).pushNamed("/RecoList");
                   },
-                  child: Text(
-                    "로그아웃",
-                    style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16),
-                    textAlign: TextAlign.start,
+                  child: Row(
+                    children: <Widget>[
+                      whiteSpaceW(10),
+                      Expanded(
+                        child: Text(
+                          "추천인목록",
+                          style: TextStyle(
+                              color: black, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                      ),
+                      whiteSpaceW(10)
+                    ],
                   ),
                 ),
-                whiteSpaceW(30)
+                whiteSpaceH(20),
+                Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width,
+                  height: 30,
+                  color: Color.fromARGB(255, 129, 129, 129),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Center(
+                    child: Text(
+                      "기타",
+                      style:
+                      TextStyle(fontWeight: FontWeight.w600, color: white),
+                    ),
+                  ),
+                ),
+                whiteSpaceH(20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushReplacementNamed("/Settings");
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      whiteSpaceW(10),
+                      Expanded(
+                        child: Text(
+                          "설정",
+                          style: TextStyle(
+                              color: black, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                      ),
+                      whiteSpaceW(10)
+                    ],
+                  ),
+                ),
               ],
             ),
-            whiteSpaceH(20),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 1,
-              color: Color.fromARGB(255, 167, 167, 167),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 30,
-              color: Color.fromARGB(255, 129, 129, 129),
-              padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
-                  "알라딘매직",
-                  style: TextStyle(fontWeight: FontWeight.w600, color: white),
-                ),
-              ),
-            ),
-            whiteSpaceH(20),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed("/SaveBreakDown");
-              },
-              child: Row(
-                children: <Widget>[
-                  whiteSpaceW(10),
-                  Expanded(
-                    child: Text(
-                      "적립금내역",
-                      style:
-                          TextStyle(color: black, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20,
-                  ),
-                  whiteSpaceW(10)
-                ],
-              ),
-            ),
-            whiteSpaceH(20),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed("/RecoList");
-              },
-              child: Row(
-                children: <Widget>[
-                  whiteSpaceW(10),
-                  Expanded(
-                    child: Text(
-                      "추천인목록",
-                      style:
-                          TextStyle(color: black, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20,
-                  ),
-                  whiteSpaceW(10)
-                ],
-              ),
-            ),
-            whiteSpaceH(20),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 30,
-              color: Color.fromARGB(255, 129, 129, 129),
-              padding: EdgeInsets.only(left: 10),
-              child: Center(
-                child: Text(
-                  "기타",
-                  style: TextStyle(fontWeight: FontWeight.w600, color: white),
-                ),
-              ),
-            ),
-            whiteSpaceH(20),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushReplacementNamed("/Settings");
-              },
-              child: Row(
-                children: <Widget>[
-                  whiteSpaceW(10),
-                  Expanded(
-                    child: Text(
-                      "설정",
-                      style:
-                          TextStyle(color: black, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20,
-                  ),
-                  whiteSpaceW(10)
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        backgroundColor: white,
-        elevation: 0.5,
-        centerTitle: true,
-        title: Image.asset(
-          "assets/resource/title.png",
-          width: 120,
-        ),
-        leading: IconButton(
-          onPressed: () {
-            _scaffoldKey.currentState.openDrawer();
-          },
-          icon: Icon(
-            Icons.menu,
-            color: black,
-            size: 28,
           ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.notifications,
-              color: black,
+          appBar: AppBar(
+            backgroundColor: white,
+            elevation: 0.5,
+            centerTitle: true,
+            title: Image.asset(
+              "assets/resource/title.png",
+              width: 120,
             ),
-          )
-        ],
-      ),
-      body: WillPopScope(
-          child: SingleChildScrollView(
+            leading: IconButton(
+              onPressed: () {
+                _scaffoldKey.currentState.openDrawer();
+              },
+              icon: Icon(
+                Icons.menu,
+                color: black,
+                size: 28,
+              ),
+            ),
+            actions: <Widget>[
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.notifications,
+                  color: black,
+                ),
+              )
+            ],
+          ),
+          body: viewPage == 4
+              ? webView(initialUrl)
+              : SingleChildScrollView(
             controller: _scrollController,
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {
                               setState(() {
                                 viewPage = 0;
-                                FocusScope.of(context).requestFocus(mainFocus);
+                                FocusScope.of(context)
+                                    .requestFocus(mainFocus);
                               });
                             },
                             focusNode: mainFocus,
@@ -832,9 +921,10 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "알라딘매직",
                                 hintStyle:
-                                    TextStyle(fontSize: 14, color: black),
+                                TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: mainColor)),
+                                    borderSide:
+                                    BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
                                 contentPadding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 5)),
@@ -843,13 +933,17 @@ class _Home extends State<Home> {
                       ),
                       Expanded(
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {
                               setState(() {
                                 viewPage = 1;
-                                FocusScope.of(context).requestFocus(pFocus);
+                                FocusScope.of(context)
+                                    .requestFocus(pFocus);
                               });
                             },
                             focusNode: pFocus,
@@ -859,9 +953,10 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "제휴서비스",
                                 hintStyle:
-                                    TextStyle(fontSize: 14, color: black),
+                                TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: mainColor)),
+                                    borderSide:
+                                    BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
                                 contentPadding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 5)),
@@ -870,13 +965,17 @@ class _Home extends State<Home> {
                       ),
                       Expanded(
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {
                               setState(() {
                                 viewPage = 2;
-                                FocusScope.of(context).requestFocus(eventFocus);
+                                FocusScope.of(context)
+                                    .requestFocus(eventFocus);
                               });
                             },
                             focusNode: eventFocus,
@@ -886,9 +985,10 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "이벤트",
                                 hintStyle:
-                                    TextStyle(fontSize: 14, color: black),
+                                TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: mainColor)),
+                                    borderSide:
+                                    BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
                                 contentPadding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 5)),
@@ -897,7 +997,10 @@ class _Home extends State<Home> {
                       ),
                       Expanded(
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                           height: 40,
                           child: TextFormField(
                             onTap: () {
@@ -909,9 +1012,10 @@ class _Home extends State<Home> {
                                 counterText: "",
                                 hintText: "고객지원",
                                 hintStyle:
-                                    TextStyle(fontSize: 14, color: black),
+                                TextStyle(fontSize: 14, color: black),
                                 focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: mainColor)),
+                                    borderSide:
+                                    BorderSide(color: mainColor)),
                                 enabledBorder: InputBorder.none,
                                 contentPadding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 5)),
@@ -922,41 +1026,48 @@ class _Home extends State<Home> {
                   ),
                   whiteSpaceH(0.5),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     height: 1,
                     color: Color.fromARGB(255, 219, 219, 219),
                   ),
                   viewPage == 0
                       ? Column(
-                          children: <Widget>[saveMoneyView(), pService()],
-                        )
+                    children: <Widget>[saveMoneyView(), pService()],
+                  )
                       : Container(),
                   viewPage == 1 ? pService() : Container(),
                   viewPage == 2
                       ? Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height / 3),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Text(
-                                "이벤트가 존재하지 않습니다.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20),
-                              ),
-                            ),
-                          ),
-                        )
+                    padding: EdgeInsets.only(
+                        top:
+                        MediaQuery
+                            .of(context)
+                            .size
+                            .height / 3),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Text(
+                          "이벤트가 존재하지 않습니다.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  )
                       : Container(),
                   viewPage == 3 ? Container() : Container()
                 ],
               ),
             ),
           ),
-          onWillPop: onWillPop),
-    );
+        ),
+        onWillPop: onWillPop);
   }
 }

@@ -12,7 +12,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="알라딘매직"
         android:allowBackup="false"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
