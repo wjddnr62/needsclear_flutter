@@ -431,6 +431,27 @@ class UserProvider {
     }
   }
 
+  withdrawApply(id, deductionReserve, withdraw, saveLog) async {
+    CollectionReference userCollection = Firestore.instance.collection("users");
+
+    QuerySnapshot userQuery = await userCollection
+        .where("id", isEqualTo: id)
+        .getDocuments();
+
+    if (userQuery.documents.length != 0) {
+      int point = userQuery.documents[0].data['point'] - deductionReserve;
+      saveData.point = point;
+
+      Firestore.instance
+          .collection("users")
+          .document(userQuery.documents[0].documentID)
+          .updateData({'point': point});
+    }
+
+    Firestore.instance.collection("withdraw").add(withdraw);
+    Firestore.instance.collection("saveLog").add(saveLog);
+  }
+
   royalCodeUpdate() async {
     CollectionReference userCollection = Firestore.instance.collection("users");
 

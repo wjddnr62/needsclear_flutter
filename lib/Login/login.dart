@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/SignUp/signup.dart';
 import 'package:aladdinmagic/SignUp/smsauth.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_kakao_login/flutter_kakao_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Login extends StatefulWidget {
@@ -39,6 +39,8 @@ class _Login extends State<Login> {
   int passEdit = 0;
 
   FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+
+  bool loginBtnClick = false;
 
   kakaoLogin() async {
     print("login");
@@ -177,6 +179,10 @@ class _Login extends State<Login> {
 
       print("userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
     }
+  }
+
+  btnSet() {
+    loginBtnClick = false;
   }
 
   sharedInit(type, userID) async {
@@ -538,7 +544,7 @@ class _Login extends State<Login> {
                           children: <Widget>[
                             Checkbox(
                               materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
+                              MaterialTapTargetSize.shrinkWrap,
                               value: autoLoginCheck,
                               activeColor: mainColor,
                               onChanged: (value) {
@@ -699,8 +705,11 @@ class _Login extends State<Login> {
                                 onTap: () {
                                   print("kakaoLogin");
 //                                  serviceDialog("서비스 준비 중입니다.");
-
-                                  kakaoLogin();
+                                  if (!loginBtnClick) {
+                                    kakaoLogin();
+                                    loginBtnClick = true;
+                                    Timer(Duration(seconds: 2), btnSet);
+                                  }
                                 },
                                 child: Image.asset(
                                   "assets/icon/kakao_icon.png",
@@ -714,7 +723,11 @@ class _Login extends State<Login> {
                                 onTap: () {
                                   print("facebooeLogin");
 //                                  serviceDialog("서비스 준비 중입니다.");
-                                fbLogin();
+                                  if (!loginBtnClick) {
+                                    fbLogin();
+                                    loginBtnClick = true;
+                                    Timer(Duration(seconds: 2), btnSet);
+                                  }
                                 },
                                 child: Image.asset(
                                   "assets/icon/facebook_icon.png",
@@ -728,7 +741,11 @@ class _Login extends State<Login> {
                                 onTap: () {
                                   print("googleLogin");
 //                                  serviceDialog("서비스 준비 중입니다.");
-                                googleLogin();
+                                  if (!loginBtnClick) {
+                                    googleLogin();
+                                    loginBtnClick = true;
+                                    Timer(Duration(seconds: 2), btnSet);
+                                  }
                                 },
                                 child: Image.asset(
                                   "assets/icon/google_icon.png",

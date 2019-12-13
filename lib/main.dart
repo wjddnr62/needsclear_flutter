@@ -55,7 +55,7 @@ class _Splash extends State<Splash> {
             whiteSpaceH(MediaQuery.of(context).size.height / 5),
             Image.asset("assets/appicon/app_icon.png", width: MediaQuery.of(context).size.width / 2.5, fit: BoxFit.fill,),
             whiteSpaceH(30),
-            Text("Aladdin Magic", style: TextStyle(
+            Text("Aladin Magic", style: TextStyle(
                 color: black, fontSize: 18, fontWeight: FontWeight.bold
             ),)
           ],

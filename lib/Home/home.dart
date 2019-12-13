@@ -1,3 +1,4 @@
+import 'package:aladdinmagic/Home/withdraw.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
@@ -404,7 +405,10 @@ class _Home extends State<Home> {
             ),
             Expanded(
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => Withdraw(type: 0)));
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 120,
@@ -477,7 +481,7 @@ class _Home extends State<Home> {
       decoration: BoxDecoration(
           color: white,
           border:
-              Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
+          Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
       child: Center(
         child: GestureDetector(
           onTap: () async {
@@ -598,78 +602,78 @@ class _Home extends State<Home> {
             physics: NeverScrollableScrollPhysics(),
             children: viewPage == 0
                 ? List.generate(12, (index) {
-                    return serviceList(index, 0);
-                  })
+              return serviceList(index, 0);
+            })
                 : viewPage == 1
-                    ? List.generate(
-                        resourcePlus.length,
-                        (idx) {
-                          return serviceList(idx, 1);
-                        },
-                      )
-                    : Container(),
+                ? List.generate(
+              resourcePlus.length,
+                  (idx) {
+                return serviceList(idx, 1);
+              },
+            )
+                : Container(),
           ),
         ),
         viewPage != 1
             ? Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: white,
-                    border: Border.all(
-                        width: 1, color: Color.fromARGB(255, 245, 245, 245))),
-              )
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: white,
+              border: Border.all(
+                  width: 1, color: Color.fromARGB(255, 245, 245, 245))),
+        )
             : Container(),
         viewPage != 1
             ? GestureDetector(
-                onTap: () {
-                  setState(() {
-                    viewPage = 1;
-                    FocusScope.of(context).requestFocus(pFocus);
-                    onTopScroll();
-                  });
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(left: 5, right: 5),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 60,
+          onTap: () {
+            setState(() {
+              viewPage = 1;
+              FocusScope.of(context).requestFocus(pFocus);
+              onTopScroll();
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 5, right: 5),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 60,
 //            color: mainColor,
-                    decoration: BoxDecoration(
-                        color: Color(0xFFD74f15),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(
-                            Icons.add,
-                            size: 36,
-                            color: white,
-                          ),
-                          whiteSpaceW(10),
-                          Text(
-                            "제휴 서비스 더보기",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
-                          )
-                        ],
-                      ),
+              decoration: BoxDecoration(
+                  color: Color(0xFFD74f15),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.add,
+                      size: 36,
+                      color: white,
                     ),
-                  ),
+                    whiteSpaceW(10),
+                    Text(
+                      "제휴 서비스 더보기",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600),
+                    )
+                  ],
                 ),
-              )
+              ),
+            ),
+          ),
+        )
             : Container(),
         viewPage != 1
             ? Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: white,
-                    border: Border.all(
-                        width: 2, color: Color.fromARGB(255, 245, 245, 245))),
-              )
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: white,
+              border: Border.all(
+                  width: 2, color: Color.fromARGB(255, 245, 245, 245))),
+        )
             : Container(),
         Container(
           width: MediaQuery.of(context).size.width,

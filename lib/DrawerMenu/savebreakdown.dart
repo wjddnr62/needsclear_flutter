@@ -1,3 +1,4 @@
+import 'package:aladdinmagic/Home/withdraw.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
@@ -185,7 +186,9 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                       Center(
                         child: GestureDetector(
                           onTap: () {
-                            serviceDialog("서비스 준비 중입니다.");
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => Withdraw(type: 1)));
                           },
                           child: Container(
                             width: 80,
@@ -281,32 +284,54 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                                                 width: MediaQuery
                                                     .of(context)
                                                     .size
-                                                    .width / 3,
+                                                    .width /
+                                                    3,
                                                 child: Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                                   children: <Widget>[
                                                     Text(document['saveType'] ==
-                                                            0
+                                                        0
                                                         ? "회원가입 적립"
                                                         : document['saveType'] ==
-                                                                1
-                                                            ? "추천인 회원가입"
-                                                            : document['saveType'] ==
-                                                                    2
-                                                                ? "택배 적립"
-                                                                : document['saveType'] ==
-                                                                        3
-                                                                    ? "운영팀 적립"
-                                                                    : document['saveType'] ==
-                                                                            4
-                                                                        ? "관리자 세탁 적립"
-                                                                        : document['saveType'] ==
-                                                                                5
-                                                                            ? "관리자 택배 적립"
-                                                                            : document['saveType'] == 6
-                                                                                ? "관리자 꽃배달 적립"
-                                                                                : document['saveType'] == 7 ? "관리자 대리운전 적립" : document['saveType'] == 8 ? "관리자 퀵서비스 적립" : document['saveType'] == 9 ? "관리자 렌트카 적립" : document['saveType'] == 10 ? "관리자 영화예매 적립" : document['saveType'] == 11 ? "관리자 추천인 적립" : ""),
+                                                        1
+                                                        ? "추천인 회원가입"
+                                                        : document['saveType'] ==
+                                                        2
+                                                        ? "택배 적립"
+                                                        : document['saveType'] ==
+                                                        3
+                                                        ? "운영팀 적립"
+                                                        : document['saveType'] ==
+                                                        4
+                                                        ? "관리자 세탁 적립"
+                                                        : document['saveType'] ==
+                                                        5
+                                                        ? "관리자 택배 적립"
+                                                        : document['saveType'] == 6
+                                                        ? "관리자 꽃배달 적립"
+                                                        : document['saveType'] ==
+                                                        7
+                                                        ? "관리자 대리운전 적립"
+                                                        : document['saveType'] ==
+                                                        8
+                                                        ? "관리자 퀵서비스 적립"
+                                                        : document['saveType'] ==
+                                                        9
+                                                        ? "관리자 렌트카 적립"
+                                                        : document['saveType'] ==
+                                                        10
+                                                        ? "관리자 영화예매 적립"
+                                                        : document['saveType'] ==
+                                                        11
+                                                        ? "관리자 추천인 적립"
+                                                        : document['saveType'] ==
+                                                        12
+                                                        ? "출금 신청"
+                                                        : document['saveType'] ==
+                                                        13
+                                                        ? "출금 취소 반환 금액"
+                                                        : ""),
                                                     whiteSpaceH(10),
                                                     Text(
                                                       document['date'],
@@ -333,7 +358,8 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                                                       fontWeight:
                                                       FontWeight.w600,
                                                       fontSize: 16),
-                                                  textAlign: TextAlign.center,
+                                                  textAlign:
+                                                  TextAlign.center,
                                                 ),
                                               )
                                                   : Expanded(
@@ -344,7 +370,8 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                                                 width: MediaQuery
                                                     .of(context)
                                                     .size
-                                                    .width / 3,
+                                                    .width /
+                                                    3,
                                                 child: Text(
                                                   numberFormat.format(
                                                       document['point']) +
@@ -354,8 +381,8 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                                                           0
                                                           ? Colors.blueAccent
                                                           : Colors.redAccent,
-                                                      fontWeight: FontWeight
-                                                          .w600,
+                                                      fontWeight:
+                                                      FontWeight.w600,
                                                       fontSize: 14),
                                                   textAlign: TextAlign.right,
                                                 ),
@@ -387,88 +414,88 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                   ),
                   bubble
                       ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              bubble = false;
-                            });
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            color: Color.fromRGBO(129, 129, 129, 0.5),
-                          ),
-                        )
+                    onTap: () {
+                      setState(() {
+                        bubble = false;
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      color: Color.fromRGBO(129, 129, 129, 0.5),
+                    ),
+                  )
                       : Container(),
                   bubble
                       ? Padding(
-                          padding: EdgeInsets.only(left: 50, right: 50),
-                          child: Bubble(
-                            margin: BubbleEdges.only(top: 20),
-                            radius: Radius.circular(15),
-                            alignment: Alignment.center,
-                            nip: BubbleNip.no,
-                            color: white,
-                            padding: BubbleEdges.all(20),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text("총 적립금"),
-                                    ),
-                                    Text(
-                                      numberFormat.format(allSavePoint) + "원",
-                                      style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                whiteSpaceH(5),
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text("사용 적립금"),
-                                    ),
-                                    Text(
-                                      numberFormat.format(useSavePoint) + "원",
-                                      style: TextStyle(
-                                          color: Colors.redAccent,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                                whiteSpaceH(10),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 2,
-                                  color: black,
-                                ),
-                                whiteSpaceH(10),
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text(
-                                        "보유 적립금",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                    Text(
-                                      numberFormat.format(saveData.point) + "원",
-                                      style: TextStyle(
-                                          color: mainColor,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                    padding: EdgeInsets.only(left: 50, right: 50),
+                    child: Bubble(
+                      margin: BubbleEdges.only(top: 20),
+                      radius: Radius.circular(15),
+                      alignment: Alignment.center,
+                      nip: BubbleNip.no,
+                      color: white,
+                      padding: BubbleEdges.all(20),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text("총 적립금"),
+                              ),
+                              Text(
+                                numberFormat.format(allSavePoint) + "원",
+                                style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              )
+                            ],
                           ),
-                        )
+                          whiteSpaceH(5),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text("사용 적립금"),
+                              ),
+                              Text(
+                                numberFormat.format(useSavePoint) + "원",
+                                style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              )
+                            ],
+                          ),
+                          whiteSpaceH(10),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 2,
+                            color: black,
+                          ),
+                          whiteSpaceH(10),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  "보유 적립금",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Text(
+                                numberFormat.format(saveData.point) + "원",
+                                style: TextStyle(
+                                    color: mainColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
                       : Container()
                 ],
               )
