@@ -51,6 +51,7 @@ class _Withdraw extends State<Withdraw> {
         (randomAlpha(4) + randomNumeric(4) + randomAlpha(8)).toUpperCase();
 
     userProvider.withdrawApply(saveData.id, deductionReserve, {
+
       "code": code,
       "bankName": _bankNameController.text,
       "account": _accountController.text,
@@ -61,6 +62,7 @@ class _Withdraw extends State<Withdraw> {
       "id": saveData.id,
       "phone": saveData.phoneNumber,
       "name": saveData.name,
+      "date": date,
       "type": 0 // 0 = 출금대기, 1 = 출금완료, 2 = 출금취소
     }, {
       'id': saveData.id,
@@ -284,7 +286,7 @@ class _Withdraw extends State<Withdraw> {
                     color: black,
                   ),
                   onPressed: () {
-                    print("출금현황");
+                    Navigator.of(context).pushNamed("/WithdrawHistory");
                   },
                 ),
               ),

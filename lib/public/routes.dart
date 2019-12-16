@@ -12,6 +12,7 @@ import 'package:aladdinmagic/Home/home.dart';
 import 'package:aladdinmagic/Home/reco.dart';
 import 'package:aladdinmagic/Home/withdraw.dart';
 import 'package:aladdinmagic/Home/withdrawfin.dart';
+import 'package:aladdinmagic/Home/withdrawhistory.dart';
 import 'package:aladdinmagic/Login/findid.dart';
 import 'package:aladdinmagic/Login/findpass.dart';
 import 'package:aladdinmagic/Login/login.dart';
@@ -37,5 +38,6 @@ final routes = {
   '/MemberWFin': (context) => MemberWFin(),
   '/SaveBreakDown': (context) => SaveBreakDown(),
   '/Withdraw': (context) => Withdraw(),
-  '/WithdrawFin': (context) => WithdrawFin()
+  '/WithdrawFin': (context) => WithdrawFin(),
+  '/WithdrawHistory': (context) => WithdrawHistory()
 };
