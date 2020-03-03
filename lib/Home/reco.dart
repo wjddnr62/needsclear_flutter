@@ -1,4 +1,5 @@
 import 'package:aladdinmagic/Model/savedata.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,7 @@ class _Reco extends State {
       backgroundColor: white,
       appBar: AppBar(
         backgroundColor: white,
-        title: Text(
-          "추천하기",
-          style: TextStyle(
-              fontWeight: FontWeight.w600, fontSize: 20, color: black),
-        ),
+        title: mainMove("추천하기", context),
         centerTitle: true,
         elevation: 0.0,
         leading: IconButton(

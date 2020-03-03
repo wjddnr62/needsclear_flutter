@@ -1,4 +1,5 @@
 import 'package:aladdinmagic/Model/savedata.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -19,11 +20,7 @@ class _WithdrawHistory extends State<WithdrawHistory> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: white,
-        title: Text(
-          "출금내역",
-          style: TextStyle(
-              fontWeight: FontWeight.w600, fontSize: 20, color: black),
-        ),
+        title: mainMove("출금내역", context),
         centerTitle: true,
         elevation: 0.5,
         leading: IconButton(

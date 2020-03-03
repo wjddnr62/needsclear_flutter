@@ -1,3 +1,4 @@
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +21,7 @@ class _MemberWFin extends State<MemberWFin> {
       backgroundColor: white,
       appBar: AppBar(
         backgroundColor: white,
-        title: Text(
-          "회원탈퇴",
-          style: TextStyle(
-              fontWeight: FontWeight.w600, fontSize: 20, color: black),
-        ),
+        title: mainMove("회원탈퇴", context),
         centerTitle: true,
         elevation: 0.5,
       ),
@@ -39,11 +36,11 @@ class _MemberWFin extends State<MemberWFin> {
               Column(
                 children: <Widget>[
                   Text("회원탈퇴가 완료되었습니다.", style: TextStyle(
-                    color: black, fontWeight: FontWeight.w600, fontSize: 16
+                      color: black, fontWeight: FontWeight.w600, fontSize: 16
                   ),),
                   whiteSpaceH(10),
                   Text("(탈퇴 날짜 : ${widget.date})", style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600, color: black
+                      fontSize: 14, fontWeight: FontWeight.w600, color: black
                   ),)
                 ],
               ),
@@ -76,7 +73,7 @@ class _MemberWFin extends State<MemberWFin> {
               height: 40,
               child: Center(
                 child: Text("확인", style: TextStyle(
-                  color: white, fontWeight: FontWeight.w600
+                    color: white, fontWeight: FontWeight.w600
                 ),),
               ),
             ),

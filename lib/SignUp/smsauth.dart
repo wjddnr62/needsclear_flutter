@@ -179,7 +179,8 @@ class _SmsAuth extends State<SmsAuth> {
                             String formatDate =
                             DateFormat('yyyy-MM-dd').format(now);
                             userProvider
-                                .deleteUser(_saveData.phoneNumber)
+                                .deleteUser(
+                                _saveData.phoneNumber, _saveData.royalCode)
                                 .then((value) {
                               if (value == 0) {
                                 Navigator.of(context).push(MaterialPageRoute(

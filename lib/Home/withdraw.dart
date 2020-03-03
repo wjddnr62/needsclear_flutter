@@ -2,6 +2,7 @@ import 'package:aladdinmagic/Home/withdrawfin.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/customDialog.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -255,11 +256,7 @@ class _Withdraw extends State<Withdraw> {
         backgroundColor: white,
         appBar: AppBar(
           backgroundColor: white,
-          title: Text(
-            "출금하기",
-            style: TextStyle(
-                fontWeight: FontWeight.w600, fontSize: 20, color: black),
-          ),
+          title: mainMove("출금하기", context),
           centerTitle: true,
           elevation: 0.5,
           leading: IconButton(

@@ -1,5 +1,6 @@
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/SignUp/smsauth.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -114,11 +115,7 @@ class _Settings extends State<Settings> {
         backgroundColor: white,
         appBar: AppBar(
           backgroundColor: white,
-          title: Text(
-            "설정",
-            style: TextStyle(
-                fontWeight: FontWeight.w600, fontSize: 20, color: black),
-          ),
+          title: mainMove("설정", context),
           centerTitle: true,
           elevation: 0.5,
           leading: IconButton(
@@ -198,6 +195,29 @@ class _Settings extends State<Settings> {
                 )
               ],
             ),
+//            whiteSpaceH(20),
+//            Container(
+//              width: MediaQuery.of(context).size.width,
+//              height: 1,
+//              color: black,
+//            ),
+//            whiteSpaceH(20),
+//            Row(
+//              children: <Widget>[
+//                whiteSpaceW(15),
+//                Expanded(
+//                  child: Text(
+//                    "버전정보",
+//                    style: TextStyle(color: black, fontSize: 14),
+//                  ),
+//                ),
+//                Icon(
+//                  Icons.arrow_forward_ios,
+//                  color: Color.fromARGB(255, 167, 167, 167),
+//                ),
+//                whiteSpaceW(15)
+//              ],
+//            ),
             whiteSpaceH(20),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -205,44 +225,26 @@ class _Settings extends State<Settings> {
               color: black,
             ),
             whiteSpaceH(20),
-            Row(
-              children: <Widget>[
-                whiteSpaceW(15),
-                Expanded(
-                  child: Text(
-                    "버전정보",
-                    style: TextStyle(color: black, fontSize: 14),
+            GestureDetector(
+              onTap: () {
+
+              },
+              child: Row(
+                children: <Widget>[
+                  whiteSpaceW(15),
+                  Expanded(
+                    child: Text(
+                      "약관",
+                      style: TextStyle(color: black, fontSize: 14),
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color.fromARGB(255, 167, 167, 167),
-                ),
-                whiteSpaceW(15)
-              ],
-            ),
-            whiteSpaceH(20),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 1,
-              color: black,
-            ),
-            whiteSpaceH(20),
-            Row(
-              children: <Widget>[
-                whiteSpaceW(15),
-                Expanded(
-                  child: Text(
-                    "약관",
-                    style: TextStyle(color: black, fontSize: 14),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Color.fromARGB(255, 167, 167, 167),
                   ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color.fromARGB(255, 167, 167, 167),
-                ),
-                whiteSpaceW(15)
-              ],
+                  whiteSpaceW(15)
+                ],
+              ),
             ),
             whiteSpaceH(20),
             Container(

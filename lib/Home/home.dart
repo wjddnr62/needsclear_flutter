@@ -100,6 +100,9 @@ class _Home extends State<Home> {
     await prefs.setInt("autoLogin", 0);
     await prefs.setString("id", "");
     await prefs.setString("pass", "");
+    await prefs.setString("bankName", "");
+    await prefs.setString("account", "");
+    await prefs.setString("accountNumber", "");
 
     if (saveData.type != 0) {
       kakaoLogOut();
@@ -866,9 +869,15 @@ class _Home extends State<Home> {
             backgroundColor: white,
             elevation: 0.5,
             centerTitle: true,
-            title: Image.asset(
-              "assets/resource/title.png",
-              width: 120,
+            title: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    "/Home", (Route<dynamic> route) => false);
+              },
+              child: Image.asset(
+                "assets/resource/title.png",
+                width: 120,
+              ),
             ),
             leading: IconButton(
               onPressed: () {

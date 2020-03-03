@@ -39,6 +39,9 @@ class _Splash extends State<Splash> {
   void initState() {
     super.initState();
 
+//    userProvider.userUpdate();
+//    userProvider.recoUpdate();
+
     startTime();
   }
 

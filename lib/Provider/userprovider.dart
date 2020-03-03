@@ -35,17 +35,46 @@ class UserProvider {
         .where("type", isEqualTo: type)
         .getDocuments();
 
+    QuerySnapshot recoQuery =
+    await Firestore.instance.collection("reco").getDocuments();
+
     // 탈퇴대기, 택배기사 로그인 따로있음 추후 추가
 
     if (authQuery.documents.length == 0) {
       return 0;
     } else {
+      print(
+          "query : ${authQuery.documents[0].data['royalCode']}, ${authQuery
+              .documents[0].data['recoCode']}");
+      int recoPerson = 0;
+      recoQuery = await Firestore.instance
+          .collection("reco")
+          .where("recoCode", isEqualTo: authQuery.documents[0].data['recoCode'])
+          .getDocuments();
+      recoPerson = recoPerson + recoQuery.documents.length;
+      if (authQuery.documents[0].data['royalCode'] != null) {
+        recoQuery = await Firestore.instance
+            .collection("reco")
+            .where("recoCode",
+            isEqualTo: authQuery.documents[0].data['royalCode'])
+            .getDocuments();
+        recoPerson = recoPerson + recoQuery.documents.length;
+      }
+
+//      await recoQuery.documents
+//          .where((doc) =>
+//              doc['recoCode'] == authQuery.documents[0].data['royalCode'] ||
+//              doc['recoCode'] == authQuery.documents[0].data['recoCode'])
+//          .length;
+      print("recoPerson : ${recoPerson}");
+
       saveData.id = authQuery.documents[0].data['id'];
       saveData.phoneNumber = authQuery.documents[0].data['phone'];
       saveData.name = authQuery.documents[0].data['name'];
       saveData.sex = authQuery.documents[0].data['sex'];
       saveData.point = authQuery.documents[0].data['point'];
-      saveData.recoPerson = authQuery.documents[0].data['recoPerson'];
+//      saveData.recoPerson = authQuery.documents[0].data['recoPerson'];
+      saveData.recoPerson = recoPerson;
       saveData.recoPrice = authQuery.documents[0].data['recoPrice'];
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
       saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
@@ -63,17 +92,27 @@ class UserProvider {
         .where("type", isEqualTo: type)
         .getDocuments();
 
+    QuerySnapshot recoQuery =
+    await Firestore.instance.collection("reco").getDocuments();
+
     // 탈퇴대기, 택배기사 로그인 따로있음 추후 추가
 
     if (authQuery.documents.length == 0) {
       return 0;
     } else {
+      int recoPerson = await recoQuery.documents
+          .where((doc) =>
+      doc['recoCode'] == authQuery.documents[0].data['royalCode'] ||
+          doc['recoCode'] == authQuery.documents[0].data['recoCode'])
+          .length;
+
       saveData.id = authQuery.documents[0].data['id'];
       saveData.phoneNumber = authQuery.documents[0].data['phone'];
       saveData.name = authQuery.documents[0].data['name'];
       saveData.sex = authQuery.documents[0].data['sex'];
       saveData.point = authQuery.documents[0].data['point'];
-      saveData.recoPerson = authQuery.documents[0].data['recoPerson'];
+//      saveData.recoPerson = authQuery.documents[0].data['recoPerson'];
+      saveData.recoPerson = recoPerson;
       saveData.recoPrice = authQuery.documents[0].data['recoPrice'];
       saveData.myRecoCode = authQuery.documents[0].data['recoCode'];
       saveData.pushRecoCode = authQuery.documents[0].data['pushRecoCode'];
@@ -169,7 +208,7 @@ class UserProvider {
     }
   }
 
-  Future<int> deleteUser(phone) async {
+  Future<int> deleteUser(phone, royalCode) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
     CollectionReference saveLogCollection =
     Firestore.instance.collection("saveLog");
@@ -181,15 +220,15 @@ class UserProvider {
     QuerySnapshot saveLogQuery =
     await saveLogCollection.where("phone", isEqualTo: phone).getDocuments();
 
-    QuerySnapshot recoQuery =
-    await recoCollection.where("phone", isEqualTo: phone).getDocuments();
+//    QuerySnapshot recoQuery =
+//    await recoCollection.where("recoCode", isEqualTo: royalCode).getDocuments();
 
     QuerySnapshot recoQuery2 =
-    await recoCollection.where("recoCode", isEqualTo: phone).getDocuments();
+    await recoCollection.where("phone", isEqualTo: phone).getDocuments();
 
     final List<DocumentSnapshot> docs = userQuery.documents;
     final List<DocumentSnapshot> saveLogDocs = saveLogQuery.documents;
-    final List<DocumentSnapshot> recoDocs = recoQuery.documents;
+//    final List<DocumentSnapshot> recoDocs = recoQuery.documents;
     final List<DocumentSnapshot> recoDocs2 = recoQuery2.documents;
 
     print('deleteLength : ${docs.length}');
@@ -209,17 +248,22 @@ class UserProvider {
           .delete();
     }
 
-    for (int i = 0; i < recoDocs.length; i++) {
-      await Firestore.instance
-          .collection("reco")
-          .document(recoDocs[i].documentID)
-          .delete();
-    }
+//    print("recoCode Length : ${recoDocs.length}");
+    print("recoCode2 Length : ${recoDocs2.length}");
 
-    for (int i = 0; i < recoDocs2.length; i++) {
+//    if (recoDocs.length != 0) {
+//      for (int i = 0; i < recoDocs.length; i++) {
+//        await Firestore.instance
+//            .collection("reco")
+//            .document(recoDocs[i].documentID)
+//            .delete();
+//      }
+//    }
+
+    if (recoDocs2.length != 0) {
       await Firestore.instance
           .collection("reco")
-          .document(recoDocs2[i].documentID)
+          .document(recoDocs2[0].documentID)
           .delete();
     }
 
@@ -260,11 +304,12 @@ class UserProvider {
     }
   }
 
-  Future<int> getrecoLength(recoCode) async {
+  Future<int> getrecoLength(recoCode, royalCode) async {
     CollectionReference recoCollection = Firestore.instance.collection("reco");
 
     QuerySnapshot recoQuery = await recoCollection
         .where("recoCode", isEqualTo: recoCode)
+        .where("recoCode", isEqualTo: royalCode)
         .getDocuments();
 
     return recoQuery.documents.length;
@@ -295,6 +340,39 @@ class UserProvider {
       return 0;
     } else {
       return 1;
+    }
+  }
+
+  userUpdate() async {
+    CollectionReference userCollection = Firestore.instance.collection("users");
+    QuerySnapshot userQuery = await userCollection.getDocuments();
+
+    for (int i = 0; i < userQuery.documents.length; i++) {
+      if (userQuery.documents[i].data['pushRecoCode'] == "01") {
+        Firestore.instance
+            .collection("users")
+            .document(userQuery.documents[i].documentID)
+            .updateData({'pushRecoCode': ""});
+      }
+    }
+  }
+
+  recoUpdate() async {
+    CollectionReference userCollection = Firestore.instance.collection("users");
+    QuerySnapshot userQuery = await userCollection.getDocuments();
+
+    for (int i = 0; i < userQuery.documents.length; i++) {
+      if (userQuery.documents[i].data['pushRecoCode'] != "") {
+        Firestore.instance.collection("reco").add({
+          'name': userQuery.documents[i].data['name'],
+          'phone': userQuery.documents[i].data['phone'],
+          'recoCode': userQuery.documents[i].data['pushRecoCode'],
+          'signDate': userQuery.documents[i].data['signDate']
+        }).catchError((e) {
+          print('addUserError : ' + e.toString());
+          return e;
+        });
+      }
     }
   }
 
@@ -434,9 +512,8 @@ class UserProvider {
   withdrawApply(id, deductionReserve, withdraw, saveLog) async {
     CollectionReference userCollection = Firestore.instance.collection("users");
 
-    QuerySnapshot userQuery = await userCollection
-        .where("id", isEqualTo: id)
-        .getDocuments();
+    QuerySnapshot userQuery =
+    await userCollection.where("id", isEqualTo: id).getDocuments();
 
     if (userQuery.documents.length != 0) {
       int point = userQuery.documents[0].data['point'] - deductionReserve;

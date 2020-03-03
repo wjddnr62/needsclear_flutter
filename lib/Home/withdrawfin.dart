@@ -1,3 +1,4 @@
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -11,8 +12,7 @@ class WithdrawFin extends StatefulWidget {
 
   int deductionReserve = 0;
 
-  WithdrawFin(
-      {Key key, this.bankName, this.account, this.accountNumber, this.deductionReserve})
+  WithdrawFin({Key key, this.bankName, this.account, this.accountNumber, this.deductionReserve})
       : super(key: key);
 
   @override
@@ -28,11 +28,7 @@ class _WithdrawFin extends State<WithdrawFin> {
       backgroundColor: white,
       appBar: AppBar(
         backgroundColor: white,
-        title: Text(
-          "출금신청 완료",
-          style: TextStyle(
-              fontWeight: FontWeight.w600, fontSize: 20, color: black),
-        ),
+        title: mainMove("출금신청 완료", context),
         centerTitle: true,
         elevation: 0.5,
       ),

@@ -1,5 +1,6 @@
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +20,13 @@ class _RecoList extends State<RecoList> {
   void initState() {
     super.initState();
 
-    userProvider.getrecoLength(saveData.myRecoCode).then((value) {
+    print(saveData.myRecoCode);
+    print(saveData.recoCode);
+    print(saveData.royalCode);
+
+    userProvider
+        .getrecoLength(saveData.royalCode, saveData.myRecoCode)
+        .then((value) {
       setState(() {
         recoPerson = value;
       });
@@ -34,11 +41,7 @@ class _RecoList extends State<RecoList> {
         backgroundColor: white,
         appBar: AppBar(
           backgroundColor: white,
-          title: Text(
-            "추천인목록",
-            style: TextStyle(
-                fontWeight: FontWeight.w600, fontSize: 20, color: black),
-          ),
+          title: mainMove("추천인목록", context),
           centerTitle: true,
           elevation: 0.5,
           leading: IconButton(
@@ -60,7 +63,7 @@ class _RecoList extends State<RecoList> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    "추천인 ${recoPerson}명",
+                    "추천인 ${saveData.recoPerson}명",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -119,9 +122,10 @@ class _RecoList extends State<RecoList> {
               StreamBuilder(
                 stream: Firestore.instance
                     .collection('reco')
-                    .where("recoCode", isEqualTo: saveData.myRecoCode)
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  print(snapshot.hasData);
+//                  snapshot.data.documents.where((doc) => doc['recoCode'] == saveData.royalCode || doc['recoCode'] == saveData.myRecoCode).map(f).toList();
                   if (snapshot.hasData) {
                     return Container(
                       height: MediaQuery.of(context).size.height -
@@ -130,8 +134,11 @@ class _RecoList extends State<RecoList> {
                           MediaQuery.of(context).padding.top -
                           60,
                       child: ListView(
-                        children: snapshot.data.documents
-                            .map((DocumentSnapshot document) {
+                        children: snapshot.data.documents.where((doc) =>
+                        doc['recoCode'] == saveData.royalCode ||
+                            doc['recoCode'] == saveData.myRecoCode).map((
+                            DocumentSnapshot document) {
+                          print("check : ${document['name']}");
                           return Padding(
                             padding: EdgeInsets.only(top: 5, bottom: 5),
                             child: Row(
@@ -160,6 +167,38 @@ class _RecoList extends State<RecoList> {
                             ),
                           );
                         }).toList(),
+
+//                        snapshot.data.documents
+//                            .map((DocumentSnapshot document) {
+//                              print("check : ${document['name']}");
+//                          return Padding(
+//                            padding: EdgeInsets.only(top: 5, bottom: 5),
+//                            child: Row(
+//                              children: <Widget>[
+//                                whiteSpaceW(30),
+//                                Expanded(
+//                                  child: Text(
+//                                    document['name'],
+//                                    textAlign: TextAlign.center,
+//                                  ),
+//                                ),
+//                                Expanded(
+//                                  child: Text(
+//                                    document['phone'],
+//                                    textAlign: TextAlign.center,
+//                                  ),
+//                                ),
+//                                Expanded(
+//                                  child: Text(
+//                                    document['signDate'],
+//                                    textAlign: TextAlign.center,
+//                                  ),
+//                                ),
+//                                whiteSpaceW(30)
+//                              ],
+//                            ),
+//                          );
+//                        }).toList(),
                       ),
                     );
                   }

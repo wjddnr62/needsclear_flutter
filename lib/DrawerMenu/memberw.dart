@@ -1,4 +1,5 @@
 import 'package:aladdinmagic/SignUp/smsauth.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -22,11 +23,7 @@ class _MemberW extends State<MemberW> {
         backgroundColor: white,
         appBar: AppBar(
           backgroundColor: white,
-          title: Text(
-            "회원탈퇴",
-            style: TextStyle(
-                fontWeight: FontWeight.w600, fontSize: 20, color: black),
-          ),
+          title: mainMove("회원탈퇴", context),
           centerTitle: true,
           elevation: 0.5,
           leading: IconButton(

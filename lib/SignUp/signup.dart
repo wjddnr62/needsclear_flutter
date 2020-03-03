@@ -233,7 +233,9 @@ class _SignUp extends State<SignUp> {
                                 'pushRecoCode': _recoCodeController.text
                                     .length == 4
                                     ? _recoCodeController.text
-                                    : "01" + _recoCodeController.text
+                                    : _recoCodeController.text.length > 4
+                                    ? "01" + _recoCodeController.text
+                                    : ""
                               }, {
                                 'id': _saveData.id,
                                 'name': _nameController.text,
@@ -628,8 +630,11 @@ class _SignUp extends State<SignUp> {
                             print("value : ${value}");
                             if (value != 0) {
                               reCoCheck = true;
+                              selectBoxValue = "지인추천";
+                              FocusScope.of(context).requestFocus(FocusNode());
                             } else if (value == 0) {
                               reCoCheck = false;
+                              selectBoxValue = "가입경로 선택";
                             }
                             print("recoCheck : " + reCoCheck.toString());
                           });
@@ -1196,8 +1201,11 @@ class _SignUp extends State<SignUp> {
                       print("value : ${value}");
                       if (value != 0) {
                         reCoCheck = true;
+                        selectBoxValue = "지인추천";
+                        FocusScope.of(context).requestFocus(FocusNode());
                       } else if (value == 0) {
                         reCoCheck = false;
+                        selectBoxValue = "가입경로 선택";
                       }
                       print("recoCheck : " + reCoCheck.toString());
                     });
@@ -1208,8 +1216,11 @@ class _SignUp extends State<SignUp> {
                       print("value : ${value}");
                       if (value != 0) {
                         reCoCheck = true;
+                        selectBoxValue = "지인추천";
+                        FocusScope.of(context).requestFocus(FocusNode());
                       } else if (value == 0) {
                         reCoCheck = false;
+                        selectBoxValue = "가입경로 선택";
                       }
                     });
                   }

@@ -1,5 +1,6 @@
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
+import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/toast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -106,11 +107,7 @@ class _Delivery extends State<Delivery> {
         backgroundColor: white,
         appBar: AppBar(
           backgroundColor: white,
-          title: Text(
-            "택배적립",
-            style: TextStyle(
-                fontWeight: FontWeight.w600, fontSize: 20, color: black),
-          ),
+          title: mainMove("택배적립", context),
           centerTitle: true,
           elevation: 0.5,
           leading: IconButton(
