@@ -243,26 +243,26 @@ class _Laundry extends State<Laundry> {
                               whiteSpaceH(4),
                               Row(
                                 children: [
-                                  washList[idx].wash.collectionType == 0
+                                  washList[idx].wash.washType == 0
                                       ? Image.asset(
                                           "assets/needsclear/resource/laundry/sending.png",
                                           width: 48,
                                           height: 48,
                                         )
-                                      : washList[idx].wash.collectionType == 1
+                                      : washList[idx].wash.washType == 1
                                           ? Image.asset(
                                               "assets/needsclear/resource/laundry/diliver.png",
                                               width: 48,
                                               height: 48,
                                             )
-                                          : washList[idx].wash.collectionType ==
+                                          : washList[idx].wash.washType ==
                                                   2
                                               ? Image.asset(
                                                   "assets/needsclear/resource/laundry/cleaning.png",
                                                   width: 48,
                                                   height: 48,
                                                 )
-                                              : washList[idx].wash.hashCode == 3
+                                              : washList[idx].wash.washType == 3
                                                   ? Image.asset(
                                                       "assets/needsclear/resource/laundry/end.png",
                                                       width: 48,
@@ -286,27 +286,28 @@ class _Laundry extends State<Laundry> {
                                           ),
                                           whiteSpaceW(12),
                                           Text(
-                                            washList[idx].wash.washType == 0
+                                            washList[idx].wash.washType ==
+                                                    0
                                                 ? "택배대기"
                                                 : washList[idx]
                                                             .wash
-                                                .washType ==
+                                                            .washType ==
                                                         1
                                                     ? "수령대기"
                                                     : washList[idx]
                                                                 .wash
-                                                .washType ==
+                                                                .washType ==
                                                             2
                                                         ? "세탁중"
                                                         : washList[idx]
                                                                     .wash
-                                                .washType ==
+                                                                    .washType ==
                                                                 3
                                                             ? "완료"
                                                             : "",
                                             style: washList[idx]
                                                         .wash
-                                                .washType ==
+                                                        .washType ==
                                                     0
                                                 ? TextStyle(
                                                     color: Color(0xFFFFCC00),
@@ -314,7 +315,7 @@ class _Laundry extends State<Laundry> {
                                                     fontSize: 12)
                                                 : washList[idx]
                                                             .wash
-                                                .washType ==
+                                                            .washType ==
                                                         1
                                                     ? TextStyle(
                                                         color:
@@ -323,7 +324,7 @@ class _Laundry extends State<Laundry> {
                                                         fontSize: 12)
                                                     : washList[idx]
                                                                 .wash
-                                                .washType ==
+                                                                .washType ==
                                                             2
                                                         ? TextStyle(
                                                             color: Color(
@@ -332,7 +333,7 @@ class _Laundry extends State<Laundry> {
                                                             fontSize: 12)
                                                         : washList[idx]
                                                                     .wash
-                                                .washType ==
+                                                                    .washType ==
                                                                 3
                                                             ? TextStyle(
                                                                 color: Color(

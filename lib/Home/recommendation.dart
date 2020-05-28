@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:aladdinmagic/Model/datastorage.dart';
+import 'package:aladdinmagic/Model/user.dart';
+import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +116,20 @@ class _Recommendation extends State<Recommendation> {
                 width: MediaQuery.of(context).size.width,
                 height: 40,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    User user = DataStorage.dataStorage.user;
+                    print(user.idx);
+                    print(user.recoCode);
+                    Provider().insertReco(user.idx, user.recoCode, nameController.text, contactUsController.text).then((value){
+                      var json = jsonDecode(value);
+                      print(value);
+                      if(json['result'] == 1) {
+                       Navigator.of(context).pop();
+                      }else {
+                        print("안됨");
+                      }
+                    });
+                  },
                   elevation: 0.0,
                   color: mainColor,
                   child: Center(

@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class Provider {
   Client client = Client();
   final baseUrl = "http://49.247.3.220/auth_api/";
-  final needsUrl = "http://needsclear.kr/needs_api";
+  final needsUrl = "http://needsclear.kr/needs_api/";
 
   final usersUrl = "api/users";
   final saveLogUrl = "api/savelog";
@@ -41,7 +41,7 @@ class Provider {
   Future<String> selectUser(id) async {
     final response = await client
         .post(needsUrl + usersUrl + "/user-select", body: {"id": id});
-
+    print(needsUrl + usersUrl + "/user-select");
     return utf8.decode(response.bodyBytes);
   }
 
@@ -131,24 +131,81 @@ class Provider {
 
   //대리 운전 조회
   Future<String> getChauffeur(id) async {
-    final response =
-    await client.get(needsUrl + chauffeurUrl + "/app-select-chauffeur?id=$id");
+    final response = await client
+        .get(needsUrl + chauffeurUrl + "/app-select-chauffeur?id=$id");
 
     return utf8.decode(response.bodyBytes);
   }
+
+  Future<String> insertChauffeur(id, start, end, name, phone) async {
+    final response = await client.put(needsUrl +
+        chauffeurUrl +
+        "/chauffeur-insert?id=$id&start=$start&end=$end&name=$name&phone=$phone");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
   //휴대폰 현황 조회
   Future<String> getPhone(id) async {
     final response =
-    await client.get(needsUrl + phoneUrl + "/app-get-phone?id=$id");
+        await client.get(needsUrl + phoneUrl + "/app-get-phone?id=$id");
 
     return utf8.decode(response.bodyBytes);
   }
+
+  Future<String> insertPhone(id, name, phone, nowNewsAgency, changeNewsAgency,
+      serviceType, deviceName) async {
+
+    final response = await client.put(needsUrl +
+        phoneUrl +
+        "/app-insert-phone?id=$id&nowNewsAgency=$nowNewsAgency&changeNewsAgency=$changeNewsAgency&name=$name&phone=$phone&serviceType=$serviceType&deviceName=$deviceName");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getDevice() async {
+    final response = await client.get(needsUrl + phoneUrl + "/get-device");
+    return utf8.decode(response.bodyBytes);
+  }
+
   //인터넷 현황 조회
   Future<String> getInternet(id) async {
-    final response =
-    await client.get(needsUrl + internetUrl + "/app-select-internet?id=$id");
+    final response = await client
+        .get(needsUrl + internetUrl + "/app-select-internet?id=$id");
 
     return utf8.decode(response.bodyBytes);
   }
 
+  Future<String> insertInternet(
+      id, name, phone, applyNewsAgency, applyService) async {
+    final response = await client.put(needsUrl +
+        internetUrl +
+        "/app-insert-internet?id=$id&applyNewsAgency=$applyNewsAgency&applyService=$applyService&name=$name&phone=$phone");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getAgency() async {
+    final response = await client
+        .get(needsUrl + internetUrl + "/select-newsagency");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getService() async {
+    final response = await client
+        .get(needsUrl + internetUrl + "/select-service");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  //추천인 등록
+  Future<String> insertReco(
+      recoIdx, recoCode, name, phone) async {
+    final response = await client.put(needsUrl +
+        usersUrl +
+        "/set-reco-register?recoIdx=$recoIdx&recoCode=$recoCode&name=$name&phone=$phone");
+
+    return utf8.decode(response.bodyBytes);
+  }
 }

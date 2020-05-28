@@ -90,6 +90,7 @@ class _CombineLogin extends State<CombineLogin> {
                       await provider
                           .authCheck(authToken['access_token'])
                           .then((value) async {
+
                         dynamic authCheck = json.decode(value);
                         int sex = 0;
 
@@ -108,10 +109,12 @@ class _CombineLogin extends State<CombineLogin> {
                             phone: authCheck['phone'],
                             birth: authCheck['birth'],
                             sex: sex);
+                        print(userCheck.username);
 
                         await provider
                             .selectUser(userCheck.username)
                             .then((value) {
+                              print(value);
                           dynamic selectUser = json.decode(value);
                           if (selectUser['data'] != null) {
                             User user = User.fromJson(selectUser['data']);

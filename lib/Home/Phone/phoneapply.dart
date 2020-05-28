@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:aladdinmagic/Home/Phone/phonebreakdown.dart';
+import 'package:aladdinmagic/Model/datastorage.dart';
+import 'package:aladdinmagic/Model/user.dart';
+import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -31,6 +36,8 @@ class _PhoneApply extends State<PhoneApply> {
 
   bool selectCheck = false;
 
+
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +47,15 @@ class _PhoneApply extends State<PhoneApply> {
     changeNewsAgencyList..add("변경 통신사")..add("SKT")..add("LG")..add("KT");
     serviceSelectList..add("번호이동");
     selectDeviceList..add("희망기종");
+
+    Provider().getDevice().then((value) {
+      List<dynamic> datas = jsonDecode(value)['data'];
+      for(Map<String ,dynamic> data in datas) {
+        selectDeviceList..add(data['deviceName']);
+      }
+      setState(() {
+      });
+    });
   }
 
   @override
@@ -537,14 +553,39 @@ class _PhoneApply extends State<PhoneApply> {
                               height: 40,
                               child: RaisedButton(
                                 onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) => PhoneBreakdown(
-                                                type: 0,
-                                              )),
-                                      (route) => false);
+                                  Provider provider = Provider();
+                                  User user = DataStorage.dataStorage.user;
+
+                                  provider
+                                      .insertPhone(
+                                          user.id,
+                                          nameController.text,
+                                          startPhone + middleController.text + endController.text,
+                                          nowNewsAgency,
+                                          changeNewsAgency,
+                                          serviceSelect == "번호이동"? 0 : "",
+                                          selectDevice)
+                                      .then((value) {
+                                    print(value);
+                                    var json = jsonDecode(value);
+                                    if (json['result'] == 1) {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PhoneBreakdown(
+                                                    type: 0,
+                                                    name: nameController.text,
+                                                    phone: startPhone + middleController.text + endController.text,
+                                                    changeNewsAgency: changeNewsAgency,
+                                                    selectDeviceName: selectDevice,
+                                                  )),
+                                          (route) => false);
+                                    } else {
+                                      print("안됨");
+                                    }
+                                  });
                                 },
                                 color: mainColor,
                                 shape: RoundedRectangleBorder(
