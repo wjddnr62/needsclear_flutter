@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/toast.dart';
+import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,7 +98,7 @@ class _SignUp extends State<SignUp> {
           nextPage = true;
         });
       } else {
-        showToast(type: 0, msg: "구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+        showToast("구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
         Navigator.of(context).pop();
       }
 
@@ -107,10 +107,10 @@ class _SignUp extends State<SignUp> {
       print("googleError : ${error}");
       if (error.toString().contains("authentication") &&
           error.toString().contains("null")) {
-        showToast(type: 0, msg: "구글 회원가입을 취소하였습니다.");
+        showToast("구글 회원가입을 취소하였습니다.");
         Navigator.of(context).pop();
       } else {
-        showToast(type: 0, msg: "구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+        showToast("구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
         Navigator.of(context).pop();
       }
     }
@@ -258,7 +258,7 @@ class _SignUp extends State<SignUp> {
                                       (Route<dynamic> route) => false);
                                 }
                               }).catchError((error) {
-                                showToast(type: 0, msg: "잠시 후 다시 시도해주세요.");
+                                showToast("잠시 후 다시 시도해주세요.");
                               });
                             }
                           },
@@ -426,24 +426,22 @@ class _SignUp extends State<SignUp> {
                       onTap: () {
                         if (_idController.text == null ||
                             _idController.text == "") {
-                          showToast(
-                              type: 0,
-                              msg: "아이디를 입력해 주세요."); // 이미 사용중인 아이디 체크 필요
+                          showToast("아이디를 입력해 주세요."); // 이미 사용중인 아이디 체크 필요
                         } else if (_idController.text.length < 6) {
-                          showToast(type: 0, msg: "아이디를 6자리 이상 입력해주세요.");
+                          showToast("아이디를 6자리 이상 입력해주세요.");
                         } else if (!idCheck) {
-                          showToast(type: 0, msg: "이미 사용중인 아이디 입니다.");
+                          showToast("이미 사용중인 아이디 입니다.");
                         } else if (_passController.text == null ||
                             _passController.text == "") {
-                          showToast(type: 0, msg: "비밀번호를 입력해 주세요.");
+                          showToast("비밀번호를 입력해 주세요.");
                         } else if (_rePassController.text == null ||
                             _rePassController.text == "") {
-                          showToast(type: 0, msg: "비밀번호를 다시 입력해 주세요.");
+                          showToast("비밀번호를 다시 입력해 주세요.");
                         } else if (_passController.text.length < 4) {
-                          showToast(type: 0, msg: "비밀번호를 4자리 이상 입력해주세요.");
+                          showToast("비밀번호를 4자리 이상 입력해주세요.");
                         } else if (_passController.text !=
                             _rePassController.text) {
-                          showToast(type: 0, msg: "비밀번호가 서로 일치하지 않습니다.");
+                          showToast("비밀번호가 서로 일치하지 않습니다.");
                         } else {
                           _saveData.id = _idController.text.trim();
                           _saveData.pass = _passController.text.trim();
@@ -877,19 +875,19 @@ class _SignUp extends State<SignUp> {
                       onTap: () {
                         if (_nameController.text == null ||
                             _nameController.text == "") {
-                          showToast(type: 0, msg: "성명을 입력해 주세요.");
+                          showToast("성명을 입력해 주세요.");
                         } else if (_birthDayController.text == null ||
                             _birthDayController.text == "") {
-                          showToast(type: 0, msg: "생년월일을 선택해 주세요.");
+                          showToast("생년월일을 선택해 주세요.");
                         } else if (selectBoxValue == "가입경로 선택" ||
                             selectBoxValue == "") {
-                          showToast(type: 0, msg: "가입경로를 선택해 주세요.");
+                          showToast("가입경로를 선택해 주세요.");
                         } else if ((_recoCodeController.text != null &&
                                 _recoCodeController.text != "") &&
                             !reCoCheck) {
-                          showToast(type: 0, msg: "추천인 번호가 올바르지 않습니다.");
+                          showToast("추천인 번호가 올바르지 않습니다.");
                         } else if (!allAgree) {
-                          showToast(type: 0, msg: "필수약관을 모두 동의해 주세요.");
+                          showToast("필수약관을 모두 동의해 주세요.");
                         } else {
                           customDialog("입력하신 정보로\n회원가입 하시겠습니까?", 1);
                         }
@@ -961,10 +959,10 @@ class _SignUp extends State<SignUp> {
       case KakaoLoginStatus.error:
         print('This is Kakao error message : ${result.errorMessage}');
         if (result.errorMessage.contains("CANCELED_OPERATION")) {
-          showToast(type: 0, msg: "회원가입을 취소하였습니다.");
+          showToast("회원가입을 취소하였습니다.");
           Navigator.of(context).pop();
         } else {
-          showToast(type: 0, msg: "회원가입 중 오류가 발생하였습니다. 다시시도해주세요.");
+          showToast("회원가입 중 오류가 발생하였습니다. 다시시도해주세요.");
           Navigator.of(context).pop();
         }
         break;
@@ -989,12 +987,11 @@ class _SignUp extends State<SignUp> {
         }
         break;
       case FacebookLoginStatus.cancelledByUser:
-        showToast(type: 0, msg: "facebook 회원가입을 취소하였습니다.");
+        showToast("facebook 회원가입을 취소하였습니다.");
         Navigator.of(context).pop();
         break;
       case FacebookLoginStatus.error:
-        showToast(
-            type: 0, msg: "facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
+        showToast("facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
         print("fbError : " + result.errorMessage.toString());
         Navigator.of(context).pop();
         break;
@@ -1397,19 +1394,19 @@ class _SignUp extends State<SignUp> {
                 onTap: () {
                   if (_nameController.text == null ||
                       _nameController.text == "") {
-                    showToast(type: 0, msg: "성명을 입력해 주세요.");
+                    showToast("성명을 입력해 주세요.");
                   } else if (_birthDayController.text == null ||
                       _birthDayController.text == "") {
-                    showToast(type: 0, msg: "생년월일을 선택해 주세요.");
+                    showToast("생년월일을 선택해 주세요.");
                   } else if (selectBoxValue == "가입경로 선택" ||
                       selectBoxValue == "") {
-                    showToast(type: 0, msg: "가입경로를 선택해 주세요.");
+                    showToast("가입경로를 선택해 주세요.");
                   } else if ((_recoCodeController.text != null &&
                           _recoCodeController.text != "") &&
                       !reCoCheck) {
-                    showToast(type: 0, msg: "추천인 번호가 올바르지 않습니다.");
+                    showToast("추천인 번호가 올바르지 않습니다.");
                   } else if (!allAgree) {
-                    showToast(type: 0, msg: "필수약관을 모두 동의해 주세요.");
+                    showToast("필수약관을 모두 동의해 주세요.");
                   } else {
                     customDialog("입력하신 정보로\n회원가입 하시겠습니까?", type);
                   }
@@ -1450,7 +1447,6 @@ class _SignUp extends State<SignUp> {
         kakaoLogin();
         snsLogin = true;
       }
-
       return nextPage ? snsNextPage(2) : Container();
     } else if (type == 2) {
       if (!snsLogin) {

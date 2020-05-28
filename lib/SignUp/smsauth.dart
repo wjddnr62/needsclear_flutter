@@ -4,7 +4,7 @@ import 'package:aladdinmagic/DrawerMenu/memberwfin.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/customDialog.dart';
-import 'package:aladdinmagic/Util/toast.dart';
+import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,7 +68,7 @@ class _SmsAuth extends State<SmsAuth> {
 
     final PhoneCodeSent codeSent =
         (String verificationId, [int forceResendingToken]) async {
-      showToast(msg: '인증 번호가 발송되었습니다. 인증 번호를 입력해주세요.');
+      showToast('인증 번호가 발송되었습니다. 인증 번호를 입력해주세요.');
       this.verificationId = verificationId;
     };
 
@@ -249,7 +249,7 @@ class _SmsAuth extends State<SmsAuth> {
             authCheck = true;
           });
           _timer.cancel();
-          showToast(type: 0, msg: "문자 인증에 성공하였습니다.");
+          showToast("문자 인증에 성공하였습니다.");
 
           if (type == 0) {
             _saveData.phoneNumber = _phoneController.text;
@@ -257,38 +257,12 @@ class _SmsAuth extends State<SmsAuth> {
           print("msg : " + msg);
           movePage();
         } else {
-          showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
+          showToast("문자 인증에 실패하였습니다.");
         }
       } else {
-        showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
+        showToast("문자 인증에 실패하였습니다.");
       }
     });
-
-//    await _auth.signInWithCredential(credential).then((value) {
-//      print("value : " + value.toString());
-//    }).catchError((error) {
-//      print('error : ' + error.toString());
-//    });
-//
-//    final FirebaseUser user =
-//        (await _auth.signInWithCredential(credential)).user;
-//
-//    final FirebaseUser currentUser = await _auth.currentUser();
-//
-//    assert(user.uid == currentUser.uid);
-//      if (user != null) {
-//        msg = 'Successfully signed in, uid: ' + user.uid;
-//        setState(() {
-//          authCheck = true;
-//        });
-//        _timer.cancel();
-//        _saveData.phoneNumber = _phoneController.text;
-//        showToast(type: 0, msg: "문자 인증에 성공하였습니다.");
-//        movePage();
-//      } else {
-//        showToast(type: 0, msg: "문자 인증에 실패하였습니다.");
-//        msg = 'Sign in failed';
-//      }
   }
 
   startTimer() {
@@ -484,7 +458,7 @@ class _SmsAuth extends State<SmsAuth> {
                         if (_phoneController.text.isEmpty ||
                             _phoneController.text == "" ||
                             _phoneController.text == null) {
-                          showToast(type: 0, msg: "휴대폰번호를 입력해 주세요.");
+                          showToast("휴대폰번호를 입력해 주세요.");
                         } else {
                           if (type == 1) {
                             userProvider
@@ -503,7 +477,7 @@ class _SmsAuth extends State<SmsAuth> {
                             if (_idController.text.isEmpty ||
                                 _idController.text == "" ||
                                 _idController.text == null) {
-                              showToast(type: 0, msg: "아이디를 입력해 주세요.");
+                              showToast("아이디를 입력해 주세요.");
                             } else {
                               userProvider
                                   .checkUser(_idController.text)
@@ -552,7 +526,7 @@ class _SmsAuth extends State<SmsAuth> {
                                 .checkAllUser(_phoneController.text)
                                 .then((value) {
                               if (value == 1) {
-                                showToast(type: 0, msg: "이미 가입되어있는 회원입니다.");
+                                showToast("이미 가입되어있는 회원입니다.");
                               } else {
                                 authStart();
                               }

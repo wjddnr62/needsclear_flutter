@@ -1,7 +1,7 @@
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/customDialog.dart';
-import 'package:aladdinmagic/Util/toast.dart';
+import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +118,7 @@ class _FindPass extends State<FindPass> {
                 onTap: () {
                   if ((_passController.text != null && _passController.text != "" && _passController.text.isNotEmpty) && _rePassController.text != null && _rePassController.text != "" && _rePassController.text.isNotEmpty) {
                     if (_passController.text.length < 4 || _rePassController.text.length < 4) {
-                      showToast(type: 0, msg: "4자리 이상 입력해주세요.");
+                      showToast("4자리 이상 입력해주세요.");
                     } else {
                       if (_passController.text == _rePassController.text) {
                         userProvider.userPasswordUpdate(saveData.findId, _passController.text).then((value) {
@@ -128,11 +128,11 @@ class _FindPass extends State<FindPass> {
                           }
                         });
                       } else {
-                        showToast(type: 0, msg: "비밀번호가 서로 일치하지 않습니다.");
+                        showToast("비밀번호가 서로 일치하지 않습니다.");
                       }
                     }
                   } else {
-                    showToast(type: 0, msg: "비밀번호를 입력해주세요.");
+                    showToast("비밀번호를 입력해주세요.");
                   }
                 },
                 child: Container(

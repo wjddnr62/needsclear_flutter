@@ -1,3 +1,4 @@
+import 'package:aladdinmagic/Login/combinelogin.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
@@ -120,7 +121,12 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
       } else if (result == 1) {
         print("moveLogin");
         sharedLogout();
-        Navigator.of(context).pushReplacementNamed("/Login");
+//        Navigator.of(context).pushReplacement(MaterialPageRoute(
+//            builder: (context) => Login()
+//        ));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => CombineLogin()
+        ));
       } else {
         if (type == 0) {
           userProvider.login(id, pass, type).then((value) {
@@ -129,7 +135,9 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
                   "/Home", (Route<dynamic> route) => false);
             } else {
               notFindUserData();
-              Navigator.of(context).pushReplacementNamed("/Login");
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => CombineLogin()
+              ));
             }
           });
         } else {
@@ -139,7 +147,9 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
                   "/Home", (Route<dynamic> route) => false);
             } else {
               notFindUserData();
-              Navigator.of(context).pushReplacementNamed("/Login");
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => CombineLogin()
+              ));
             }
           });
         }
@@ -207,7 +217,6 @@ class _Loading extends State<Loading> with SingleTickerProviderStateMixin {
           print("releaseVersion");
         }
       });
-
     });
 
 //    autoLoginCheck();

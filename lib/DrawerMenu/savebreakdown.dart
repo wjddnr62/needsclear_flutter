@@ -1,7 +1,6 @@
-import 'package:aladdinmagic/Home/withdraw.dart';
+import 'package:aladdinmagic/Home/Exchange/exchange.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/mainMove.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -120,9 +119,9 @@ class _SaveBreakDown extends State<SaveBreakDown> {
       backgroundColor: white,
       appBar: AppBar(
         backgroundColor: white,
-        title: mainMove("적립금내역", context),
-        centerTitle: true,
-        elevation: 0.5,
+//        title: mainMove("적립금내역", context),
+//        centerTitle: true,
+        elevation: 0.0,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -185,7 +184,7 @@ class _SaveBreakDown extends State<SaveBreakDown> {
                           onTap: () {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                    builder: (context) => Withdraw(type: 1)));
+                                    builder: (context) => Exchange(type: 1)));
                           },
                           child: Container(
                             width: 80,

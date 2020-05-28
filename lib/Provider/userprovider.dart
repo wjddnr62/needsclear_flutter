@@ -220,15 +220,11 @@ class UserProvider {
     QuerySnapshot saveLogQuery =
     await saveLogCollection.where("phone", isEqualTo: phone).getDocuments();
 
-//    QuerySnapshot recoQuery =
-//    await recoCollection.where("recoCode", isEqualTo: royalCode).getDocuments();
-
     QuerySnapshot recoQuery2 =
     await recoCollection.where("phone", isEqualTo: phone).getDocuments();
 
     final List<DocumentSnapshot> docs = userQuery.documents;
     final List<DocumentSnapshot> saveLogDocs = saveLogQuery.documents;
-//    final List<DocumentSnapshot> recoDocs = recoQuery.documents;
     final List<DocumentSnapshot> recoDocs2 = recoQuery2.documents;
 
     print('deleteLength : ${docs.length}');
@@ -248,17 +244,7 @@ class UserProvider {
           .delete();
     }
 
-//    print("recoCode Length : ${recoDocs.length}");
     print("recoCode2 Length : ${recoDocs2.length}");
-
-//    if (recoDocs.length != 0) {
-//      for (int i = 0; i < recoDocs.length; i++) {
-//        await Firestore.instance
-//            .collection("reco")
-//            .document(recoDocs[i].documentID)
-//            .delete();
-//      }
-//    }
 
     if (recoDocs2.length != 0) {
       await Firestore.instance

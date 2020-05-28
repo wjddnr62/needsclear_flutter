@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/SignUp/smsauth.dart';
-import 'package:aladdinmagic/Util/toast.dart';
+import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,9 +71,9 @@ class _Login extends State<Login> {
       case KakaoLoginStatus.error:
         print('This is Kakao error message : ${result.errorMessage}');
         if (result.errorMessage.contains("CANCELED_OPERATION")) {
-          showToast(type: 0, msg: "로그인을 취소하였습니다.");
+          showToast("로그인을 취소하였습니다.");
         } else {
-          showToast(type: 0, msg: "로그인 중 오류가 발생하였습니다. 다시시도해주세요.");
+          showToast("로그인 중 오류가 발생하였습니다. 다시시도해주세요.");
         }
         break;
     }
@@ -116,16 +116,16 @@ class _Login extends State<Login> {
           }
         });
       } else {
-        showToast(type: 0, msg: "구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+        showToast("구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
       }
 
       print("currentUser : ${currentUser.uid}");
     } catch (error) {
       print("googleError : ${error}");
       if (error.toString().contains("authentication") && error.toString().contains("null")) {
-        showToast(type: 0, msg: "구글 로그인을 취소하였습니다.");
+        showToast("구글 로그인을 취소하였습니다.");
       } else {
-        showToast(type: 0, msg: "구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+        showToast("구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
       }
     }
   }
@@ -157,10 +157,10 @@ class _Login extends State<Login> {
 
         break;
       case FacebookLoginStatus.cancelledByUser:
-        showToast(type: 0, msg: "facebook 로그인을 취소하였습니다.");
+        showToast("facebook 로그인을 취소하였습니다.");
         break;
       case FacebookLoginStatus.error:
-        showToast(type: 0, msg: "facebook 로그인 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
+        showToast("facebook 로그인 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
         print("fbError : " + result.errorMessage.toString());
         break;
     }
@@ -463,7 +463,7 @@ class _Login extends State<Login> {
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime) > Duration(seconds: 2)) {
       currentBackPressTime = now;
-      showToast(msg: "한번 더 누르면 종료됩니다.", type: 0);
+      showToast("한번 더 누르면 종료됩니다.");
       return Future.value(false);
     }
     return Future.value(true);
@@ -565,9 +565,9 @@ class _Login extends State<Login> {
                             RaisedButton(
                               onPressed: () {
                                 if (_idController.text == null || _idController.text == "") {
-                                  showToast(type: 0, msg: "아이디를 입력해 주세요.");
+                                  showToast("아이디를 입력해 주세요.");
                                 } else if (_passController.text == null || _passController.text == "") {
-                                  showToast(type: 0, msg: "비밀번호를 입력해 주세요.");
+                                  showToast("비밀번호를 입력해 주세요.");
                                 } else {
                                   userProvider.login(_idController.text, _passController.text, 0).then((value) {
                                     if (value == 0) {

@@ -1,7 +1,7 @@
 import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/mainMove.dart';
-import 'package:aladdinmagic/Util/toast.dart';
+import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -275,15 +275,15 @@ class _Delivery extends State<Delivery> {
                   GestureDetector(
                     onTap: () {
                       if (sender.text == null || sender.text == "") {
-                        showToast(type: 0, msg: "발송인을 입력해 주세요.");
+                        showToast("발송인을 입력해 주세요.");
                       } else if (selectBoxValue == "택배사 선택") {
-                        showToast(type: 0, msg: "택배사를 선택해 주세요.");
+                        showToast("택배사를 선택해 주세요.");
                       } else if (invoice.text == null || invoice.text == "") {
-                        showToast(type: 0, msg: "송장번호를 입력해 주세요.");
+                        showToast("송장번호를 입력해 주세요.");
                       } else if (invoice.text != null &&
                           invoice.text != "" &&
                           invoice.text.length < 10) {
-                        showToast(type: 0, msg: "송장번호를 10자 이상 입력해 주세요.");
+                        showToast("송장번호를 10자 이상 입력해 주세요.");
                       } else {
                         DateTime now = DateTime.now();
                         String saveMonth = DateFormat('yyyy.MM').format(now);
@@ -316,7 +316,7 @@ class _Delivery extends State<Delivery> {
                                 "택배 적립이 신청되었습니다.\n\n신청내역을 확인 후 매월 말일 적립금이 지급됩니다.",
                                 0);
                           } else {
-                            showToast(type: 0, msg: "한달에 최대 5번까지만 신청 가능합니다.");
+                            showToast("한달에 최대 5번까지만 신청 가능합니다.");
                           }
                         });
                       }

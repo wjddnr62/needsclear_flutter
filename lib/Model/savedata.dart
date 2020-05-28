@@ -181,5 +181,22 @@ class SaveData {
     _nowVersionCode = value;
   }
 
+  String _address;
+  String _zoneCode;
+
+  String get address => _address;
+
+  set address(String value) {
+    _address = value;
+  }
+
+  String get zoneCode => _zoneCode;
+
+  set zoneCode(String value) {
+    _zoneCode = value;
+  }
+
 
 }
+
+final saveData = SaveData();

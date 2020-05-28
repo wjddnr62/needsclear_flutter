@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-final black = const Color(0xff000000);
+final black = const Color(0xff444444);
 final white = const Color(0xffffffff);
-final mainColor = const Color.fromARGB(255, 240, 80, 0);
+final mainColor = const Color(0xFF00BBCC);
+final subColor = const Color(0xFF000C5B);
