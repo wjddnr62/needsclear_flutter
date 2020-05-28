@@ -286,28 +286,27 @@ class _Laundry extends State<Laundry> {
                                           ),
                                           whiteSpaceW(12),
                                           Text(
-                                            washList[idx].wash.collectionType ==
-                                                    0
+                                            washList[idx].wash.washType == 0
                                                 ? "택배대기"
                                                 : washList[idx]
                                                             .wash
-                                                            .collectionType ==
+                                                .washType ==
                                                         1
                                                     ? "수령대기"
                                                     : washList[idx]
                                                                 .wash
-                                                                .collectionType ==
+                                                .washType ==
                                                             2
                                                         ? "세탁중"
                                                         : washList[idx]
                                                                     .wash
-                                                                    .hashCode ==
+                                                .washType ==
                                                                 3
                                                             ? "완료"
                                                             : "",
                                             style: washList[idx]
                                                         .wash
-                                                        .collectionType ==
+                                                .washType ==
                                                     0
                                                 ? TextStyle(
                                                     color: Color(0xFFFFCC00),
@@ -315,7 +314,7 @@ class _Laundry extends State<Laundry> {
                                                     fontSize: 12)
                                                 : washList[idx]
                                                             .wash
-                                                            .collectionType ==
+                                                .washType ==
                                                         1
                                                     ? TextStyle(
                                                         color:
@@ -324,7 +323,7 @@ class _Laundry extends State<Laundry> {
                                                         fontSize: 12)
                                                     : washList[idx]
                                                                 .wash
-                                                                .collectionType ==
+                                                .washType ==
                                                             2
                                                         ? TextStyle(
                                                             color: Color(
@@ -333,7 +332,7 @@ class _Laundry extends State<Laundry> {
                                                             fontSize: 12)
                                                         : washList[idx]
                                                                     .wash
-                                                                    .hashCode ==
+                                                .washType ==
                                                                 3
                                                             ? TextStyle(
                                                                 color: Color(
