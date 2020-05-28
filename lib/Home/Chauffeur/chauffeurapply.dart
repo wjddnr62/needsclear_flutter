@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:aladdinmagic/Home/Chauffeur/chauffeurbreakdown.dart';
 import 'package:aladdinmagic/Home/Laundry/addressfind.dart';
+import 'package:aladdinmagic/Model/datastorage.dart';
 import 'package:aladdinmagic/Model/savedata.dart';
+import 'package:aladdinmagic/Model/user.dart';
+import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Util/text.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -312,15 +317,30 @@ class _ChauffeurApply extends State<ChauffeurApply> {
                               height: 40,
                               child: RaisedButton(
                                 onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ChauffeurBreakdown(
-                                                type: 0,
-                                              )),
-                                      (route) => false);
+
+                                  Provider provider = Provider();
+                                  User user = DataStorage.dataStorage.user;
+                                  provider.insertChauffeur(user.id, startAddress, endAddress, user.name, user.phone).then((value) {
+                                    print(value);
+                                    var json = jsonDecode(value);
+                                    if(json['result'] == 1) {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChauffeurBreakdown(
+                                                    type: 0,
+                                                    startAddress: startAddress,
+                                                    endAddress: endAddress,
+                                                  )),
+                                              (route) => false);
+                                    }else {
+                                      print("안됨");
+                                    }
+                                  });
+
+
                                 },
                                 color: mainColor,
                                 shape: RoundedRectangleBorder(

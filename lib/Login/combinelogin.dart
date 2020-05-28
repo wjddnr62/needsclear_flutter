@@ -25,8 +25,8 @@ class CombineLogin extends StatefulWidget {
 class _CombineLogin extends State<CombineLogin> {
   WebViewController webViewController;
   String url =
-      "http://192.168.100.237/auth_api/oauth/authorize?client_id=needs_clear&redirect_uri=http://localhost:3000&response_type=code";
-  String logoutUrl = "http://192.168.100.237/auth_api/users/logout";
+      "http://49.247.3.220/auth_api/oauth/authorize?client_id=needs_clear&redirect_uri=http://localhost:3000&response_type=code";
+  String logoutUrl = "http://49.247.3.220/auth_api/users/logout";
 
   Provider provider = Provider();
   bool userCheck = false;
@@ -63,7 +63,7 @@ class _CombineLogin extends State<CombineLogin> {
                 this.webViewController = webViewController;
               },
               onPageStarted: (url) {
-                if (url == "http://192.168.100.237/auth_api/") {
+                if (url == "http://49.247.3.220/auth_api/") {
 //                  webViewController.clearCache();
                   webViewController.loadUrl(this.url);
                   if (widget.authCheck != 1) {
@@ -90,6 +90,7 @@ class _CombineLogin extends State<CombineLogin> {
                       await provider
                           .authCheck(authToken['access_token'])
                           .then((value) async {
+
                         dynamic authCheck = json.decode(value);
                         int sex = 0;
 
@@ -108,10 +109,12 @@ class _CombineLogin extends State<CombineLogin> {
                             phone: authCheck['phone'],
                             birth: authCheck['birth'],
                             sex: sex);
+                        print(userCheck.username);
 
                         await provider
                             .selectUser(userCheck.username)
                             .then((value) {
+                              print(value);
                           dynamic selectUser = json.decode(value);
                           if (selectUser['data'] != null) {
                             User user = User.fromJson(selectUser['data']);

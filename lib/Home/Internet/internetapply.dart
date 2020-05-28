@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:aladdinmagic/Model/datastorage.dart';
+import 'package:aladdinmagic/Model/user.dart';
+import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -35,6 +40,28 @@ class _InternetApply extends State<InternetApply> {
     startPhoneList..add("010")..add("011")..add("012");
     selectNewsAgencyList..add("통신사")..add("SKT")..add("LG")..add("KT");
     serviceSelectList..add("인터넷")..add("TV + 인터넷");
+
+    Provider().getAgency().then((value) {
+      List<dynamic> datas = jsonDecode(value)['data'];
+      selectNewsAgencyList.clear();
+      selectNewsAgencyList..add("통신사");
+      for(Map<String ,dynamic> data in datas) {
+        selectNewsAgencyList..add(data['newsAgency']);
+      }
+      setState(() {
+      });
+    });
+
+    Provider().getService().then((value) {
+      List<dynamic> datas = jsonDecode(value)['data'];
+      serviceSelectList.clear();
+      for(Map<String ,dynamic> data in datas) {
+        serviceSelectList..add(data['item']);
+      }
+      setState(() {
+      });
+    });
+
   }
 
   @override
@@ -492,6 +519,13 @@ class _InternetApply extends State<InternetApply> {
                               height: 40,
                               child: RaisedButton(
                                 onPressed: () {
+                                  Provider provider = Provider();
+                                  User user = DataStorage.dataStorage.user;
+                                  provider.insertInternet(user.id, nameController.text, startPhone + middleController.text + endController.text, selectNewsAgency, serviceSelect).then((value) {
+                                    print(value);
+                                    var json = jsonDecode(value);
+                                    if(json['result'] == 1) {
+
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
                                   Navigator.of(context).pushAndRemoveUntil(
@@ -499,8 +533,17 @@ class _InternetApply extends State<InternetApply> {
                                           builder: (context) =>
                                               InternetBreakdown(
                                                 type: 0,
+                                                name: nameController.text,
+                                                phone: startPhone + middleController.text + endController.text,
+                                                newsAgency: selectNewsAgency,
+                                                selectService: serviceSelect,
                                               )),
                                       (route) => false);
+                                    }else {
+                                      print("안됨");
+                                    }
+                                  });
+
                                 },
                                 color: mainColor,
                                 shape: RoundedRectangleBorder(

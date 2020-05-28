@@ -8,8 +8,11 @@ import 'internet.dart';
 
 class InternetBreakdown extends StatefulWidget {
   final int type;
-
-  InternetBreakdown({this.type});
+  final String name;
+  final String phone;
+  final String newsAgency;
+  final String selectService;
+  InternetBreakdown({this.type,this.name,this.phone,this.newsAgency,this.selectService});
 
   @override
   _InternetBreakdown createState() => _InternetBreakdown();
@@ -25,11 +28,24 @@ class _InternetBreakdown extends State<InternetBreakdown> {
   String newsAgency = "SK 브로드밴드";
   String selectService = "인터넷";
 
+
   @override
   void initState() {
     super.initState();
-
+    type = widget.type;
+    name = widget.name;
+    phone = widget.phone;
+    newsAgency = widget.newsAgency;
+    selectService = widget.selectService;
     date = DateFormat('yyyy/MM/dd').format(now);
+  }
+
+  String typeToString(type) {
+    if(type == 0) return "접수완료";
+    else if(type == 1) return "결제대기";
+    else if(type == 2) return "결제완료";
+    else if(type == 3) return "취소";
+    else return "";
   }
 
   @override
@@ -88,7 +104,7 @@ class _InternetBreakdown extends State<InternetBreakdown> {
                         children: [
                           Center(
                             child: Text(
-                              widget.type == 0 ? date : "",
+                              date,
                               style: TextStyle(
                                   color: black,
                                   fontSize: 16,
@@ -102,7 +118,7 @@ class _InternetBreakdown extends State<InternetBreakdown> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                type == 0 ? "접수완료" : "완료",
+                                typeToString(type),
                                 textAlign: TextAlign.center,
                               ),
                             ),

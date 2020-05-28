@@ -87,7 +87,7 @@ class _Invitation extends State {
                               color: Color(0xFF444444))),
                           whiteSpaceW(16),
                           customText(StyleCustom(
-                              text: dataStorage.user.recoCode.substring(2),
+                              text: dataStorage.user.recoCode,
                               color: mainColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 14))
@@ -101,7 +101,7 @@ class _Invitation extends State {
                       child: RaisedButton(
                         onPressed: () {
                           Share.share(
-                              "생활서비스의 모든것 니즈클리어\n새로운 경험을 지금 시작해 보세요.\nhttps://play.google.com/store/apps/details?id=com.laon.aladdinmagic\n추천인 : ${dataStorage.user.recoCode.substring(2)}");
+                              "생활서비스의 모든것 니즈클리어\n새로운 경험을 지금 시작해 보세요.\nhttps://play.google.com/store/apps/details?id=com.laon.aladdinmagic\n추천인 : ${dataStorage.user.recoCode}");
                         },
                         elevation: 0.0,
                         color: mainColor,

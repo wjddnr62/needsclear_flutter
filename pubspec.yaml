@@ -92,6 +92,8 @@ flutter:
     - assets/needsclear/resource/public/
     - assets/needsclear/resource/service/
     - assets/needsclear/resource/laundry/
+    - assets/needsclear/resource/drive/
+    - assets/needsclear/resource/internet/
 
   fonts:
     - family: noto

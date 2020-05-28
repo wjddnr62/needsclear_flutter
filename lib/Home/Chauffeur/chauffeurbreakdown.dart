@@ -7,8 +7,9 @@ import 'package:intl/intl.dart';
 
 class ChauffeurBreakdown extends StatefulWidget {
   final int type;
-
-  ChauffeurBreakdown({this.type});
+  final String startAddress;
+  final String endAddress;
+  ChauffeurBreakdown({this.type, this.startAddress, this.endAddress});
 
   @override
   _ChauffeurBreakdown createState() => _ChauffeurBreakdown();
@@ -25,10 +26,19 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
   @override
   void initState() {
     super.initState();
-
+    type = widget.type;
+    startAddress = widget.startAddress;
+    endAddress = widget.endAddress;
     date = DateFormat('yyyy/MM/dd').format(now);
   }
 
+  String typeToString(type) {
+    if(type == 0) return "배차대기";
+    else if(type == 1) return "기사출발";
+    else if(type == 2) return "운행중";
+    else if(type == 3) return "완료";
+    else return "";
+  }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -86,7 +96,7 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
                         children: [
                           Center(
                             child: Text(
-                              widget.type == 0 ? date : "",
+                              date,
                               style: TextStyle(
                                   color: black,
                                   fontSize: 16,
@@ -100,7 +110,7 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                type == 0 ? "배차대기" : "완료",
+                                typeToString(type),
                                 textAlign: TextAlign.center,
                               ),
                             ),
