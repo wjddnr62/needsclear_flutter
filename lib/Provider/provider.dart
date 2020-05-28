@@ -6,15 +6,15 @@ import 'package:intl/intl.dart';
 
 class Provider {
   Client client = Client();
-  final baseUrl = "http://192.168.100.237/auth_api/";
-  final needsUrl = "http://192.168.100.237/needs_api/";
+  final baseUrl = "http://49.247.3.220/auth_api/";
+  final needsUrl = "http://needsclear.kr/needs_api";
 
   final usersUrl = "api/users";
   final saveLogUrl = "api/savelog";
   final laundryUrl = "api/laundry";
 
   final getToken = "oauth/token";
-  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
+  String userCheckUrl = "http://49.247.3.220/resource_api/api/users/me";
 
   Future<String> authToken() async {
     final response = await client.post("$baseUrl$getToken", body: {
