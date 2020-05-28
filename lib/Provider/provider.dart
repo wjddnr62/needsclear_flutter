@@ -6,15 +6,18 @@ import 'package:intl/intl.dart';
 
 class Provider {
   Client client = Client();
-  final baseUrl = "http://192.168.100.237/auth_api/";
-  final needsUrl = "http://192.168.100.237/needs_api/";
+  final baseUrl = "http://49.247.3.220/auth_api/";
+  final needsUrl = "http://needsclear.kr/needs_api";
 
   final usersUrl = "api/users";
   final saveLogUrl = "api/savelog";
   final laundryUrl = "api/laundry";
+  final chauffeurUrl = "api/chauffeur";
+  final phoneUrl = "api/phone";
+  final internetUrl = "api/internet";
 
   final getToken = "oauth/token";
-  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
+  String userCheckUrl = "http://49.247.3.220/resource_api/api/users/me";
 
   Future<String> authToken() async {
     final response = await client.post("$baseUrl$getToken", body: {
@@ -125,4 +128,27 @@ class Provider {
 
     return utf8.decode(response.bodyBytes);
   }
+
+  //대리 운전 조회
+  Future<String> getChauffeur(id) async {
+    final response =
+    await client.get(needsUrl + chauffeurUrl + "/app-select-chauffeur?id=$id");
+
+    return utf8.decode(response.bodyBytes);
+  }
+  //휴대폰 현황 조회
+  Future<String> getPhone(id) async {
+    final response =
+    await client.get(needsUrl + phoneUrl + "/app-get-phone?id=$id");
+
+    return utf8.decode(response.bodyBytes);
+  }
+  //인터넷 현황 조회
+  Future<String> getInternet(id) async {
+    final response =
+    await client.get(needsUrl + internetUrl + "/app-select-internet?id=$id");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
 }
