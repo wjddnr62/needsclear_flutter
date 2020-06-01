@@ -1,5 +1,5 @@
 import 'package:aladdinmagic/Home/Chauffeur/chauffeur.dart';
-import 'package:aladdinmagic/Home/Phone/phone.dart';
+import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,10 @@ class ChauffeurBreakdown extends StatefulWidget {
   final int type;
   final String startAddress;
   final String endAddress;
-  ChauffeurBreakdown({this.type, this.startAddress, this.endAddress});
+  final int payment;
+
+  ChauffeurBreakdown(
+      {this.type, this.startAddress, this.endAddress, this.payment});
 
   @override
   _ChauffeurBreakdown createState() => _ChauffeurBreakdown();
@@ -33,12 +36,35 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
   }
 
   String typeToString(type) {
-    if(type == 0) return "배차대기";
-    else if(type == 1) return "기사출발";
-    else if(type == 2) return "운행중";
-    else if(type == 3) return "완료";
-    else return "";
+    if (type == 0)
+      return "배차대기";
+    else if (type == 1)
+      return "기사출발";
+    else if (type == 2)
+      return "운행중";
+    else if (type == 3)
+      return "완료";
+    else
+      return "";
   }
+
+  TextStyle typeToStyle(type) {
+    if (type == 0)
+      return TextStyle(
+          color: Color(0xFFFFCC00), fontFamily: 'noto', fontSize: 12);
+    else if (type == 1)
+      return TextStyle(
+          color: Color(0xFF00AAFF), fontFamily: 'noto', fontSize: 12);
+    else if (type == 2)
+      return TextStyle(
+          color: Color(0xFF00AAFF), fontFamily: 'noto', fontSize: 12);
+    else if (type == 3)
+      return TextStyle(
+          color: Color(0xFF888888), fontFamily: 'noto', fontSize: 12);
+    else
+      return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -64,7 +90,7 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => Phone()),
+                  MaterialPageRoute(builder: (context) => Chauffeur()),
                   (route) => false);
             },
             icon: Image.asset(
@@ -111,6 +137,7 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
                               alignment: Alignment.centerRight,
                               child: Text(
                                 typeToString(type),
+                                style: typeToStyle(type),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -169,9 +196,40 @@ class _ChauffeurBreakdown extends State<ChauffeurBreakdown> {
                         )
                       ],
                     ),
-                    type != 0
+                    type == 3
                         ? Column(
-                            children: [],
+                            children: [
+                              whiteSpaceH(8),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Color(0xFFDDDDDD),
+                              ),
+                              whiteSpaceH(8),
+                              Row(
+                                children: [
+                                  Text(
+                                    "운행금액",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'noto',
+                                        color: black,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Expanded(
+                                    child: Container(),
+                                  ),
+                                  Text(
+                                    "${numberFormat.format(widget.payment)} 원",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: mainColor,
+                                        fontFamily: 'noto',
+                                        fontSize: 16),
+                                  )
+                                ],
+                              )
+                            ],
                           )
                         : Container()
                   ],

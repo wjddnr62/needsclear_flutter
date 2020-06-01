@@ -8,6 +8,7 @@ import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class PhoneApply extends StatefulWidget {
   @override
@@ -36,7 +37,8 @@ class _PhoneApply extends State<PhoneApply> {
 
   bool selectCheck = false;
 
-
+  bool dataSet = false;
+  List<String> deviceImage = List();
 
   @override
   void initState() {
@@ -52,8 +54,10 @@ class _PhoneApply extends State<PhoneApply> {
       List<dynamic> datas = jsonDecode(value)['data'];
       for(Map<String ,dynamic> data in datas) {
         selectDeviceList..add(data['deviceName']);
+        deviceImage.add(data['deviceImage']);
       }
       setState(() {
+        dataSet = true;
       });
     });
   }
@@ -92,9 +96,33 @@ class _PhoneApply extends State<PhoneApply> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                "assets/needsclear/resource/home/phone/phone_image.png",
-                fit: BoxFit.contain,
+//              Image.asset(
+//                "assets/needsclear/resource/home/phone/phone_image.png",
+//                fit: BoxFit.contain,
+//              ),
+              dataSet
+                  ? StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, idx) {
+                    return Column(
+                      children: [
+                        Image.memory(base64.decode(deviceImage[idx].split(
+                            ",")[1]), fit: BoxFit.contain,),
+
+                      ],
+                    );
+                    return Container();
+                  },
+                  itemCount: deviceImage.length,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  staggeredTileBuilder: (idx) => StaggeredTile.fit(1))
+                  : Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(mainColor),
+                ),
               ),
               whiteSpaceH(20),
               Text(
@@ -475,6 +503,8 @@ class _PhoneApply extends State<PhoneApply> {
     );
   }
 
+  bool touch = false;
+
   dialog() {
     return showDialog(
         barrierDismissible: false,
@@ -553,39 +583,52 @@ class _PhoneApply extends State<PhoneApply> {
                               height: 40,
                               child: RaisedButton(
                                 onPressed: () {
-                                  Provider provider = Provider();
-                                  User user = DataStorage.dataStorage.user;
+                                  if (!touch) {
+                                    touch = true;
+                                    Provider provider = Provider();
+                                    User user = DataStorage.dataStorage.user;
 
-                                  provider
-                                      .insertPhone(
-                                          user.id,
-                                          nameController.text,
-                                          startPhone + middleController.text + endController.text,
-                                          nowNewsAgency,
-                                          changeNewsAgency,
-                                          serviceSelect == "번호이동"? 0 : "",
-                                          selectDevice)
-                                      .then((value) {
-                                    print(value);
-                                    var json = jsonDecode(value);
-                                    if (json['result'] == 1) {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PhoneBreakdown(
-                                                    type: 0,
-                                                    name: nameController.text,
-                                                    phone: startPhone + middleController.text + endController.text,
-                                                    changeNewsAgency: changeNewsAgency,
-                                                    selectDeviceName: selectDevice,
-                                                  )),
-                                          (route) => false);
-                                    } else {
-                                      print("안됨");
-                                    }
-                                  });
+                                    provider
+                                        .insertPhone(
+                                        user.id,
+                                        nameController.text,
+                                        startPhone + middleController.text +
+                                            endController.text,
+                                        nowNewsAgency,
+                                        changeNewsAgency,
+                                        serviceSelect == "번호이동" ? 0 : "",
+                                        selectDevice)
+                                        .then((value) {
+                                      print(value);
+                                      touch = false;
+                                      var json = jsonDecode(value);
+                                      if (json['result'] == 1) {
+                                        Navigator.of(
+                                            context, rootNavigator: true)
+                                            .pop();
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PhoneBreakdown(
+                                                      type: 0,
+                                                      name: nameController.text,
+                                                      phone: startPhone +
+                                                          middleController
+                                                              .text +
+                                                          endController.text,
+                                                      changeNewsAgency: changeNewsAgency,
+                                                      selectDeviceName: selectDevice,
+                                                    )),
+                                                (route) => false);
+                                      } else {
+                                        touch = false;
+                                        print("안됨");
+                                      }
+                                    });
+                                  }
+
+
                                 },
                                 color: mainColor,
                                 shape: RoundedRectangleBorder(

@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 
 class Provider {
   Client client = Client();
-  final baseUrl = "http://49.247.3.220/auth_api/";
+  final baseUrl = "http://gateway.cashlink.kr/auth_api/";
+
+//  final baseUrl = "http://192.168.100.237/auth_api/";
   final needsUrl = "http://needsclear.kr/needs_api/";
 
   final usersUrl = "api/users";
@@ -15,9 +17,83 @@ class Provider {
   final chauffeurUrl = "api/chauffeur";
   final phoneUrl = "api/phone";
   final internetUrl = "api/internet";
+  final eventUrl = "api/event";
+  final noticeUrl = "api/notice";
+  final faqUrl = "api/faq";
+  final inquiryUrl = "api/inquiry";
 
   final getToken = "oauth/token";
-  String userCheckUrl = "http://49.247.3.220/resource_api/api/users/me";
+  String userCheckUrl = "http://gateway.cashlink.kr/resource_api/api/users/me";
+
+//  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
+
+  Future<String> selectInquiry(id) async {
+    final response =
+        await client.get("$needsUrl$inquiryUrl/app-select-inquiry?id=$id");
+    print("$needsUrl$inquiryUrl/app-select-inquiry?id=$id");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> insertInquiry(id, title, question) async {
+    final response = await client.put(
+        "$needsUrl$inquiryUrl/insert-inquiry?id=$id&title=$title&question=$question");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getFaq() async {
+    final response = await client.get("$needsUrl$faqUrl/select-faq");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getNotice() async {
+    final response = await client.get("$needsUrl$noticeUrl/select-notice");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getRecoUser(idx) async {
+    final response =
+        await client.get("$needsUrl$usersUrl/get-reco-user?idx=$idx");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> recoUpdate(idx, id, recoCode) async {
+    final response = await client.put(
+        "$needsUrl$usersUrl/reco-update?idx=$idx&id=$id&recoCode=$recoCode");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> selectRecoRegister(name, phone) async {
+    final response = await client
+        .get("$needsUrl$usersUrl/select-reco-register?name=$name&phone=$phone");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> selectSavelog(id) async {
+    final response =
+        await client.get("$needsUrl$saveLogUrl/savelog-select?id=$id");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> getEvent() async {
+    final response = await client.get("$needsUrl$eventUrl/select-event");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
+  Future<String> exchange(idx, dl) async {
+    final response = await client
+        .put("$needsUrl$usersUrl/exchange-ncp?idx=$idx&dl=${dl.toInt()}");
+
+    return utf8.decode(response.bodyBytes);
+  }
 
   Future<String> authToken() async {
     final response = await client.post("$baseUrl$getToken", body: {
@@ -209,3 +285,5 @@ class Provider {
     return utf8.decode(response.bodyBytes);
   }
 }
+
+final provider = Provider();

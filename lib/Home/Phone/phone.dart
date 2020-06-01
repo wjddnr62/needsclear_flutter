@@ -21,6 +21,8 @@ class _Phone extends State<Phone> {
   String phoneValue = "전체";
   bool dataSet = false;
   List<mp.Phone> phones = List();
+  bool viewOption = false;
+  int viewType = 0;
 
   getPhone() {
     Provider provider = Provider();
@@ -160,7 +162,8 @@ class _Phone extends State<Phone> {
                             elevation: 0,
                             style: TextStyle(
                                 color: black, fontSize: 14, fontFamily: 'noto'),
-                            items: <String>['전체', '접수완료', '완료'].map((value) {
+                            items: <String>['전체', '접수완료', '결제대기', '결제완료', '취소']
+                                .map((value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
@@ -176,6 +179,20 @@ class _Phone extends State<Phone> {
                             onChanged: (value) {
                               setState(() {
                                 phoneValue = value;
+                                if (value == "전체") {
+                                  viewOption = false;
+                                } else {
+                                  viewOption = true;
+                                  if (value == "접수완료") {
+                                    viewType = 0;
+                                  } else if (value == "결제대기") {
+                                    viewType = 1;
+                                  } else if (value == "결제완료") {
+                                    viewType = 2;
+                                  } else if (value == "취소") {
+                                    viewType = 3;
+                                  }
+                                }
                               });
                             },
                           ),
@@ -191,136 +208,283 @@ class _Phone extends State<Phone> {
                       child: ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, idx) {
-                          return InkWell(
-                            onTap: () {
-                              print("123");
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => PhoneBreakdown(
-                                            type: phones[idx].type,
+                          if (viewOption) {
+                            if (phones[idx].type == viewType) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) => PhoneBreakdown(
+                                                type: phones[idx].type,
                                             name: phones[idx].name,
                                             phone: phones[idx].phone,
                                             changeNewsAgency:
-                                                phones[idx].changeNewsAgency,
+                                            phones[idx].changeNewsAgency,
                                             selectDeviceName:
-                                                phones[idx].deviceName,
+                                            phones[idx].deviceName,
                                           )),
-                                  (route) => false);
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  phones[idx].created_at.split(" ")[0],
-                                  style: TextStyle(
-                                      color: Color(0xFF888888),
-                                      fontFamily: 'noto',
-                                      fontSize: 12),
-                                ),
-                                whiteSpaceH(4),
-                                Row(
+                                          (route) => false);
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    phones[idx].type == 0
-                                        ? Image.asset(
-                                            "assets/needsclear/resource/internet/contract.png",
-                                            width: 48,
-                                            height: 48,
-                                          )
-                                        : phones[idx].type == 1
-                                            ? Image.asset(
-                                                "assets/needsclear/resource/internet/contract.png",
-                                                width: 48,
-                                                height: 48,
-                                              )
-                                            : phones[idx].type == 2
-                                                ? Image.asset(
-                                                    "assets/needsclear/resource/internet/end.png",
-                                                    width: 48,
-                                                    height: 48,
-                                                  )
-                                                : Container(),
-                                    whiteSpaceW(12),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    Text(
+                                      phones[idx].created_at.split(" ")[0],
+                                      style: TextStyle(
+                                          color: Color(0xFF888888),
+                                          fontFamily: 'noto',
+                                          fontSize: 12),
+                                    ),
+                                    whiteSpaceH(4),
+                                    Row(
                                       children: [
-                                        Row(
+                                        phones[idx].type == 0
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/contract.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : phones[idx].type == 1
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/contract.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : phones[idx].type == 2
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/end.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : Image.asset(
+                                          "assets/needsclear/resource/internet/end.png",
+                                          width: 48,
+                                          height: 48,
+                                        ),
+                                        whiteSpaceW(12),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              "${phones[idx].changeNewsAgency}",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'noto',
-                                                  color: black,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                            whiteSpaceW(12),
-                                            Text(
-                                              phones[idx].type == 0
-                                                  ? "접수완료"
-                                                  : phones[idx].type == 1
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${phones[idx]
+                                                      .changeNewsAgency}",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'noto',
+                                                      color: black,
+                                                      fontWeight: FontWeight
+                                                          .w600),
+                                                ),
+                                                whiteSpaceW(12),
+                                                Text(
+                                                  phones[idx].type == 0
+                                                      ? "접수완료"
+                                                      : phones[idx].type == 1
                                                       ? "결제대기"
                                                       : phones[idx].type == 2
-                                                          ? "결제완료"
-                                                          : "",
-                                              style: phones[idx].type == 0
-                                                  ? TextStyle(
+                                                      ? "결제완료"
+                                                      : "취소",
+                                                  style: phones[idx].type == 0
+                                                      ? TextStyle(
                                                       color: Color(0xFFFFCC00),
                                                       fontFamily: 'noto',
                                                       fontSize: 12)
-                                                  : phones[idx].type == 1
+                                                      : phones[idx].type == 1
                                                       ? TextStyle(
-                                                          color:
-                                                              Color(0xFFFFCC00),
-                                                          fontFamily: 'noto',
-                                                          fontSize: 12)
+                                                      color:
+                                                      Color(0xFFFFCC00),
+                                                      fontFamily: 'noto',
+                                                      fontSize: 12)
                                                       : phones[idx].type == 2
-                                                          ? TextStyle(
-                                                              color: Color(
-                                                                  0xFF00AAFF),
-                                                              fontFamily:
-                                                                  'noto',
-                                                              fontSize: 12)
-                                                          : phones[idx].type ==
-                                                                  3
-                                                              ? TextStyle(
-                                                                  color: Color(
-                                                                      0xFF888888),
-                                                                  fontFamily:
-                                                                      'noto',
-                                                                  fontSize: 12)
-                                                              : TextStyle(
-                                                                  color: Color(
-                                                                      0xFFFFCC00),
-                                                                  fontFamily:
-                                                                      'noto',
-                                                                  fontSize: 12),
-                                            )
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFF00AAFF),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : phones[idx].type ==
+                                                      3
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFF888888),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : TextStyle(
+                                                      color: Color(
+                                                          0xFF888888),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12),
+                                                )
+                                              ],
+                                            ),
+                                            Text(
+                                              "${phones[idx].deviceName}",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontFamily: 'noto',
+                                                  color: Color(0xFF888888)),
+                                            ),
                                           ],
                                         ),
-                                        Text(
-                                          "${phones[idx].deviceName}",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: 'noto',
-                                              color: Color(0xFF888888)),
+                                        Expanded(
+                                          child: Container(),
                                         ),
+                                        Image.asset(
+                                          "assets/needsclear/resource/public/small-arrow.png",
+                                          width: 24,
+                                          height: 24,
+                                        )
                                       ],
                                     ),
-                                    Expanded(
-                                      child: Container(),
-                                    ),
-                                    Image.asset(
-                                      "assets/needsclear/resource/public/small-arrow.png",
-                                      width: 24,
-                                      height: 24,
-                                    )
+                                    whiteSpaceH(20)
                                   ],
                                 ),
-                                whiteSpaceH(20)
-                              ],
-                            ),
-                          );
+                              );
+                            }
+                          } else {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PhoneBreakdown(
+                                              type: phones[idx].type,
+                                              name: phones[idx].name,
+                                              phone: phones[idx].phone,
+                                              changeNewsAgency:
+                                              phones[idx].changeNewsAgency,
+                                              selectDeviceName:
+                                              phones[idx].deviceName,
+                                            )),
+                                        (route) => false);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    phones[idx].created_at.split(" ")[0],
+                                    style: TextStyle(
+                                        color: Color(0xFF888888),
+                                        fontFamily: 'noto',
+                                        fontSize: 12),
+                                  ),
+                                  whiteSpaceH(4),
+                                  Row(
+                                    children: [
+                                      phones[idx].type == 0
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/contract.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : phones[idx].type == 1
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/contract.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : phones[idx].type == 2
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/end.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : Image.asset(
+                                        "assets/needsclear/resource/internet/end.png",
+                                        width: 48,
+                                        height: 48,
+                                      ),
+                                      whiteSpaceW(12),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "${phones[idx]
+                                                    .changeNewsAgency}",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontFamily: 'noto',
+                                                    color: black,
+                                                    fontWeight: FontWeight
+                                                        .w600),
+                                              ),
+                                              whiteSpaceW(12),
+                                              Text(
+                                                phones[idx].type == 0
+                                                    ? "접수완료"
+                                                    : phones[idx].type == 1
+                                                    ? "결제대기"
+                                                    : phones[idx].type == 2
+                                                    ? "결제완료"
+                                                    : "취소",
+                                                style: phones[idx].type == 0
+                                                    ? TextStyle(
+                                                    color: Color(0xFFFFCC00),
+                                                    fontFamily: 'noto',
+                                                    fontSize: 12)
+                                                    : phones[idx].type == 1
+                                                    ? TextStyle(
+                                                    color:
+                                                    Color(0xFFFFCC00),
+                                                    fontFamily: 'noto',
+                                                    fontSize: 12)
+                                                    : phones[idx].type == 2
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFF00AAFF),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12)
+                                                    : phones[idx].type ==
+                                                    3
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFF888888),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12)
+                                                    : TextStyle(
+                                                    color: Color(
+                                                        0xFF888888),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12),
+                                              )
+                                            ],
+                                          ),
+                                          Text(
+                                            "${phones[idx].deviceName}",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'noto',
+                                                color: Color(0xFF888888)),
+                                          ),
+                                        ],
+                                      ),
+                                      Expanded(
+                                        child: Container(),
+                                      ),
+                                      Image.asset(
+                                        "assets/needsclear/resource/public/small-arrow.png",
+                                        width: 24,
+                                        height: 24,
+                                      )
+                                    ],
+                                  ),
+                                  whiteSpaceH(20)
+                                ],
+                              ),
+                            );
+                          }
+                          return Container();
                         },
                         shrinkWrap: true,
                         itemCount: phones.length,

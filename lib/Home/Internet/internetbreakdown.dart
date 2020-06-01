@@ -53,7 +53,8 @@ class _InternetBreakdown extends State<InternetBreakdown> {
     // TODO: implement build
     return WillPopScope(
       onWillPop: () => Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => Phone()), (route) => false),
+          MaterialPageRoute(builder: (context) => Internet()),
+          (route) => false),
       child: Scaffold(
         backgroundColor: white,
         resizeToAvoidBottomInset: true,

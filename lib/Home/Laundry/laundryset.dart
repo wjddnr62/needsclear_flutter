@@ -196,7 +196,9 @@ class _LaundrySet extends State<LaundrySet> {
                       crossAxisSpacing: 8,
                       staggeredTileBuilder: (idx) => StaggeredTile.fit(1))
                   : Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(mainColor),
+                      ),
                     ),
               whiteSpaceH(24),
               Text(

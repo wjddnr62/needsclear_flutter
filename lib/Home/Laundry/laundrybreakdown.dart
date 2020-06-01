@@ -9,21 +9,27 @@ import 'laundry.dart';
 
 class LaundryBreakDown extends StatefulWidget {
   final int type;
+  final int washType;
   final int allPay;
   final List<DressSet> dressNormal;
   final List<DressSet> dressPremium;
   final List<int> dressPaymentNormal;
   final List<int> dressPaymentPremium;
   final int ncpPoint;
+  final List<DressSet> addAllDress;
+  final String date;
 
   LaundryBreakDown(
       {this.type,
+      this.washType,
       this.allPay,
       this.dressNormal,
       this.dressPremium,
       this.dressPaymentNormal,
       this.dressPaymentPremium,
-      this.ncpPoint});
+        this.ncpPoint,
+        this.addAllDress,
+        this.date});
 
   @override
   _LaundryBreakDown createState() => _LaundryBreakDown();
@@ -69,7 +75,11 @@ class _LaundryBreakDown extends State<LaundryBreakDown> {
 
       dressPaymentNormal = widget.dressPaymentNormal;
       dressPaymentPremium = widget.dressPaymentPremium;
-    } else {}
+    } else {
+      allPay = widget.allPay;
+      addAllDress = widget.addAllDress;
+      date = widget.date.split(" ")[0];
+    }
   }
 
   @override
@@ -130,7 +140,7 @@ class _LaundryBreakDown extends State<LaundryBreakDown> {
                             children: [
                               Center(
                                 child: Text(
-                                  widget.type == 0 ? date : "",
+                                  date,
                                   style: TextStyle(
                                       color: black,
                                       fontSize: 16,
@@ -144,7 +154,41 @@ class _LaundryBreakDown extends State<LaundryBreakDown> {
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: Text(
-                                    type == 0 ? "세탁중" : "",
+                                    widget.washType == 0
+                                        ? "택배대기"
+                                        : widget.washType == 1
+                                        ? "수령대기"
+                                        : widget.washType == 2
+                                        ? "세탁중"
+                                        : widget.washType == 3
+                                        ? "완료"
+                                        : "",
+                                    style: widget.washType == 0
+                                        ? TextStyle(
+                                        color: Color(0xFFFFCC00),
+                                        fontFamily: 'noto',
+                                        fontSize: 12)
+                                        : widget.washType == 1
+                                        ? TextStyle(
+                                        color: Color(0xFFFFCC00),
+                                        fontFamily: 'noto',
+                                        fontSize: 12)
+                                        : widget.washType == 2
+                                        ? TextStyle(
+                                        color: Color(0xFF00AAFF),
+                                        fontFamily: 'noto',
+                                        fontSize: 12)
+                                        : widget.washType == 3
+                                        ? TextStyle(
+                                        color:
+                                        Color(0xFF888888),
+                                        fontFamily: 'noto',
+                                        fontSize: 12)
+                                        : TextStyle(
+                                        color:
+                                        Color(0xFFFFCC00),
+                                        fontFamily: 'noto',
+                                        fontSize: 12),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -226,7 +270,7 @@ class _LaundryBreakDown extends State<LaundryBreakDown> {
                             )
                           ],
                         ),
-                        Align(
+                        widget.type == 0 ? Align(
                           alignment: Alignment.centerRight,
                           child: Text(
                             "${widget.ncpPoint} NCP 적립",
@@ -235,7 +279,7 @@ class _LaundryBreakDown extends State<LaundryBreakDown> {
                                 fontSize: 12,
                                 color: mainColor),
                           ),
-                        )
+                        ) : Container()
                       ],
                     ),
                   ),

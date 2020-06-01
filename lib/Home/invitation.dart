@@ -1,4 +1,3 @@
-import 'package:aladdinmagic/Model/datastorage.dart';
 import 'package:aladdinmagic/Util/text.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
@@ -74,34 +73,33 @@ class _Invitation extends State {
                                     fontWeight: FontWeight.w600))
                           ]),
                     ),
-                    whiteSpaceH(32),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 40,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          customText(StyleCustom(
-                              text: "내 추천코드",
-                              fontSize: 14,
-                              color: Color(0xFF444444))),
-                          whiteSpaceW(16),
-                          customText(StyleCustom(
-                              text: dataStorage.user.recoCode,
-                              color: mainColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14))
-                        ],
-                      ),
-                    ),
+//                    whiteSpaceH(32),
+//                    Container(
+//                      width: MediaQuery.of(context).size.width,
+//                      height: 40,
+//                      child: Row(
+//                        mainAxisAlignment: MainAxisAlignment.center,
+//                        children: [
+//                          customText(StyleCustom(
+//                              text: "내 추천코드",
+//                              fontSize: 14,
+//                              color: Color(0xFF444444))),
+//                          whiteSpaceW(16),
+//                          customText(StyleCustom(
+//                              text: dataStorage.user.recoCode,
+//                              color: mainColor,
+//                              fontWeight: FontWeight.w600,
+//                              fontSize: 14))
+//                        ],
+//                      ),
+//                    ),
                     whiteSpaceH(40),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: 40,
                       child: RaisedButton(
                         onPressed: () {
-                          Share.share(
-                              "생활서비스의 모든것 니즈클리어\n새로운 경험을 지금 시작해 보세요.\nhttps://play.google.com/store/apps/details?id=com.laon.aladdinmagic\n추천인 : ${dataStorage.user.recoCode}");
+                          Share.share("생활서비스의 모든것 니즈클리어\n새로운 경험을 지금 시작해 보세요.");
                         },
                         elevation: 0.0,
                         color: mainColor,

@@ -55,7 +55,7 @@ class _ChauffeurApply extends State<ChauffeurApply> {
               style: TextStyle(
                   color: black,
                   fontFamily: 'noto',
-                  fontSize: 16,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
             whiteSpaceH(4),
@@ -136,7 +136,7 @@ class _ChauffeurApply extends State<ChauffeurApply> {
               style: TextStyle(
                   color: black,
                   fontFamily: 'noto',
-                  fontSize: 16,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
             whiteSpaceH(4),
@@ -239,6 +239,8 @@ class _ChauffeurApply extends State<ChauffeurApply> {
     );
   }
 
+  bool touch = false;
+
   dialog() {
     return showDialog(
         barrierDismissible: false,
@@ -317,30 +319,39 @@ class _ChauffeurApply extends State<ChauffeurApply> {
                               height: 40,
                               child: RaisedButton(
                                 onPressed: () {
-
-                                  Provider provider = Provider();
-                                  User user = DataStorage.dataStorage.user;
-                                  provider.insertChauffeur(user.id, startAddress, endAddress, user.name, user.phone).then((value) {
-                                    print(value);
-                                    var json = jsonDecode(value);
-                                    if(json['result'] == 1) {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ChauffeurBreakdown(
-                                                    type: 0,
-                                                    startAddress: startAddress,
-                                                    endAddress: endAddress,
-                                                  )),
-                                              (route) => false);
-                                    }else {
-                                      print("안됨");
-                                    }
-                                  });
-
-
+                                  if (!touch) {
+                                    touch = true;
+                                    Provider provider = Provider();
+                                    User user = DataStorage.dataStorage.user;
+                                    provider
+                                        .insertChauffeur(user.id, startAddress,
+                                            endAddress, user.name, user.phone)
+                                        .then((value) {
+                                      print(value);
+                                      touch = false;
+                                      var json = jsonDecode(value);
+                                      if (json['result'] == 1) {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ChauffeurBreakdown(
+                                                          type: 0,
+                                                          startAddress:
+                                                              startAddress,
+                                                          endAddress:
+                                                              endAddress,
+                                                        )),
+                                                (route) => false);
+                                      } else {
+                                        touch = false;
+                                        print("안됨");
+                                      }
+                                    });
+                                  }
                                 },
                                 color: mainColor,
                                 shape: RoundedRectangleBorder(

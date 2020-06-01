@@ -25,8 +25,12 @@ class CombineLogin extends StatefulWidget {
 class _CombineLogin extends State<CombineLogin> {
   WebViewController webViewController;
   String url =
-      "http://49.247.3.220/auth_api/oauth/authorize?client_id=needs_clear&redirect_uri=http://localhost:3000&response_type=code";
-  String logoutUrl = "http://49.247.3.220/auth_api/users/logout";
+      "http://gateway.cashlink.kr/auth_api/oauth/authorize?client_id=needs_clear&redirect_uri=http://localhost:3000&response_type=code";
+  String logoutUrl = "http://gateway.cashlink.kr/auth_api/users/logout";
+
+//  String url =
+//      "http://192.168.100.237/auth_api/oauth/authorize?client_id=needs_clear&redirect_uri=http://localhost:3000&response_type=code";
+//  String logoutUrl = "http://192.168.100.237/auth_api/users/logout";
 
   Provider provider = Provider();
   bool userCheck = false;
@@ -63,7 +67,8 @@ class _CombineLogin extends State<CombineLogin> {
                 this.webViewController = webViewController;
               },
               onPageStarted: (url) {
-                if (url == "http://49.247.3.220/auth_api/") {
+                if (url == "http://gateway.cashlink.kr/auth_api/") {
+//                if (url == "http://192.168.100.237/auth_api/") {
 //                  webViewController.clearCache();
                   webViewController.loadUrl(this.url);
                   if (widget.authCheck != 1) {

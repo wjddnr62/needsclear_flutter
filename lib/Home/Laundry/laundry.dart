@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:aladdinmagic/Home/Laundry/laundrybreakdown.dart';
 import 'package:aladdinmagic/Home/Laundry/laundryset.dart';
 import 'package:aladdinmagic/Model/datastorage.dart';
+import 'package:aladdinmagic/Model/dress.dart';
 import 'package:aladdinmagic/Model/washsum.dart';
 import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
@@ -23,6 +25,8 @@ class _Laundry extends State<Laundry> {
   String laundryValue = '전체';
   Provider provider = Provider();
   List<WashSum> washList = List();
+  bool viewOption = false;
+  int viewType = 0;
 
   laundryDataSet() async {
     await provider.getWash(dataStorage.user.id).then((value) async {
@@ -215,6 +219,20 @@ class _Laundry extends State<Laundry> {
                             onChanged: (value) {
                               setState(() {
                                 laundryValue = value;
+                                if (value == "전체") {
+                                  viewOption = false;
+                                } else {
+                                  viewOption = true;
+                                  if (value == "택배대기") {
+                                    viewType = 0;
+                                  } else if (value == "수령대기") {
+                                    viewType = 1;
+                                  } else if (value == "세탁중") {
+                                    viewType = 2;
+                                  } else if (value == "완료") {
+                                    viewType = 3;
+                                  }
+                                }
                               });
                             },
                           ),
@@ -229,153 +247,395 @@ class _Laundry extends State<Laundry> {
                   ? Padding(
                       padding: EdgeInsets.all(16),
                       child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, idx) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                washList[idx].wash.date.split(" ")[0],
-                                style: TextStyle(
-                                    color: Color(0xFF888888),
-                                    fontFamily: 'noto',
-                                    fontSize: 12),
-                              ),
-                              whiteSpaceH(4),
-                              Row(
-                                children: [
-                                  washList[idx].wash.washType == 0
-                                      ? Image.asset(
-                                          "assets/needsclear/resource/laundry/sending.png",
+                          if (viewOption) {
+                            if (washList[idx].wash.washType == viewType) {
+                              return InkWell(
+                                onTap: () {
+                                  List<DressSet> addAllDress = List();
+                                  for (int i = 0;
+                                      i < washList[idx].laundries.length;
+                                      i++) {
+                                    addAllDress.add(DressSet(
+                                        dressName:
+                                            washList[idx].laundries[i].name,
+                                        dressCount:
+                                            washList[idx].laundries[i].count,
+                                        dressPay: washList[idx]
+                                            .laundries[i]
+                                            .payment));
+                                  }
+
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LaundryBreakDown(
+                                                type: 1,
+                                                allPay: washList[idx]
+                                                    .wash
+                                                    .washPayment,
+                                                addAllDress: addAllDress,
+                                                date: washList[idx].wash.date,
+                                                washType:
+                                                    washList[idx].wash.washType,
+                                              )),
+                                      (route) => false);
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      washList[idx].wash.date.split(" ")[0],
+                                      style: TextStyle(
+                                          color: Color(0xFF888888),
+                                          fontFamily: 'noto',
+                                          fontSize: 12),
+                                    ),
+                                    whiteSpaceH(4),
+                                    Row(
+                                      children: [
+                                        washList[idx].wash.washType == 0
+                                            ? Image.asset(
+                                                "assets/needsclear/resource/laundry/sending.png",
                                           width: 48,
                                           height: 48,
                                         )
-                                      : washList[idx].wash.washType == 1
-                                          ? Image.asset(
-                                              "assets/needsclear/resource/laundry/diliver.png",
-                                              width: 48,
-                                              height: 48,
-                                            )
-                                          : washList[idx].wash.washType ==
-                                                  2
-                                              ? Image.asset(
-                                                  "assets/needsclear/resource/laundry/cleaning.png",
-                                                  width: 48,
-                                                  height: 48,
+                                            : washList[idx].wash.washType == 1
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/laundry/diliver.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : washList[idx].wash.washType == 2
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/laundry/cleaning.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : washList[idx].wash.washType ==
+                                            3
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/laundry/end.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : Container(),
+                                        whiteSpaceW(12),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${numberFormat.format(
+                                                      washList[idx].wash
+                                                          .washPayment)} 원",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'noto',
+                                                      color: black,
+                                                      fontWeight: FontWeight
+                                                          .w600),
+                                                ),
+                                                whiteSpaceW(12),
+                                                Text(
+                                                  washList[idx].wash.washType ==
+                                                      0
+                                                      ? "택배대기"
+                                                      : washList[idx]
+                                                      .wash
+                                                      .washType ==
+                                                      1
+                                                      ? "수령대기"
+                                                      : washList[idx]
+                                                      .wash
+                                                      .washType ==
+                                                      2
+                                                      ? "세탁중"
+                                                      : washList[idx]
+                                                      .wash
+                                                      .washType ==
+                                                      3
+                                                      ? "완료"
+                                                      : "",
+                                                  style: washList[idx]
+                                                      .wash
+                                                      .washType ==
+                                                      0
+                                                      ? TextStyle(
+                                                      color: Color(0xFFFFCC00),
+                                                      fontFamily: 'noto',
+                                                      fontSize: 12)
+                                                      : washList[idx]
+                                                      .wash
+                                                      .washType ==
+                                                      1
+                                                      ? TextStyle(
+                                                      color:
+                                                      Color(0xFFFFCC00),
+                                                      fontFamily: 'noto',
+                                                      fontSize: 12)
+                                                      : washList[idx]
+                                                      .wash
+                                                      .washType ==
+                                                      2
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFF00AAFF),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : washList[
+                                                  idx]
+                                                      .wash
+                                                      .washType ==
+                                                      3
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFF888888),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : TextStyle(
+                                                      color: Color(
+                                                          0xFFFFCC00),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12),
                                                 )
-                                              : washList[idx].wash.washType == 3
-                                                  ? Image.asset(
-                                                      "assets/needsclear/resource/laundry/end.png",
-                                                      width: 48,
-                                                      height: 48,
-                                                    )
-                                                  : Container(),
-                                  whiteSpaceW(12),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                              ],
+                                            ),
+                                            Text(
+                                              washList[idx].laundries.length ==
+                                                  1
+                                                  ? washList[idx]
+                                                  .laundries[0]
+                                                  .name +
+                                                  "${numberFormat.format(
+                                                      washList[idx].laundries[0]
+                                                          .payment)}원 x ${washList[idx]
+                                                      .laundries[0].count}"
+                                                  : washList[idx]
+                                                  .laundries[0]
+                                                  .name +
+                                                  "${numberFormat.format(
+                                                      washList[idx].laundries[0]
+                                                          .payment)}원 x ${washList[idx]
+                                                      .laundries[0]
+                                                      .count} 외 ${washList[idx]
+                                                      .laundries.length - 1}개",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontFamily: 'noto',
+                                                  color: Color(0xFF888888)),
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(
+                                          child: Container(),
+                                        ),
+                                        Image.asset(
+                                          "assets/needsclear/resource/public/small-arrow.png",
+                                          width: 24,
+                                          height: 24,
+                                        )
+                                      ],
+                                    ),
+                                    whiteSpaceH(20)
+                                  ],
+                                ),
+                              );
+                            }
+                          } else {
+                            return InkWell(
+                              onTap: () {
+                                List<DressSet> addAllDress = List();
+                                for (int i = 0;
+                                i < washList[idx].laundries.length;
+                                i++) {
+                                  addAllDress.add(DressSet(
+                                      dressName: washList[idx].laundries[i]
+                                          .name,
+                                      dressCount:
+                                      washList[idx].laundries[i].count,
+                                      dressPay:
+                                      washList[idx].laundries[i].payment));
+                                }
+
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            LaundryBreakDown(
+                                              type: 1,
+                                              allPay:
+                                              washList[idx].wash.washPayment,
+                                              addAllDress: addAllDress,
+                                              date: washList[idx].wash.date,
+                                              washType:
+                                              washList[idx].wash.washType,
+                                            )),
+                                        (route) => false);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    washList[idx].wash.date.split(" ")[0],
+                                    style: TextStyle(
+                                        color: Color(0xFF888888),
+                                        fontFamily: 'noto',
+                                        fontSize: 12),
+                                  ),
+                                  whiteSpaceH(4),
+                                  Row(
                                     children: [
-                                      Row(
+                                      washList[idx].wash.washType == 0
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/laundry/sending.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : washList[idx].wash.washType == 1
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/laundry/diliver.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : washList[idx].wash.washType == 2
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/laundry/cleaning.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : washList[idx].wash.washType ==
+                                          3
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/laundry/end.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : Container(),
+                                      whiteSpaceW(12),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            "${numberFormat.format(washList[idx].wash.washPayment)} 원",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: 'noto',
-                                                color: black,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          whiteSpaceW(12),
-                                          Text(
-                                            washList[idx].wash.washType ==
-                                                    0
-                                                ? "택배대기"
-                                                : washList[idx]
-                                                            .wash
-                                                            .washType ==
-                                                        1
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "${numberFormat.format(
+                                                    washList[idx].wash
+                                                        .washPayment)} 원",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontFamily: 'noto',
+                                                    color: black,
+                                                    fontWeight: FontWeight
+                                                        .w600),
+                                              ),
+                                              whiteSpaceW(12),
+                                              Text(
+                                                washList[idx].wash.washType == 0
+                                                    ? "택배대기"
+                                                    : washList[idx]
+                                                    .wash
+                                                    .washType ==
+                                                    1
                                                     ? "수령대기"
                                                     : washList[idx]
-                                                                .wash
-                                                                .washType ==
-                                                            2
-                                                        ? "세탁중"
-                                                        : washList[idx]
-                                                                    .wash
-                                                                    .washType ==
-                                                                3
-                                                            ? "완료"
-                                                            : "",
-                                            style: washList[idx]
-                                                        .wash
-                                                        .washType ==
+                                                    .wash
+                                                    .washType ==
+                                                    2
+                                                    ? "세탁중"
+                                                    : washList[idx]
+                                                    .wash
+                                                    .washType ==
+                                                    3
+                                                    ? "완료"
+                                                    : "",
+                                                style: washList[idx]
+                                                    .wash
+                                                    .washType ==
                                                     0
-                                                ? TextStyle(
+                                                    ? TextStyle(
                                                     color: Color(0xFFFFCC00),
                                                     fontFamily: 'noto',
                                                     fontSize: 12)
-                                                : washList[idx]
-                                                            .wash
-                                                            .washType ==
-                                                        1
-                                                    ? TextStyle(
-                                                        color:
-                                                            Color(0xFFFFCC00),
-                                                        fontFamily: 'noto',
-                                                        fontSize: 12)
                                                     : washList[idx]
-                                                                .wash
-                                                                .washType ==
-                                                            2
-                                                        ? TextStyle(
-                                                            color: Color(
-                                                                0xFF00AAFF),
-                                                            fontFamily: 'noto',
-                                                            fontSize: 12)
-                                                        : washList[idx]
-                                                                    .wash
-                                                                    .washType ==
-                                                                3
-                                                            ? TextStyle(
-                                                                color: Color(
-                                                                    0xFF888888),
-                                                                fontFamily:
-                                                                    'noto',
-                                                                fontSize: 12)
-                                                            : TextStyle(
-                                                                color: Color(
-                                                                    0xFFFFCC00),
-                                                                fontFamily:
-                                                                    'noto',
-                                                                fontSize: 12),
-                                          )
+                                                    .wash
+                                                    .washType ==
+                                                    1
+                                                    ? TextStyle(
+                                                    color:
+                                                    Color(0xFFFFCC00),
+                                                    fontFamily: 'noto',
+                                                    fontSize: 12)
+                                                    : washList[idx]
+                                                    .wash
+                                                    .washType ==
+                                                    2
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFF00AAFF),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12)
+                                                    : washList[
+                                                idx]
+                                                    .wash
+                                                    .washType ==
+                                                    3
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFF888888),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12)
+                                                    : TextStyle(
+                                                    color: Color(
+                                                        0xFFFFCC00),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12),
+                                              )
+                                            ],
+                                          ),
+                                          Text(
+                                            washList[idx].laundries.length == 1
+                                                ? washList[idx]
+                                                .laundries[0]
+                                                .name +
+                                                "${numberFormat.format(washList[idx].laundries[0].payment)}원 x ${washList[idx].laundries[0].count}"
+                                                : washList[idx]
+                                                .laundries[0]
+                                                .name +
+                                                "${numberFormat.format(washList[idx].laundries[0].payment)}원 x ${washList[idx].laundries[0].count} 외 ${washList[idx].laundries.length - 1}개",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'noto',
+                                                color: Color(0xFF888888)),
+                                          ),
                                         ],
                                       ),
-                                      Text(
-                                        washList[idx].laundries.length == 1
-                                            ? washList[idx].laundries[0].name +
-                                                "${numberFormat.format(washList[idx].laundries[0].payment)}원 x ${washList[idx].laundries[0].count}"
-                                            : washList[idx].laundries[0].name +
-                                                "${numberFormat.format(washList[idx].laundries[0].payment)}원 x ${washList[idx].laundries[0].count} 외 ${washList[idx].laundries.length - 1}개",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontFamily: 'noto',
-                                            color: Color(0xFF888888)),
+                                      Expanded(
+                                        child: Container(),
                                       ),
+                                      Image.asset(
+                                        "assets/needsclear/resource/public/small-arrow.png",
+                                        width: 24,
+                                        height: 24,
+                                      )
                                     ],
                                   ),
-                                  Expanded(
-                                    child: Container(),
-                                  ),
-                                  Image.asset(
-                                    "assets/needsclear/resource/public/small-arrow.png",
-                                    width: 24,
-                                    height: 24,
-                                  )
+                                  whiteSpaceH(20)
                                 ],
                               ),
-                              whiteSpaceH(20)
-                            ],
-                          );
+                            );
+                          }
+
+                          return Container();
                         },
                         shrinkWrap: true,
                         itemCount: washList.length,

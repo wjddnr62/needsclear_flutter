@@ -153,22 +153,14 @@ class _Buy extends State<Buy> {
             for (int i = 0; i < dataStorage.pointManage.length; i++) {
               if (dataStorage.pointManage[i].type == dataStorage.user.type &&
                   dataStorage.pointManage[i].serviceType == 3) {
-                await provider
-                    .pointInsert(
-                        id: dataStorage.user.idx,
-                        point: dataStorage.user.point +
-                            (widget.allPay *
-                                dataStorage.pointManage[i].myselfPercent /
-                                100))
-                    .then((value) {
                   print("pointInsert : $value");
                   dataStorage.user.point = dataStorage.user.point +
                       (widget.allPay *
                               dataStorage.pointManage[i].myselfPercent /
                               100)
                           .toInt();
-
-                  Navigator.of(context).pushAndRemoveUntil(
+//
+                Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                           builder: (context) => LaundryBreakDown(
                               type: 0,
@@ -182,7 +174,7 @@ class _Buy extends State<Buy> {
                                       100)
                                   .toInt())),
                       (route) => false);
-                });
+
                 break;
               }
             }

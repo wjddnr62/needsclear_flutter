@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aladdinmagic/Home/Chauffeur/chauffeur.dart';
 import 'package:aladdinmagic/Home/Exchange/exchange.dart';
+import 'package:aladdinmagic/Home/Faq/faq.dart';
 import 'package:aladdinmagic/Home/Internet/internet.dart';
 import 'package:aladdinmagic/Home/Laundry/laundry.dart';
 import 'package:aladdinmagic/Home/delivery.dart';
@@ -9,7 +10,11 @@ import 'package:aladdinmagic/Home/invitation.dart';
 import 'package:aladdinmagic/Home/recommendation.dart';
 import 'package:aladdinmagic/Login/combinelogin.dart';
 import 'package:aladdinmagic/Model/datastorage.dart';
+import 'package:aladdinmagic/Model/event.dart';
 import 'package:aladdinmagic/Model/pointmanage.dart';
+import 'package:aladdinmagic/Model/savelog.dart';
+import 'package:aladdinmagic/Model/user.dart';
+import 'package:aladdinmagic/Model/userreco.dart';
 import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Provider/userprovider.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
@@ -23,7 +28,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'App/app.dart';
+import 'Dl/dl.dart';
+import 'Inquiry/inquiry.dart';
+import 'Notice/notice.dart';
 import 'Phone/phone.dart';
+import 'Terms/Terms.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -43,6 +53,11 @@ class _Home extends State<Home> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   bool dlAuto = false;
+
+  List<Event> eventList = List();
+  List<SaveLog> saveLogList = List();
+
+  int alignment = 0;
 
   Future<bool> onWillPop() {
     if (loadCompleteUrl == null) {
@@ -255,7 +270,7 @@ class _Home extends State<Home> {
       decoration: BoxDecoration(
           color: white,
           border:
-          Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
+              Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
       child: Center(
         child: GestureDetector(
           onTap: () async {
@@ -367,6 +382,23 @@ class _Home extends State<Home> {
 
   Provider provider = Provider();
 
+  int savePoint = 0;
+  int usePoint = 0;
+
+  pointInit() async {
+    await provider.selectSavelog(dataStorage.user.id).then((value) {
+      List<dynamic> data = json.decode(value)['data'];
+      for (int i = 0; i < data.length; i++) {
+        if (data[i]['type'] == 0) {
+          savePoint += data[i]['point'];
+        } else {
+          usePoint -= data[i]['point'];
+        }
+      }
+      setState(() {});
+    });
+  }
+
   initManage() async {
     await provider.pointManageSelect().then((value) async {
       print(json.decode(value)['data']);
@@ -403,6 +435,10 @@ class _Home extends State<Home> {
     }
 
     initManage();
+    eventInit();
+    saveLogInit();
+    recoInit();
+    pointInit();
   }
 
   drawerUi() {
@@ -545,7 +581,10 @@ class _Home extends State<Home> {
                     .width,
                 height: 56,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Dl()));
+                  },
                   elevation: 0.0,
                   padding: EdgeInsets.only(left: 16, right: 16),
                   color: Color(0xFF00AAFF),
@@ -640,7 +679,11 @@ class _Home extends State<Home> {
                     .width,
                 height: 48,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Notice()));
+                    ;
+                  },
                   color: white,
                   elevation: 0.0,
                   padding: EdgeInsets.only(left: 16),
@@ -664,7 +707,11 @@ class _Home extends State<Home> {
                     .width,
                 height: 48,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Faq()));
+                    ;
+                  },
                   color: white,
                   elevation: 0.0,
                   padding: EdgeInsets.only(left: 16),
@@ -688,7 +735,10 @@ class _Home extends State<Home> {
                     .width,
                 height: 48,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Inquiry()));
+                  },
                   color: white,
                   elevation: 0.0,
                   padding: EdgeInsets.only(left: 16),
@@ -712,7 +762,10 @@ class _Home extends State<Home> {
                     .width,
                 height: 48,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Terms()));
+                  },
                   color: white,
                   elevation: 0.0,
                   padding: EdgeInsets.only(left: 16),
@@ -736,7 +789,10 @@ class _Home extends State<Home> {
                     .width,
                 height: 48,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => App()));
+                  },
                   color: white,
                   elevation: 0.0,
                   padding: EdgeInsets.only(left: 16),
@@ -783,7 +839,7 @@ class _Home extends State<Home> {
             key: _scaffoldKey,
             backgroundColor: white,
             resizeToAvoidBottomInset: true,
-            drawer: drawerUi(),
+            drawer: viewPage != 3 ? drawerUi() : null,
             appBar: viewPage == 0
                 ? appBar = AppBar(
               backgroundColor: white,
@@ -814,16 +870,51 @@ class _Home extends State<Home> {
               ),
               actions: <Widget>[
                 IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(
-                    "assets/needsclear/resource/home/notice-new.png",
-                    width: 24,
-                    height: 24,
+                  onPressed: () async {
+                    await provider
+                        .selectUser(dataStorage.user.id)
+                        .then((value) {
+                      print(value);
+                      dynamic selectUser = json.decode(value);
+                      if (selectUser['data'] != null) {
+                        User user = User.fromJson(selectUser['data']);
+
+                        setState(() {
+                          dataStorage.user = user;
+                        });
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    Icons.refresh,
+                    color: mainColor,
                   ),
                 )
+//                IconButton(
+//                  onPressed: () {},
+//                  icon: Image.asset(
+//                    "assets/needsclear/resource/home/notice-new.png",
+//                    width: 24,
+//                    height: 24,
+//                  ),
+//                )
               ],
             )
-                : viewPage == 3 ? null : null,
+                : viewPage == 3
+                ? AppBar(
+              elevation: 1.0,
+              centerTitle: true,
+              backgroundColor: white,
+              title: Text(
+                "이벤트",
+                style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'noto',
+                    fontWeight: FontWeight.w600,
+                    color: black),
+              ),
+            )
+                : null,
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               onTap: (idx) {
@@ -940,7 +1031,7 @@ class _Home extends State<Home> {
                             viewPage == 2
                                 ? pointManagement()
                                 : Container(),
-                            viewPage == 3 ? Container() : Container()
+                            viewPage == 3 ? event() : Container()
                           ],
                         ),
                       ],
@@ -1027,7 +1118,8 @@ class _Home extends State<Home> {
                                 fontFamily: 'noto',
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14),
-                          )
+                          ),
+                          whiteSpaceW(4),
                         ],
                       ),
                       RichText(
@@ -1094,7 +1186,7 @@ class _Home extends State<Home> {
                             whiteSpaceH(8),
                             Text(
                               "${numberFormat.format(
-                                  dataStorage.user.point)} NCP",
+                                  dataStorage.user.recoPrice)} NCP",
                               style: TextStyle(
                                   color: black,
                                   fontSize: 14,
@@ -1256,8 +1348,7 @@ class _Home extends State<Home> {
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          Chauffeur()
-                                                  ));
+                                                          Chauffeur()));
                                             } else if (serviceName[idx + 4] ==
                                                 '퀵배송') {
                                               print("퀵배송");
@@ -1268,16 +1359,14 @@ class _Home extends State<Home> {
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          Phone()
-                                                  ));
+                                                          Phone()));
                                             } else if (serviceName[idx + 4] ==
                                                 '인터넷가입') {
                                               print("인터넷가입");
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          Internet()
-                                                  ));
+                                                          Internet()));
                                             }
                                           },
                                           elevation: 0.0,
@@ -1358,6 +1447,36 @@ class _Home extends State<Home> {
 
   String recoValue = "최신순";
   String pointValue = "최신순";
+
+  List<UserReco> userRecoList = List();
+
+  recoInit() async {
+    await provider.getRecoUser(dataStorage.user.idx).then((value) {
+      List<dynamic> data = json.decode(value)['data'];
+      for (int i = 0; i < data.length; i++) {
+        userRecoList.add(UserReco(
+          recoCode: data[i]['recoCode'],
+          point: data[i]['point'],
+          phone: data[i]['phone'],
+          id: data[i]['id'],
+          type: data[i]['type'],
+          name: data[i]['name'],
+          idx: data[i]['idx'],
+          autoSale: data[i]['autoSale'],
+          dl: data[i]['dl'],
+          signDate: data[i]['signDate'],
+          gender: data[i]['gender'],
+          recoPrice: data[i]['recoPrice'],
+          recoPerson: data[i]['recoPerson'],
+          pushRecoCode: data[i]['pushRecoCode'],
+          birthDay: data[i]['birthDay'],
+          recoType: data[i]['recoType'],
+          upName: data[i]['upName'],
+        ));
+      }
+      setState(() {});
+    });
+  }
 
   aRecommenderManagement() {
     return SingleChildScrollView(
@@ -1483,7 +1602,7 @@ class _Home extends State<Home> {
                     ),
                     whiteSpaceW(16),
                     Text(
-                      "${numberFormat.format(dataStorage.user.point)} NCP",
+                      "${numberFormat.format(dataStorage.user.recoPrice)} NCP",
                       style: TextStyle(
                           color: black,
                           fontSize: 14,
@@ -1540,6 +1659,19 @@ class _Home extends State<Home> {
                           onChanged: (value) {
                             setState(() {
                               recoValue = value;
+                              if (value == "최신순") {
+                                alignment = 0;
+                                userRecoList.sort((a, b) =>
+                                    b.signDate
+                                        .toString()
+                                        .compareTo(a.signDate.toString()));
+                              } else {
+                                alignment = 1;
+                                userRecoList.sort((a, b) =>
+                                    a.signDate
+                                        .toString()
+                                        .compareTo(b.signDate.toString()));
+                              }
                             });
                           },
                         ),
@@ -1564,7 +1696,7 @@ class _Home extends State<Home> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Image.asset(
-                            idx == 0
+                            userRecoList[idx].recoType == 0
                                 ? "assets/needsclear/resource/home/management/friend-first.png"
                                 : "assets/needsclear/resource/home/management/friend-second.png",
                             width: 32,
@@ -1575,8 +1707,21 @@ class _Home extends State<Home> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(resourceName[idx]),
-                              Text(idx.toString())
+                              Text(
+                                userRecoList[idx].name,
+                                style: TextStyle(
+                                    fontFamily: 'noto',
+                                    color: black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                userRecoList[idx].phone,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF888888),
+                                    fontFamily: 'noto'),
+                              )
                             ],
                           ),
                           Expanded(
@@ -1584,20 +1729,71 @@ class _Home extends State<Home> {
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [Text("날짜"), Text("By")],
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                userRecoList[idx].signDate.split(" ")[0],
+                                style: TextStyle(
+                                  fontFamily: 'noto',
+                                  color: Color(0xFF888888),
+                                  fontSize: 12,
+                                ),
+                              ),
+                              userRecoList[idx].recoType == 1
+                                  ? Text(
+                                "By ${userRecoList[idx].upName}",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontFamily: 'noto',
+                                    color: mainColor),
+                              )
+                                  : Container()
+                            ],
                           )
                         ],
                       ),
                     );
                   },
                   shrinkWrap: true,
-                  itemCount: resourceName.length,
+                  itemCount: userRecoList.length,
                 ),
               )
             ],
           )),
     );
+  }
+
+  saveLogInit() async {
+    await provider.selectSavelog(dataStorage.user.id).then((value) {
+      List<dynamic> saveLog = json.decode(value)['data'];
+      for (int i = 0; i < saveLog.length; i++) {
+        saveLogList.add(SaveLog(
+            name: saveLog[i]['name'],
+            type: saveLog[i]['type'],
+            id: saveLog[i]['id'],
+            date: saveLog[i]['date'],
+            phone: saveLog[i]['phone'],
+            point: saveLog[i]['point'],
+            saveType: saveLog[i]['saveType']));
+      }
+      setState(() {});
+    });
+  }
+
+  typeToString(type) {
+    if (type == 0)
+      return "회원가입 적립";
+    else if (type == 1)
+      return "추천인 회원가입";
+    else if (type == 2)
+      return "DL 환전";
+    else if (type == 3)
+      return "세탁서비스";
+    else if (type == 4)
+      return "대리운전";
+    else if (type == 5)
+      return "휴대폰 구매";
+    else if (type == 6) return "인터넷가입";
   }
 
   pointManagement() {
@@ -1738,7 +1934,7 @@ class _Home extends State<Home> {
                             ),
                             whiteSpaceW(12),
                             Text(
-                              "${numberFormat.format(1000000)} NCP",
+                              "${numberFormat.format(savePoint)} NCP",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'noto',
@@ -1771,7 +1967,7 @@ class _Home extends State<Home> {
                             ),
                             whiteSpaceW(12),
                             Text(
-                              "- ${numberFormat.format(1000000)} NCP",
+                              "- ${numberFormat.format(usePoint)} NCP",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'noto',
@@ -1833,6 +2029,19 @@ class _Home extends State<Home> {
                         onChanged: (value) {
                           setState(() {
                             pointValue = value;
+                            if (value == "최신순") {
+                              alignment = 0;
+                              saveLogList.sort((a, b) =>
+                                  b.date
+                                      .toString()
+                                      .compareTo(a.date.toString()));
+                            } else {
+                              alignment = 1;
+                              saveLogList.sort((a, b) =>
+                                  a.date
+                                      .toString()
+                                      .compareTo(b.date.toString()));
+                            }
                           });
                         },
                       ),
@@ -1843,8 +2052,164 @@ class _Home extends State<Home> {
             ),
             whiteSpaceW(16),
             // 리스트 추가
+            ListView.builder(
+              itemBuilder: (context, idx) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      saveLogList[idx].date.split(" ")[0],
+                      style: TextStyle(
+                          color: Color(0xFF888888),
+                          fontSize: 12,
+                          fontFamily: 'noto'),
+                    ),
+                    whiteSpaceH(12),
+                    Row(
+                      children: [
+                        Image.asset(
+                          saveLogList[idx].type == 0
+                              ? "assets/needsclear/resource/home/point/ncp-coin-plus.png"
+                              : "assets/needsclear/resource/home/point/ncp-coin-minus.png",
+                          width: 48,
+                          height: 48,
+                        ),
+                        whiteSpaceW(12),
+                        Text(
+                          typeToString(saveLogList[idx].saveType),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'noto',
+                              color: black,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Text(
+                          saveLogList[idx].type == 0
+                              ? "${numberFormat.format(
+                              saveLogList[idx].point)} NCP"
+                              : "- ${numberFormat.format(
+                              saveLogList[idx].point)} NCP",
+                          style: saveLogList[idx].type == 0
+                              ? TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: mainColor,
+                              fontFamily: 'noto',
+                              fontSize: 20)
+                              : TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF003355),
+                              fontFamily: 'noto',
+                              fontSize: 20),
+                        )
+                      ],
+                    ),
+                    whiteSpaceH(16)
+                  ],
+                );
+              },
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: saveLogList.length,
+            )
           ],
         ),
+      ),
+    );
+  }
+
+  eventInit() async {
+    await provider.getEvent().then((value) {
+      List<dynamic> event = json.decode(value)['data'];
+      for (int i = 0; i < event.length; i++) {
+        eventList.add(Event(
+            idx: event[i]['idx'],
+            title: event[i]['title'],
+            image: event[i]['image'],
+            createdAt: event[i]['created_at']));
+      }
+      setState(() {});
+    });
+  }
+
+  event() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: ListView.builder(
+        itemBuilder: (context, idx) {
+          return Container(
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            height: 88,
+            color: Color(0xFFF7F7F7),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                whiteSpaceW(16),
+                Expanded(
+                  child: Text(
+                    eventList[idx].title,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'noto',
+                        fontSize: 16,
+                        color: black),
+                  ),
+                ),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 40),
+                          child: Image.memory(
+                            base64.decode(eventList[idx].image.split(",")[1]),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 40,
+                          height: 20,
+                          color: white,
+                          child: Center(
+                            child: Text(
+                              eventList[idx]
+                                  .createdAt
+                                  .split(" ")[0]
+                                  .split("-")[1] +
+                                  "." +
+                                  eventList[idx]
+                                      .createdAt
+                                      .split(" ")[0]
+                                      .split("-")[2],
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 11,
+                                  fontFamily: 'noto'),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                whiteSpaceW(16)
+              ],
+            ),
+          );
+        },
+        itemCount: eventList.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
       ),
     );
   }

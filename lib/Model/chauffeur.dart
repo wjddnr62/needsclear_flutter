@@ -6,7 +6,7 @@ class Chauffeur{
   String id;
   String name;
   String phone;
-  String payment;
+  int payment;
   String gisaName;
   String gisaPhone;
   int type;

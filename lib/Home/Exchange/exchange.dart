@@ -1,5 +1,6 @@
 import 'package:aladdinmagic/Home/Exchange/exchangebreakdown.dart';
 import 'package:aladdinmagic/Model/datastorage.dart';
+import 'package:aladdinmagic/Provider/provider.dart';
 import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/showToast.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
@@ -25,7 +26,7 @@ class _Exchange extends State<Exchange> {
   void initState() {
     super.initState();
     point = dataStorage.user.point;
-    ncpController.text = "0";
+//    ncpController.text = "0";
   }
 
   @override
@@ -117,8 +118,16 @@ class _Exchange extends State<Exchange> {
                       autofocus: true,
                       onChanged: (value) {
                         setState(() {
-                          if (point < int.parse(value)) {
+                          if (point <= int.parse(value)) {
+                            print("point : $point, $value");
                             ncpController.text = point.toString();
+//                              ncpController.value = TextEditingValue(
+//                                  text: point.toString(),
+//                                  selection: TextSelection.fromPosition(TextPosition(offset: point.toString().length))
+//                              );
+                            print("ncp Text " + ncpController.text);
+                          } else {
+                            ncpController.text = "9999999999";
                           }
                         });
                       },
@@ -128,6 +137,7 @@ class _Exchange extends State<Exchange> {
                       style: TextStyle(fontSize: 16, color: black),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                          hintText: "0",
                           suffixText: "NCP",
                           suffixStyle: TextStyle(
                               fontSize: 16, color: black, fontFamily: 'noto'),
@@ -228,7 +238,7 @@ class _Exchange extends State<Exchange> {
                               point,
                               int.parse(ncpController.text),
                               dataStorage.user.dl,
-                              int.parse(ncpController.text) / 1000);
+                              int.parse(ncpController.text) / 1000.toInt());
                         }
 //                        serviceDialog(context);
                       },
@@ -253,13 +263,17 @@ class _Exchange extends State<Exchange> {
     );
   }
 
-  exchange(retentionNcp, deductionNcp, retentionDL, exchangeDL) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => ExchangeBreakdown(
-              retentionNcp: retentionNcp,
-              deductionNcp: deductionNcp,
-              retentionDL: retentionDL,
-              exchangeDL: exchangeDL,
-            )));
+  exchange(retentionNcp, deductionNcp, retentionDL, exchangeDL) async {
+    await provider.exchange(dataStorage.user.idx, exchangeDL).then((value) {
+      dataStorage.user.point = retentionNcp - deductionNcp;
+      dataStorage.user.dl = dataStorage.user.dl + exchangeDL;
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => ExchangeBreakdown(
+                retentionNcp: retentionNcp,
+                deductionNcp: deductionNcp,
+                retentionDL: retentionDL,
+                exchangeDL: exchangeDL,
+              )));
+    });
   }
 }

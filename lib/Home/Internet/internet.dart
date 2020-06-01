@@ -4,7 +4,6 @@ import 'package:aladdinmagic/Model/datastorage.dart';
 import 'package:aladdinmagic/Model/internet.dart' as mIt;
 import 'package:aladdinmagic/Model/user.dart';
 import 'package:aladdinmagic/Provider/provider.dart';
-import 'package:aladdinmagic/Util/numberFormat.dart';
 import 'package:aladdinmagic/Util/whiteSpace.dart';
 import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,8 @@ class _Internet extends State<Internet> {
   String internetValue = "전체";
   bool dataSet = false;
   List<mIt.Internet> internets = List();
+  bool viewOption = false;
+  int viewType = 0;
 
   getInternet() {
     Provider provider = Provider();
@@ -159,7 +160,8 @@ class _Internet extends State<Internet> {
                             elevation: 0,
                             style: TextStyle(
                                 color: black, fontSize: 14, fontFamily: 'noto'),
-                            items: <String>['전체', '접수완료', '완료'].map((value) {
+                            items: <String>['전체', '접수완료', '결제대기', '결제완료', '취소']
+                                .map((value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
@@ -175,6 +177,20 @@ class _Internet extends State<Internet> {
                             onChanged: (value) {
                               setState(() {
                                 internetValue = value;
+                                if (value == "전체") {
+                                  viewOption = false;
+                                } else {
+                                  viewOption = true;
+                                  if (value == "접수완료") {
+                                    viewType = 0;
+                                  } else if (value == "결제대기") {
+                                    viewType = 1;
+                                  } else if (value == "결제완료") {
+                                    viewType = 2;
+                                  } else if (value == "취소") {
+                                    viewType = 3;
+                                  }
+                                }
                               });
                             },
                           ),
@@ -191,146 +207,299 @@ class _Internet extends State<Internet> {
                       child: ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, idx) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => InternetBreakdown(
-                                            type: internets[idx].type,
+                          if (viewOption) {
+                            if (internets[idx].type == viewType) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              InternetBreakdown(
+                                                type: internets[idx].type,
                                             name: internets[idx].name,
                                             phone: internets[idx].phone,
                                             newsAgency:
-                                                internets[idx].applyNewsAgency,
+                                            internets[idx].applyNewsAgency,
                                             selectService:
-                                                internets[idx].applyService,
+                                            internets[idx].applyService,
                                           )),
-                                  (route) => false);
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  internets[idx].created_at.split(" ")[0],
-                                  style: TextStyle(
-                                      color: Color(0xFF888888),
-                                      fontFamily: 'noto',
-                                      fontSize: 12),
-                                ),
-                                whiteSpaceH(4),
-                                Row(
+                                          (route) => false);
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    internets[idx].type == 0
-                                        ? Image.asset(
-                                            "assets/needsclear/resource/internet/contract.png",
-                                            width: 48,
-                                            height: 48,
-                                          )
-                                        : internets[idx].type == 1
-                                            ? Image.asset(
-                                                "assets/needsclear/resource/internet/contract.png",
-                                                width: 48,
-                                                height: 48,
-                                              )
-                                            : internets[idx].type == 2
-                                                ? Image.asset(
-                                                    "assets/needsclear/resource/internet/end.png",
-                                                    width: 48,
-                                                    height: 48,
-                                                  )
-                                                : internets[idx].type == 3
-                                                    ? Image.asset(
-                                                        "assets/needsclear/resource/internet/end.png",
-                                                        width: 48,
-                                                        height: 48,
-                                                      )
-                                                    : Container(),
-                                    whiteSpaceW(12),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    Text(
+                                      internets[idx].created_at.split(" ")[0],
+                                      style: TextStyle(
+                                          color: Color(0xFF888888),
+                                          fontFamily: 'noto',
+                                          fontSize: 12),
+                                    ),
+                                    whiteSpaceH(4),
+                                    Row(
                                       children: [
-                                        Row(
+                                        internets[idx].type == 0
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/contract.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : internets[idx].type == 1
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/contract.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : internets[idx].type == 2
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/end.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : internets[idx].type == 3
+                                            ? Image.asset(
+                                          "assets/needsclear/resource/internet/end.png",
+                                          width: 48,
+                                          height: 48,
+                                        )
+                                            : Container(),
+                                        whiteSpaceW(12),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              "${internets[idx].applyNewsAgency}",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'noto',
-                                                  color: black,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                            whiteSpaceW(12),
-                                            Text(
-                                              internets[idx].type == 0
-                                                  ? "접수완료"
-                                                  : internets[idx].type == 1
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${internets[idx]
+                                                      .applyNewsAgency}",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'noto',
+                                                      color: black,
+                                                      fontWeight: FontWeight
+                                                          .w600),
+                                                ),
+                                                whiteSpaceW(12),
+                                                Text(
+                                                  internets[idx].type == 0
+                                                      ? "접수완료"
+                                                      : internets[idx].type == 1
                                                       ? "결제대기"
                                                       : internets[idx].type == 2
-                                                          ? "결제완료"
-                                                          : internets[idx]
-                                                                      .type ==
-                                                                  3
-                                                              ? "취소"
-                                                              : "",
-                                              style: internets[idx].type == 0
-                                                  ? TextStyle(
+                                                      ? "결제완료"
+                                                      : internets[idx]
+                                                      .type ==
+                                                      3
+                                                      ? "취소"
+                                                      : "",
+                                                  style: internets[idx].type ==
+                                                      0
+                                                      ? TextStyle(
                                                       color: Color(0xFFFFCC00),
                                                       fontFamily: 'noto',
                                                       fontSize: 12)
-                                                  : internets[idx].type == 1
+                                                      : internets[idx].type == 1
                                                       ? TextStyle(
-                                                          color:
-                                                              Color(0xFFFFCC00),
-                                                          fontFamily: 'noto',
-                                                          fontSize: 12)
+                                                      color:
+                                                      Color(0xFFFFCC00),
+                                                      fontFamily: 'noto',
+                                                      fontSize: 12)
                                                       : internets[idx].type == 2
-                                                          ? TextStyle(
-                                                              color: Color(
-                                                                  0xFF00AAFF),
-                                                              fontFamily:
-                                                                  'noto',
-                                                              fontSize: 12)
-                                                          : internets[idx]
-                                                                      .type ==
-                                                                  3
-                                                              ? TextStyle(
-                                                                  color: Color(
-                                                                      0xFF888888),
-                                                                  fontFamily:
-                                                                      'noto',
-                                                                  fontSize: 12)
-                                                              : TextStyle(
-                                                                  color: Color(
-                                                                      0xFFFFCC00),
-                                                                  fontFamily:
-                                                                      'noto',
-                                                                  fontSize: 12),
-                                            )
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFF00AAFF),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : internets[idx]
+                                                      .type ==
+                                                      3
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFF888888),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : TextStyle(
+                                                      color: Color(
+                                                          0xFFFFCC00),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12),
+                                                )
+                                              ],
+                                            ),
+                                            Text(
+                                              "${internets[idx].applyService}",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontFamily: 'noto',
+                                                  color: Color(0xFF888888)),
+                                            ),
                                           ],
                                         ),
-                                        Text(
-                                          "${internets[idx].applyService}",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: 'noto',
-                                              color: Color(0xFF888888)),
+                                        Expanded(
+                                          child: Container(),
                                         ),
+                                        Image.asset(
+                                          "assets/needsclear/resource/public/small-arrow.png",
+                                          width: 24,
+                                          height: 24,
+                                        )
                                       ],
                                     ),
-                                    Expanded(
-                                      child: Container(),
-                                    ),
-                                    Image.asset(
-                                      "assets/needsclear/resource/public/small-arrow.png",
-                                      width: 24,
-                                      height: 24,
-                                    )
+                                    whiteSpaceH(20)
                                   ],
                                 ),
-                                whiteSpaceH(20)
-                              ],
-                            ),
-                          );
+                              );
+                            }
+                          } else {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            InternetBreakdown(
+                                              type: internets[idx].type,
+                                              name: internets[idx].name,
+                                              phone: internets[idx].phone,
+                                              newsAgency:
+                                              internets[idx].applyNewsAgency,
+                                              selectService:
+                                              internets[idx].applyService,
+                                            )),
+                                        (route) => false);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    internets[idx].created_at.split(" ")[0],
+                                    style: TextStyle(
+                                        color: Color(0xFF888888),
+                                        fontFamily: 'noto',
+                                        fontSize: 12),
+                                  ),
+                                  whiteSpaceH(4),
+                                  Row(
+                                    children: [
+                                      internets[idx].type == 0
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/contract.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : internets[idx].type == 1
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/contract.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : internets[idx].type == 2
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/end.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : internets[idx].type == 3
+                                          ? Image.asset(
+                                        "assets/needsclear/resource/internet/end.png",
+                                        width: 48,
+                                        height: 48,
+                                      )
+                                          : Container(),
+                                      whiteSpaceW(12),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "${internets[idx]
+                                                    .applyNewsAgency}",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontFamily: 'noto',
+                                                    color: black,
+                                                    fontWeight: FontWeight
+                                                        .w600),
+                                              ),
+                                              whiteSpaceW(12),
+                                              Text(
+                                                internets[idx].type == 0
+                                                    ? "접수완료"
+                                                    : internets[idx].type == 1
+                                                    ? "결제대기"
+                                                    : internets[idx].type == 2
+                                                    ? "결제완료"
+                                                    : internets[idx]
+                                                    .type ==
+                                                    3
+                                                    ? "취소"
+                                                    : "",
+                                                style: internets[idx].type == 0
+                                                    ? TextStyle(
+                                                    color: Color(0xFFFFCC00),
+                                                    fontFamily: 'noto',
+                                                    fontSize: 12)
+                                                    : internets[idx].type == 1
+                                                    ? TextStyle(
+                                                    color:
+                                                    Color(0xFFFFCC00),
+                                                    fontFamily: 'noto',
+                                                    fontSize: 12)
+                                                    : internets[idx].type == 2
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFF00AAFF),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12)
+                                                    : internets[idx]
+                                                    .type ==
+                                                    3
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFF888888),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12)
+                                                    : TextStyle(
+                                                    color: Color(
+                                                        0xFFFFCC00),
+                                                    fontFamily:
+                                                    'noto',
+                                                    fontSize: 12),
+                                              )
+                                            ],
+                                          ),
+                                          Text(
+                                            "${internets[idx].applyService}",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontFamily: 'noto',
+                                                color: Color(0xFF888888)),
+                                          ),
+                                        ],
+                                      ),
+                                      Expanded(
+                                        child: Container(),
+                                      ),
+                                      Image.asset(
+                                        "assets/needsclear/resource/public/small-arrow.png",
+                                        width: 24,
+                                        height: 24,
+                                      )
+                                    ],
+                                  ),
+                                  whiteSpaceH(20)
+                                ],
+                              ),
+                            );
+                          }
+                          return Container();
                         },
                         shrinkWrap: true,
                         itemCount: internets.length,

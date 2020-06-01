@@ -406,7 +406,6 @@ class _InternetApply extends State<InternetApply> {
                 height: 44,
                 child: RaisedButton(
                   onPressed: () {
-                    dialog();
                     if (nameController.text == "") {
                       showToast("이름을 입력해주세요.");
                     } else if (middleController.text == "" ||
@@ -440,6 +439,8 @@ class _InternetApply extends State<InternetApply> {
       ),
     );
   }
+
+  bool touch = false;
 
   dialog() {
     return showDialog(
@@ -519,31 +520,53 @@ class _InternetApply extends State<InternetApply> {
                               height: 40,
                               child: RaisedButton(
                                 onPressed: () {
-                                  Provider provider = Provider();
-                                  User user = DataStorage.dataStorage.user;
-                                  provider.insertInternet(user.id, nameController.text, startPhone + middleController.text + endController.text, selectNewsAgency, serviceSelect).then((value) {
-                                    print(value);
-                                    var json = jsonDecode(value);
-                                    if(json['result'] == 1) {
+                                  if (!touch) {
+                                    touch = true;
+                                    Provider provider = Provider();
+                                    User user = DataStorage.dataStorage.user;
+                                    provider
+                                        .insertInternet(
+                                            user.id,
+                                            nameController.text,
+                                            startPhone +
+                                                middleController.text +
+                                                endController.text,
+                                            selectNewsAgency,
+                                            serviceSelect)
+                                        .then((value) {
+                                      print(value);
+                                      var json = jsonDecode(value);
+                                      if (json['result'] == 1) {
+                                        touch = false;
 
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              InternetBreakdown(
-                                                type: 0,
-                                                name: nameController.text,
-                                                phone: startPhone + middleController.text + endController.text,
-                                                newsAgency: selectNewsAgency,
-                                                selectService: serviceSelect,
-                                              )),
-                                      (route) => false);
-                                    }else {
-                                      print("안됨");
-                                    }
-                                  });
-
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        InternetBreakdown(
+                                                          type: 0,
+                                                          name: nameController
+                                                              .text,
+                                                          phone: startPhone +
+                                                              middleController
+                                                                  .text +
+                                                              endController
+                                                                  .text,
+                                                          newsAgency:
+                                                              selectNewsAgency,
+                                                          selectService:
+                                                              serviceSelect,
+                                                        )),
+                                                (route) => false);
+                                      } else {
+                                        touch = false;
+                                        print("안됨");
+                                      }
+                                    });
+                                  }
                                 },
                                 color: mainColor,
                                 shape: RoundedRectangleBorder(
