@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Model/notice.dart' as No;
-import 'package:aladdinmagic/Provider/provider.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Model/notice.dart' as No;
+import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/public/colors.dart';
 
 class Notice extends StatefulWidget {
   @override

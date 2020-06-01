@@ -1,5 +1,5 @@
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/public/colors.dart';
 
 mainMove(text, context) {
   return GestureDetector(

@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Model/chauffeur.dart' as mCh;
-import 'package:aladdinmagic/Model/datastorage.dart';
-import 'package:aladdinmagic/Model/user.dart';
-import 'package:aladdinmagic/Provider/provider.dart';
-import 'package:aladdinmagic/Util/numberFormat.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Model/chauffeur.dart' as mCh;
+import 'package:needsclear/Model/datastorage.dart';
+import 'package:needsclear/Model/user.dart';
+import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/numberFormat.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 import '../home.dart';
 import 'chauffeurapply.dart';

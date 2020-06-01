@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Home/home.dart';
-import 'package:aladdinmagic/Model/datastorage.dart';
-import 'package:aladdinmagic/Model/user.dart';
-import 'package:aladdinmagic/Model/usercheck.dart';
-import 'package:aladdinmagic/Provider/provider.dart';
-import 'package:aladdinmagic/SignUp/newsignup.dart';
-import 'package:aladdinmagic/Util/parameter.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:needsclear/Home/home.dart';
+import 'package:needsclear/Model/datastorage.dart';
+import 'package:needsclear/Model/user.dart';
+import 'package:needsclear/Model/usercheck.dart';
+import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/SignUp/newsignup.dart';
+import 'package:needsclear/Util/parameter.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/public/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class CombineLogin extends StatefulWidget {

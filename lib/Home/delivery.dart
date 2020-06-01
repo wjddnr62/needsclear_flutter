@@ -1,11 +1,11 @@
-import 'package:aladdinmagic/Model/savedata.dart';
-import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/mainMove.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/Provider/userprovider.dart';
+import 'package:needsclear/Util/mainMove.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class Delivery extends StatefulWidget {
   @override

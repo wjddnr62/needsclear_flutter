@@ -1,9 +1,9 @@
-import 'package:aladdinmagic/Model/savedata.dart';
-import 'package:aladdinmagic/SignUp/smsauth.dart';
-import 'package:aladdinmagic/Util/mainMove.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/SignUp/smsauth.dart';
+import 'package:needsclear/Util/mainMove.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class Settings extends StatefulWidget {
   @override

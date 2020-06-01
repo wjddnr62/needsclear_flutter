@@ -1,7 +1,7 @@
-import 'package:aladdinmagic/Util/mainMove.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Util/mainMove.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class MemberWFin extends StatefulWidget {
 

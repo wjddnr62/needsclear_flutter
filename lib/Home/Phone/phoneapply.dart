@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Home/Phone/phonebreakdown.dart';
-import 'package:aladdinmagic/Model/datastorage.dart';
-import 'package:aladdinmagic/Model/user.dart';
-import 'package:aladdinmagic/Provider/provider.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:needsclear/Home/Phone/phonebreakdown.dart';
+import 'package:needsclear/Model/datastorage.dart';
+import 'package:needsclear/Model/user.dart';
+import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class PhoneApply extends StatefulWidget {
   @override

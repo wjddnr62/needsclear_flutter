@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:needsclear/public/colors.dart';
 
 showToast(msg) {
   return Fluttertoast.showToast(

@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Home/Laundry/laundrybreakdown.dart';
-import 'package:aladdinmagic/Home/Laundry/laundryset.dart';
-import 'package:aladdinmagic/Model/datastorage.dart';
-import 'package:aladdinmagic/Model/dress.dart';
-import 'package:aladdinmagic/Model/washsum.dart';
-import 'package:aladdinmagic/Provider/provider.dart';
-import 'package:aladdinmagic/Util/numberFormat.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Home/Laundry/laundrybreakdown.dart';
+import 'package:needsclear/Home/Laundry/laundryset.dart';
+import 'package:needsclear/Model/datastorage.dart';
+import 'package:needsclear/Model/dress.dart';
+import 'package:needsclear/Model/washsum.dart';
+import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/numberFormat.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 import '../home.dart';
 

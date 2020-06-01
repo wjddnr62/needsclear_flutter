@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:aladdinmagic/Model/savedata.dart';
-import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/SignUp/smsauth.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_kakao_login/flutter_kakao_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
+import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/Provider/userprovider.dart';
+import 'package:needsclear/SignUp/smsauth.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -38,148 +33,149 @@ class _Login extends State<Login> {
 
   int passEdit = 0;
 
-  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+//  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
 
   bool loginBtnClick = false;
 
-  kakaoLogin() async {
-    print("login");
-    final KakaoLoginResult result = await kakaoSignIn.logIn();
-    switch (result.status) {
-      case KakaoLoginStatus.loggedIn:
-        print('LoggedIn by the user.\n'
-            '- UserID is ${result.account.userID}\n'
-            '- UserEmail is ${result.account.userEmail} ');
-
-        userProvider.snsLogin(result.account.userID, 1).then((value) {
-          if (value == 0) {
-            customDialog("등록되지 않은 회원 입니다.", 0);
-          } else {
-            if (autoLoginCheck) {
-              sharedInit(1, result.account.userID);
-            }
-
-            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
-                    (Route<dynamic> route) => false);
-          }
-        });
-
-        break;
-      case KakaoLoginStatus.loggedOut:
-        print('LoggedOut by the user.');
-        break;
-      case KakaoLoginStatus.error:
-        print('This is Kakao error message : ${result.errorMessage}');
-        if (result.errorMessage.contains("CANCELED_OPERATION")) {
-          showToast("로그인을 취소하였습니다.");
-        } else {
-          showToast("로그인 중 오류가 발생하였습니다. 다시시도해주세요.");
-        }
-        break;
-    }
-  }
+//  kakaoLogin() async {
+//    print("login");
+//    final KakaoLoginResult result = await kakaoSignIn.logIn();
+//    switch (result.status) {
+//      case KakaoLoginStatus.loggedIn:
+//        print('LoggedIn by the user.\n'
+//            '- UserID is ${result.account.userID}\n'
+//            '- UserEmail is ${result.account.userEmail} ');
+//
+//        userProvider.snsLogin(result.account.userID, 1).then((value) {
+//          if (value == 0) {
+//            customDialog("등록되지 않은 회원 입니다.", 0);
+//          } else {
+//            if (autoLoginCheck) {
+//              sharedInit(1, result.account.userID);
+//            }
+//
+//            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
+//                    (Route<dynamic> route) => false);
+//          }
+//        });
+//
+//        break;
+//      case KakaoLoginStatus.loggedOut:
+//        print('LoggedOut by the user.');
+//        break;
+//      case KakaoLoginStatus.error:
+//        print('This is Kakao error message : ${result.errorMessage}');
+//        if (result.errorMessage.contains("CANCELED_OPERATION")) {
+//          showToast("로그인을 취소하였습니다.");
+//        } else {
+//          showToast("로그인 중 오류가 발생하였습니다. 다시시도해주세요.");
+//        }
+//        break;
+//    }
+//  }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  Future<void> googleLogin() async {
-    try {
-      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
+//  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-
-      final AuthResult authResult = await _auth.signInWithCredential(credential);
-      final FirebaseUser user = authResult.user;
-
-      assert(!user.isAnonymous);
-      assert(await user.getIdToken() != null);
-
-      final FirebaseUser currentUser = await _auth.currentUser();
-      assert(user.uid == currentUser.uid);
-
-      if (user.uid == currentUser.uid) {
-        userProvider.snsLogin(currentUser.uid, 2).then((value) {
-          if (value == 0) {
-            customDialog("등록되지 않은 회원 입니다.", 0);
-          } else {
-            if (autoLoginCheck) {
-              sharedInit(2, currentUser.uid);
-            }
-
-            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
-                    (Route<dynamic> route) => false);
-          }
-        });
-      } else {
-        showToast("구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
-      }
-
-      print("currentUser : ${currentUser.uid}");
-    } catch (error) {
-      print("googleError : ${error}");
-      if (error.toString().contains("authentication") && error.toString().contains("null")) {
-        showToast("구글 로그인을 취소하였습니다.");
-      } else {
-        showToast("구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
-      }
-    }
-  }
-
-  final facebookLogin = FacebookLogin();
-
-  fbLogin() async {
-    final result = await facebookLogin.logIn(['email', 'public_profile']);
-
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
-        final profile = json.decode(graphResponse.body);
-        print("id : ${profile['id']}");
-        print("token : ${result.accessToken.token}");
-
-        userProvider.snsLogin(profile['id'], 3).then((value) {
-          if (value == 0) {
-            customDialog("등록되지 않은 회원 입니다.", 0);
-          } else {
-            if (autoLoginCheck) {
-              sharedInit(3, profile['id']);
-            }
-
-            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
-                    (Route<dynamic> route) => false);
-          }
-        });
-
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        showToast("facebook 로그인을 취소하였습니다.");
-        break;
-      case FacebookLoginStatus.error:
-        showToast("facebook 로그인 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
-        print("fbError : " + result.errorMessage.toString());
-        break;
-    }
-  }
-
-  Future<Null> _getAccountInfo() async {
-    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
-    if (result != null && result.status != KakaoLoginStatus.error) {
-      final KakaoAccountResult account = result.account;
-      final userID = account.userID;
-      final userEmail = account.userEmail;
-      final userPhoneNumber = account.userPhoneNumber;
-      final userDisplayID = account.userDisplayID;
-      final userNickname = account.userNickname;
-      // To-do Someting ...
-
-      print("userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
-    }
-  }
+//  Future<void> googleLogin() async {
+//    try {
+//      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+//      final GoogleSignInAuthentication googleSignInAuthentication =
+//      await googleSignInAccount.authentication;
+//
+//      final AuthCredential credential = GoogleAuthProvider.getCredential(
+//        accessToken: googleSignInAuthentication.accessToken,
+//        idToken: googleSignInAuthentication.idToken,
+//      );
+//
+//      final AuthResult authResult = await _auth.signInWithCredential(credential);
+//      final FirebaseUser user = authResult.user;
+//
+//      assert(!user.isAnonymous);
+//      assert(await user.getIdToken() != null);
+//
+//      final FirebaseUser currentUser = await _auth.currentUser();
+//      assert(user.uid == currentUser.uid);
+//
+//      if (user.uid == currentUser.uid) {
+//        userProvider.snsLogin(currentUser.uid, 2).then((value) {
+//          if (value == 0) {
+//            customDialog("등록되지 않은 회원 입니다.", 0);
+//          } else {
+//            if (autoLoginCheck) {
+//              sharedInit(2, currentUser.uid);
+//            }
+//
+//            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
+//                    (Route<dynamic> route) => false);
+//          }
+//        });
+//      } else {
+//        showToast("구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+//      }
+//
+//      print("currentUser : ${currentUser.uid}");
+//    } catch (error) {
+//      print("googleError : ${error}");
+//      if (error.toString().contains("authentication") && error.toString().contains("null")) {
+//        showToast("구글 로그인을 취소하였습니다.");
+//      } else {
+//        showToast("구글 로그인 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+//      }
+//    }
+//  }
+//
+//  final facebookLogin = FacebookLogin();
+//
+//  fbLogin() async {
+//    final result = await facebookLogin.logIn(['email', 'public_profile']);
+//
+//    switch (result.status) {
+//      case FacebookLoginStatus.loggedIn:
+//        final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
+//        final profile = json.decode(graphResponse.body);
+//        print("id : ${profile['id']}");
+//        print("token : ${result.accessToken.token}");
+//
+//        userProvider.snsLogin(profile['id'], 3).then((value) {
+//          if (value == 0) {
+//            customDialog("등록되지 않은 회원 입니다.", 0);
+//          } else {
+//            if (autoLoginCheck) {
+//              sharedInit(3, profile['id']);
+//            }
+//
+//            Navigator.of(context).pushNamedAndRemoveUntil("/Home",
+//                    (Route<dynamic> route) => false);
+//          }
+//        });
+//
+//        break;
+//      case FacebookLoginStatus.cancelledByUser:
+//        showToast("facebook 로그인을 취소하였습니다.");
+//        break;
+//      case FacebookLoginStatus.error:
+//        showToast("facebook 로그인 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
+//        print("fbError : " + result.errorMessage.toString());
+//        break;
+//    }
+//  }
+//
+//  Future<Null> _getAccountInfo() async {
+//    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
+//    if (result != null && result.status != KakaoLoginStatus.error) {
+//      final KakaoAccountResult account = result.account;
+//      final userID = account.userID;
+//      final userEmail = account.userEmail;
+//      final userPhoneNumber = account.userPhoneNumber;
+//      final userDisplayID = account.userDisplayID;
+//      final userNickname = account.userNickname;
+//      // To-do Someting ...
+//
+//      print("userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
+//    }
+//  }
 
   btnSet() {
     loginBtnClick = false;
@@ -706,7 +702,7 @@ class _Login extends State<Login> {
                                   print("kakaoLogin");
 //                                  serviceDialog("서비스 준비 중입니다.");
                                   if (!loginBtnClick) {
-                                    kakaoLogin();
+//                                    kakaoLogin();
                                     loginBtnClick = true;
                                     Timer(Duration(seconds: 2), btnSet);
                                   }
@@ -724,7 +720,7 @@ class _Login extends State<Login> {
                                   print("facebooeLogin");
 //                                  serviceDialog("서비스 준비 중입니다.");
                                   if (!loginBtnClick) {
-                                    fbLogin();
+//                                    fbLogin();
                                     loginBtnClick = true;
                                     Timer(Duration(seconds: 2), btnSet);
                                   }
@@ -742,7 +738,7 @@ class _Login extends State<Login> {
                                   print("googleLogin");
 //                                  serviceDialog("서비스 준비 중입니다.");
                                   if (!loginBtnClick) {
-                                    googleLogin();
+//                                    googleLogin();
                                     loginBtnClick = true;
                                     Timer(Duration(seconds: 2), btnSet);
                                   }

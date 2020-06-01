@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:aladdinmagic/DrawerMenu/memberwfin.dart';
-import 'package:aladdinmagic/Model/savedata.dart';
-import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/customDialog.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/DrawerMenu/memberwfin.dart';
+import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/Provider/userprovider.dart';
+import 'package:needsclear/Util/customDialog.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class SmsAuth extends StatefulWidget {
   int type;

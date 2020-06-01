@@ -1,8 +1,8 @@
-import 'package:aladdinmagic/Home/Phone/phone.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/Home/Phone/phone.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class PhoneBreakdown extends StatefulWidget {
   final int type;

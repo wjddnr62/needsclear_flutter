@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:aladdinmagic/Login/combinelogin.dart';
-import 'package:aladdinmagic/Model/users.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Login/combinelogin.dart';
+import 'package:needsclear/Model/users.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';

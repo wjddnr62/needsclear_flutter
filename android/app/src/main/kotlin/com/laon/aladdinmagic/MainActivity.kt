@@ -1,4 +1,4 @@
-package com.laon.aladdinmagic
+package com.laon.needsclear
 
 import android.os.Bundle
 

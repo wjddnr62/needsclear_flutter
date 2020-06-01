@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aladdinmagic/Model/users.dart';
-import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/text.dart';
-import 'package:aladdinmagic/public/colors.dart';
-import 'package:aladdinmagic/public/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Model/users.dart';
+import 'package:needsclear/Provider/userprovider.dart';
+import 'package:needsclear/Util/text.dart';
+import 'package:needsclear/public/colors.dart';
+import 'package:needsclear/public/routes.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'Util/whiteSpace.dart';

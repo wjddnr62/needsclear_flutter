@@ -1,10 +1,10 @@
-import 'package:aladdinmagic/Model/datastorage.dart';
-import 'package:aladdinmagic/Util/numberFormat.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:needsclear/Model/datastorage.dart';
+import 'package:needsclear/Util/numberFormat.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 
 class DlSend extends StatefulWidget {
   @override

@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:945453806910:android:2690840af3d69cb17c686f",
         "android_client_info": {
-          "package_name": "com.laon.aladdinmagic"
+          "package_name": "com.laon.needsclear"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "945453806910-vpuph7l46o1km3v9o2r1qoqftumbr08g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.laon.aladdinmagic",
+            "package_name": "com.laon.needsclear",
             "certificate_hash": "354b8a374c79f41835296377e15358bcba476e83"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "945453806910-n47ah77kfj6v5485t0801jn2tbq9ec7l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.laon.aladdinmagic",
+            "package_name": "com.laon.needsclear",
             "certificate_hash": "0b56595581f733e57928ce49249fa0b5a9d07551"
           }
         },
@@ -34,7 +34,7 @@
           "client_id": "945453806910-ufv46s89hdp5fvjvhnb9anrqg1r4030c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.laon.aladdinmagic",
+            "package_name": "com.laon.needsclear",
             "certificate_hash": "e0a3cbf8a635b9cadb9961d60f46e879b7fbf7c9"
           }
         },

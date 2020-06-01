@@ -1,14 +1,14 @@
-import 'package:aladdinmagic/Home/withdrawfin.dart';
-import 'package:aladdinmagic/Model/savedata.dart';
-import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/customDialog.dart';
-import 'package:aladdinmagic/Util/mainMove.dart';
-import 'package:aladdinmagic/Util/numberFormat.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/Home/withdrawfin.dart';
+import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/Provider/userprovider.dart';
+import 'package:needsclear/Util/customDialog.dart';
+import 'package:needsclear/Util/mainMove.dart';
+import 'package:needsclear/Util/numberFormat.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

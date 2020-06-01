@@ -1,19 +1,13 @@
-import 'dart:convert';
-
-import 'package:aladdinmagic/Model/savedata.dart';
-import 'package:aladdinmagic/Provider/userprovider.dart';
-import 'package:aladdinmagic/Util/showToast.dart';
-import 'package:aladdinmagic/Util/whiteSpace.dart';
-import 'package:aladdinmagic/public/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_kakao_login/flutter_kakao_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/Provider/userprovider.dart';
+import 'package:needsclear/Util/showToast.dart';
+import 'package:needsclear/Util/whiteSpace.dart';
+import 'package:needsclear/public/colors.dart';
 import 'package:random_string/random_string.dart';
 
 class SignUp extends StatefulWidget {
@@ -37,8 +31,8 @@ class _SignUp extends State<SignUp> {
   bool nextPage = false;
   int sex = 0;
 
-  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
-  final facebookLogin = FacebookLogin();
+//  FlutterKakaoLogin kakaoSignIn = FlutterKakaoLogin();
+//  final facebookLogin = FacebookLogin();
 
   TextEditingController _idController = TextEditingController();
   TextEditingController _passController = TextEditingController();
@@ -68,53 +62,54 @@ class _SignUp extends State<SignUp> {
   bool snsLogin = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  Future<void> _handleSignIn() async {
-    try {
-      final GoogleSignInAccount googleSignInAccount =
-          await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+//  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-
-      final AuthResult authResult =
-          await _auth.signInWithCredential(credential);
-      final FirebaseUser user = authResult.user;
-
-      assert(!user.isAnonymous);
-      assert(await user.getIdToken() != null);
-
-      final FirebaseUser currentUser = await _auth.currentUser();
-      assert(user.uid == currentUser.uid);
-
-      if (user.uid == currentUser.uid) {
-        _saveData.id = currentUser.uid;
-        setState(() {
-          nextPage = true;
-        });
-      } else {
-        showToast("구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
-        Navigator.of(context).pop();
-      }
-
-      print("currentUser : ${currentUser.uid}");
-    } catch (error) {
-      print("googleError : ${error}");
-      if (error.toString().contains("authentication") &&
-          error.toString().contains("null")) {
-        showToast("구글 회원가입을 취소하였습니다.");
-        Navigator.of(context).pop();
-      } else {
-        showToast("구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
-        Navigator.of(context).pop();
-      }
-    }
-  }
+//  Future<void> _handleSignIn() async {
+//    try {
+//      final GoogleSignInAccount googleSignInAccount =
+//          await googleSignIn.signIn();
+//      final GoogleSignInAuthentication googleSignInAuthentication =
+//          await googleSignInAccount.authentication;
+//
+//      final AuthCredential credential = GoogleAuthProvider.getCredential(
+//        accessToken: googleSignInAuthentication.accessToken,
+//        idToken: googleSignInAuthentication.idToken,
+//      );
+//
+//      final AuthResult authResult =
+//          await _auth.signInWithCredential(credential);
+//      final FirebaseUser user = authResult.user;
+//
+//      assert(!user.isAnonymous);
+//      assert(await user.getIdToken() != null);
+//
+//      final FirebaseUser currentUser = await _auth.currentUser();
+//      assert(user.uid == currentUser.uid);
+//
+//      if (user.uid == currentUser.uid) {
+//        _saveData.id = currentUser.uid;
+//        setState(() {
+//          nextPage = true;
+//        });
+//      } else {
+//        showToast("구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+//        Navigator.of(context).pop();
+//      }
+//
+//      print("currentUser : ${currentUser.uid}");
+//    } catch (error) {
+//      print("googleError : ${error}");
+//      if (error.toString().contains("authentication") &&
+//          error.toString().contains("null")) {
+//        showToast("구글 회원가입을 취소하였습니다.");
+//        Navigator.of(context).pop();
+//      } else {
+//        showToast("구글 회원가입 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
+//        Navigator.of(context).pop();
+//      }
+//    }
+//  }
 
 //  Future<void> _handleSignOut() async {
 //    _googleSignIn.disconnect();
@@ -918,85 +913,85 @@ class _SignUp extends State<SignUp> {
           );
   }
 
-  Future<Null> _getAccountInfo() async {
-    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
-    if (result != null && result.status != KakaoLoginStatus.error) {
-      final KakaoAccountResult account = result.account;
-      final userID = account.userID;
-      final userEmail = account.userEmail;
-      final userPhoneNumber = account.userPhoneNumber;
-      final userDisplayID = account.userDisplayID;
-      final userNickname = account.userNickname;
-      // To-do Someting ...
+//  Future<Null> _getAccountInfo() async {
+//    final KakaoLoginResult result = await kakaoSignIn.getUserMe();
+//    if (result != null && result.status != KakaoLoginStatus.error) {
+//      final KakaoAccountResult account = result.account;
+//      final userID = account.userID;
+//      final userEmail = account.userEmail;
+//      final userPhoneNumber = account.userPhoneNumber;
+//      final userDisplayID = account.userDisplayID;
+//      final userNickname = account.userNickname;
+//      // To-do Someting ...
+//
+//      print(
+//          "userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
+//    }
+//  }
 
-      print(
-          "userID : ${userID}, userEmail : ${userEmail}, userPhoneNumber : ${userPhoneNumber}, userDisplayId : ${userDisplayID}, userNickName : ${userNickname}");
-    }
-  }
-
-  kakaoLogin() async {
-    print("login");
-    final KakaoLoginResult result = await kakaoSignIn.logIn();
-    switch (result.status) {
-      case KakaoLoginStatus.loggedIn:
-//        _getAccessToken();
-//        _getAccountInfo();
-        print('LoggedIn by the user.\n'
-            '- UserID is ${result.account.userID}\n'
-            '- UserEmail is ${result.account.userEmail} ');
-
-        _saveData.id = result.account.userID;
-        _saveData.snsEmail = result.account.userEmail;
-
-        setState(() {
-          nextPage = true;
-        });
-
-        break;
-      case KakaoLoginStatus.loggedOut:
-        print('LoggedOut by the user.');
-        break;
-      case KakaoLoginStatus.error:
-        print('This is Kakao error message : ${result.errorMessage}');
-        if (result.errorMessage.contains("CANCELED_OPERATION")) {
-          showToast("회원가입을 취소하였습니다.");
-          Navigator.of(context).pop();
-        } else {
-          showToast("회원가입 중 오류가 발생하였습니다. 다시시도해주세요.");
-          Navigator.of(context).pop();
-        }
-        break;
-    }
-  }
-
-  fbLogin() async {
-    final result = await facebookLogin.logIn(['email', 'public_profile']);
-
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
-        final profile = json.decode(graphResponse.body);
-        print("id : ${profile['id']}");
-        print("token : ${result.accessToken.token}");
-        if (profile['id'] != null) {
-          _saveData.id = profile['id'];
-          setState(() {
-            nextPage = true;
-          });
-        }
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        showToast("facebook 회원가입을 취소하였습니다.");
-        Navigator.of(context).pop();
-        break;
-      case FacebookLoginStatus.error:
-        showToast("facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
-        print("fbError : " + result.errorMessage.toString());
-        Navigator.of(context).pop();
-        break;
-    }
-  }
+//  kakaoLogin() async {
+//    print("login");
+//    final KakaoLoginResult result = await kakaoSignIn.logIn();
+//    switch (result.status) {
+//      case KakaoLoginStatus.loggedIn:
+////        _getAccessToken();
+////        _getAccountInfo();
+//        print('LoggedIn by the user.\n'
+//            '- UserID is ${result.account.userID}\n'
+//            '- UserEmail is ${result.account.userEmail} ');
+//
+//        _saveData.id = result.account.userID;
+//        _saveData.snsEmail = result.account.userEmail;
+//
+//        setState(() {
+//          nextPage = true;
+//        });
+//
+//        break;
+//      case KakaoLoginStatus.loggedOut:
+//        print('LoggedOut by the user.');
+//        break;
+//      case KakaoLoginStatus.error:
+//        print('This is Kakao error message : ${result.errorMessage}');
+//        if (result.errorMessage.contains("CANCELED_OPERATION")) {
+//          showToast("회원가입을 취소하였습니다.");
+//          Navigator.of(context).pop();
+//        } else {
+//          showToast("회원가입 중 오류가 발생하였습니다. 다시시도해주세요.");
+//          Navigator.of(context).pop();
+//        }
+//        break;
+//    }
+//  }
+//
+//  fbLogin() async {
+//    final result = await facebookLogin.logIn(['email', 'public_profile']);
+//
+//    switch (result.status) {
+//      case FacebookLoginStatus.loggedIn:
+//        final graphResponse = await http.get(
+//            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${result.accessToken.token}');
+//        final profile = json.decode(graphResponse.body);
+//        print("id : ${profile['id']}");
+//        print("token : ${result.accessToken.token}");
+//        if (profile['id'] != null) {
+//          _saveData.id = profile['id'];
+//          setState(() {
+//            nextPage = true;
+//          });
+//        }
+//        break;
+//      case FacebookLoginStatus.cancelledByUser:
+//        showToast("facebook 회원가입을 취소하였습니다.");
+//        Navigator.of(context).pop();
+//        break;
+//      case FacebookLoginStatus.error:
+//        showToast("facebook 회원가입 중 오류가 발생하였습니다. 잠시 후에 다시 시도해주세요.");
+//        print("fbError : " + result.errorMessage.toString());
+//        Navigator.of(context).pop();
+//        break;
+//    }
+//  }
 
 //  Future<Null> _getAccessToken() async {
 //    final KakaoAccessToken accessToken = await (kakaoSignIn.currentAccessToken);
@@ -1444,20 +1439,20 @@ class _SignUp extends State<SignUp> {
     } else if (type == 1) {
 //      kakaoLogOut();
       if (!snsLogin) {
-        kakaoLogin();
+//        kakaoLogin();
         snsLogin = true;
       }
       return nextPage ? snsNextPage(2) : Container();
     } else if (type == 2) {
       if (!snsLogin) {
-        _handleSignIn();
+//        _handleSignIn();
         snsLogin = true;
       }
 
       return nextPage ? snsNextPage(3) : Container();
     } else if (type == 3) {
       if (!snsLogin) {
-        fbLogin();
+//        fbLogin();
         snsLogin = true;
       }
 

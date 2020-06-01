@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:aladdinmagic/Util/parameter.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/Util/parameter.dart';
 
 class Provider {
   Client client = Client();

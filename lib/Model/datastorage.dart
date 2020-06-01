@@ -1,5 +1,5 @@
-import 'package:aladdinmagic/Model/pointmanage.dart';
-import 'package:aladdinmagic/Model/user.dart';
+import 'package:needsclear/Model/pointmanage.dart';
+import 'package:needsclear/Model/user.dart';
 
 class DataStorage {
   static final DataStorage dataStorage = DataStorage._internal();

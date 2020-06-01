@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:aladdinmagic/Model/savedata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/Model/savedata.dart';
 
 class UserProvider {
   SaveData saveData = SaveData();
