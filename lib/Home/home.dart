@@ -33,6 +33,7 @@ import 'Dl/dl.dart';
 import 'Inquiry/inquiry.dart';
 import 'Notice/notice.dart';
 import 'Phone/phone.dart';
+import 'Premium/premium.dart';
 import 'Terms/Terms.dart';
 
 class Home extends StatefulWidget {
@@ -311,7 +312,7 @@ class _Home extends State<Home> {
             } else if (name == "알라딘박스") {
               setState(() {
                 initialUrl =
-                "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko";
+                    "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko";
                 viewPage = 4;
               });
 //              await launch(
@@ -518,19 +519,19 @@ class _Home extends State<Home> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: dataStorage.user.type == 0
-                                ? Container()
-                                : Image.asset(
-                              "assets/needsclear/resource/home/pbm.png",
-                              width: 24,
-                              height: 24,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
+//                        Expanded(
+//                          child: Align(
+//                            alignment: Alignment.centerRight,
+//                            child: dataStorage.user.type == 0
+//                                ? Container()
+//                                : Image.asset(
+//                              "assets/needsclear/resource/home/pbm.png",
+//                              width: 24,
+//                              height: 24,
+//                              fit: BoxFit.contain,
+//                            ),
+//                          ),
+//                        ),
                         Align(
                           alignment: Alignment.bottomRight,
                           child: GestureDetector(
@@ -558,19 +559,26 @@ class _Home extends State<Home> {
                     .size
                     .width,
                 height: 56,
-                color: Color(0xFFF7F7F7),
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Row(
-                  children: [
-                    Text(
-                      "프리미엄 회원 모집안내!",
-                      style: TextStyle(
-                          color: Color(0xFF444444),
-                          fontSize: 14,
-                          fontFamily: 'noto',
-                          fontWeight: FontWeight.w600),
-                    )
-                  ],
+                child: RaisedButton(
+                  color: Color(0xFFF7F7F7),
+                  elevation: 0.0,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Premium()));
+                  },
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  child: Row(
+                    children: [
+                      Text(
+                        "프리미엄 회원 모집안내!",
+                        style: TextStyle(
+                            color: Color(0xFF444444),
+                            fontSize: 14,
+                            fontFamily: 'noto',
+                            fontWeight: FontWeight.w600),
+                      )
+                    ],
+                  ),
                 ),
               ),
               whiteSpaceH(12),
@@ -1352,7 +1360,7 @@ class _Home extends State<Home> {
                                             } else if (serviceName[idx + 4] ==
                                                 '퀵배송') {
                                               print("퀵배송");
-                                              await launch("tel:15888290");
+                                              dialog("15888290");
                                             } else if (serviceName[idx + 4] ==
                                                 '휴대폰 구매') {
                                               print("휴대폰 구매");
@@ -2212,5 +2220,106 @@ class _Home extends State<Home> {
         physics: NeverScrollableScrollPhysics(),
       ),
     );
+  }
+
+  dialog(phone) {
+    return showDialog(
+        barrierDismissible: false,
+        context: (context),
+        builder: (_) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0),
+            ),
+            backgroundColor: white,
+            child: Container(
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(
+                  color: white, borderRadius: BorderRadius.circular(0)),
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        whiteSpaceH(20),
+                        Text(
+                          "서비스 이용을 위한\n연락처로 연결됩니다.",
+                          style: TextStyle(
+                              fontSize: 14, fontFamily: 'noto', color: black),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              height: 40,
+                              child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                color: Color(0xFFF7F7F8),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(0))),
+                                child: Text(
+                                  "취소",
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      color: black,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              height: 40,
+                              child: RaisedButton(
+                                onPressed: () async {
+                                  await launch("tel:$phone");
+                                },
+                                color: mainColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(0)),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "확인",
+                                    style: TextStyle(
+                                        color: white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

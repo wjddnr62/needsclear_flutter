@@ -5,12 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:needsclear/Model/users.dart';
 import 'package:needsclear/Provider/userprovider.dart';
-import 'package:needsclear/Util/text.dart';
 import 'package:needsclear/public/colors.dart';
 import 'package:needsclear/public/routes.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'Util/whiteSpace.dart';
 
 void main() => runApp(MaterialApp(
       home: Splash(),
@@ -118,22 +115,23 @@ class _Splash extends State<Splash> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        padding: EdgeInsets.all(40),
+//        padding: EdgeInsets.all(40),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            whiteSpaceH(80),
+//            whiteSpaceH(80),
             Image.asset(
-              "assets/icon/logo.png",
+              "assets/icon/logo.jpg",
               fit: BoxFit.contain,
-              width: 100,
+              width: 120,
             ),
-            whiteSpaceH(24),
-            customText(StyleCustom(
-                text: "생활서비스의\n모든 것",
-                fontSize: 14,
-                fontWeight: FontWeight.w600
-            ))
+//            whiteSpaceH(24),
+//            customText(StyleCustom(
+//                text: "생활서비스의\n모든 것",
+//                fontSize: 14,
+//                fontWeight: FontWeight.w600
+//            ))
 //            whiteSpaceH(MediaQuery.of(context).size.height / 5),
 //            Image.asset(
 //              "assets/appicon/app_icon.png",

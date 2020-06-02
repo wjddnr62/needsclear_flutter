@@ -27,6 +27,12 @@ class Provider {
 
 //  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
 
+  Future<String> selectPremium() async {
+    final response = await client.get("${needsUrl}api/admin/select-premium");
+
+    return utf8.decode(response.bodyBytes);
+  }
+
   Future<String> selectInquiry(id) async {
     final response =
         await client.get("$needsUrl$inquiryUrl/app-select-inquiry?id=$id");

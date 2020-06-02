@@ -29,6 +29,8 @@ class _Exchange extends State<Exchange> {
 //    ncpController.text = "0";
   }
 
+  bool pointInput = true;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -115,20 +117,39 @@ class _Exchange extends State<Exchange> {
                     child: TextFormField(
                       maxLines: 1,
                       controller: ncpController,
-                      autofocus: true,
+                      maxLength: point.toString().length,
                       onChanged: (value) {
                         setState(() {
-                          if (point <= int.parse(value)) {
-                            print("point : $point, $value");
-                            ncpController.text = point.toString();
-//                              ncpController.value = TextEditingValue(
-//                                  text: point.toString(),
-//                                  selection: TextSelection.fromPosition(TextPosition(offset: point.toString().length))
-//                              );
-                            print("ncp Text " + ncpController.text);
-                          } else {
-                            ncpController.text = "9999999999";
+                          if (!pointInput) {
+                            if (point.toString().length > value.length) {
+                              pointInput = true;
+                            }
                           }
+
+                          if (!pointInput) {
+                            ncpController.selection = TextSelection.collapsed(
+                                offset: point.toString().length);
+                            ncpController.text = point.toString();
+                          } else {
+                            if (point.toString().length <= value.length) {
+                              print("test");
+                              if (point <= int.parse(value)) {
+                                print("check");
+//                                ncpController.selection =C
+//
+
+                                setState(() {
+                                  ncpController.text = point.toString();
+                                });
+
+                                pointInput = false;
+                              }
+                            }
+                          }
+//                          if (point < int.parse(value)) {
+//                            print("point : $point, $value");
+//                            ncpController.text = point.toString();
+//                          }
                         });
                       },
                       inputFormatters: <TextInputFormatter>[
@@ -137,6 +158,7 @@ class _Exchange extends State<Exchange> {
                       style: TextStyle(fontSize: 16, color: black),
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
+                          counterText: "",
                           hintText: "0",
                           suffixText: "NCP",
                           suffixStyle: TextStyle(
