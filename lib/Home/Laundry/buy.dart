@@ -133,6 +133,7 @@ class _Buy extends State<Buy> {
           await provider
               .insertWash(
                   collectionType: widget.collectionType,
+                  washType: widget.collectionType,
                   id: dataStorage.user.id,
                   phone: dataStorage.user.phone,
                   name: dataStorage.user.name,

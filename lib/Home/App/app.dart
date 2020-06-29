@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -18,6 +19,8 @@ class _App extends State<App> {
       appBar: appBar = AppBar(
         backgroundColor: white,
         elevation: 0.0,
+        centerTitle: true,
+        title: mainMoveLogo(context),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:needsclear/Model/datastorage.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
@@ -35,15 +36,7 @@ class _DlSend extends State<DlSend> {
         ),
         elevation: 1.0,
         centerTitle: true,
-        title: Text(
-          "전송하기",
-          style: TextStyle(
-            fontSize: 14,
-            fontFamily: 'noto',
-            color: black,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: mainMove("전송하기", context),
       ),
       body: SingleChildScrollView(
         child: Padding(

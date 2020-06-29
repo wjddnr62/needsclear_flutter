@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -53,14 +54,7 @@ class _ExchangeBreakdown extends State<ExchangeBreakdown> {
             ),
           ),
           centerTitle: true,
-          title: Text(
-            "환전 내역",
-            style: TextStyle(
-                fontFamily: 'noto',
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: black),
-          ),
+          title: mainMove("환전 내역", context),
         ),
         body: SingleChildScrollView(
           child: Padding(

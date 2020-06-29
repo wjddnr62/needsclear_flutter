@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:needsclear/Home/Exchange/exchangebreakdown.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
@@ -57,14 +58,7 @@ class _Exchange extends State<Exchange> {
               height: 24,
             ),
           ),
-          title: Text(
-            "환전하기",
-            style: TextStyle(
-                fontFamily: 'noto',
-                color: black,
-                fontWeight: FontWeight.w600,
-                fontSize: 14),
-          ),
+          title: mainMove("환전하기", context),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -120,37 +114,40 @@ class _Exchange extends State<Exchange> {
                       maxLength: point.toString().length,
                       onChanged: (value) {
                         setState(() {
-                          if (!pointInput) {
-                            if (point.toString().length > value.length) {
-                              pointInput = true;
-                            }
-                          }
-
-                          if (!pointInput) {
-                            ncpController.selection = TextSelection.collapsed(
-                                offset: point.toString().length);
-                            ncpController.text = point.toString();
-                          } else {
-                            if (point.toString().length <= value.length) {
-                              print("test");
-                              if (point <= int.parse(value)) {
-                                print("check");
-//                                ncpController.selection =C
-//
-
-                                setState(() {
-                                  ncpController.text = point.toString();
-                                });
-
-                                pointInput = false;
-                              }
-                            }
-                          }
-//                          if (point < int.parse(value)) {
-//                            print("point : $point, $value");
-//                            ncpController.text = point.toString();
-//                          }
+                          if (int.parse(value) >= 1000) {}
                         });
+//                        setState(() {
+//                          if (!pointInput) {
+//                            if (point.toString().length > value.length) {
+//                              pointInput = true;
+//                            }
+//                          }
+//
+//                          if (!pointInput) {
+//                            ncpController.selection = TextSelection.collapsed(
+//                                offset: point.toString().length);
+//                            ncpController.text = point.toString();
+//                          } else {
+//                            if (point.toString().length <= value.length) {
+//                              print("test");
+//                              if (point <= int.parse(value)) {
+//                                print("check");
+////                                ncpController.selection =C
+////
+//
+//                                setState(() {
+//                                  ncpController.text = point.toString();
+//                                });
+//
+//                                pointInput = false;
+//                              }
+//                            }
+//                          }
+////                          if (point < int.parse(value)) {
+////                            print("point : $point, $value");
+////                            ncpController.text = point.toString();
+////                          }
+//                        });
                       },
                       inputFormatters: <TextInputFormatter>[
                         WhitelistingTextInputFormatter.digitsOnly
@@ -255,6 +252,8 @@ class _Exchange extends State<Exchange> {
                           showToast("1000 NCP 부터 환전 가능합니다.");
                         } else if (int.parse(ncpController.text) % 1000 != 0) {
                           showToast("1000 NCP 단위로 환전 가능합니다.");
+                        } else if (point < int.parse(ncpController.text)) {
+                          showToast("가지고 있는 포인트보다\n많은 포인트에 환전은 불가합니다.");
                         } else {
                           exchange(
                               point,

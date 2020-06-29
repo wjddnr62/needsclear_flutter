@@ -9,7 +9,24 @@ mainMove(text, context) {
     },
     child: Text(
       text,
-      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: black),
+      style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: black,
+          fontFamily: 'noto'),
+    ),
+  );
+}
+
+mainMoveLogo(context) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil("/Home", (Route<dynamic> route) => false);
+    },
+    child: Image.asset(
+      "assets/icon/logolong.png",
+      fit: BoxFit.cover,
     ),
   );
 }

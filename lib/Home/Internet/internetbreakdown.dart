@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:needsclear/Home/Phone/phone.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -61,14 +62,7 @@ class _InternetBreakdown extends State<InternetBreakdown> {
         appBar: AppBar(
           backgroundColor: white,
           centerTitle: true,
-          title: Text(
-            "인터넷 신청 내역",
-            style: TextStyle(
-                color: black,
-                fontFamily: 'noto',
-                fontSize: 14,
-                fontWeight: FontWeight.w600),
-          ),
+          title: mainMove("인터넷 신청 내역", context),
           elevation: 1.0,
           leading: IconButton(
             onPressed: () {

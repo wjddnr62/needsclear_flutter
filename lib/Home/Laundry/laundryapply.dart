@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:needsclear/Model/dress.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
@@ -88,14 +89,7 @@ class _LaundryApply extends State<LaundryApply> {
             ),
           ),
           centerTitle: true,
-          title: Text(
-            "세탁신청",
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: black,
-                fontFamily: 'noto',
-                fontSize: 14),
-          ),
+          title: mainMove("세탁신청", context),
         ),
         backgroundColor: white,
         body: SingleChildScrollView(

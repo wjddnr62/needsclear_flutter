@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:needsclear/Model/dress.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -107,14 +108,7 @@ class _LaundryBreakDown extends State<LaundryBreakDown> {
               height: 24,
             ),
           ),
-          title: Text(
-            "세탁 내역",
-            style: TextStyle(
-                color: black,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'noto',
-                fontSize: 14),
-          ),
+          title: mainMove("세탁 내역", context),
         ),
         body: SingleChildScrollView(
           child: Column(

@@ -7,11 +7,13 @@ import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/dress.dart';
 import 'package:needsclear/Model/washsum.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
 import '../home.dart';
+import 'laundryUseGuide.dart';
 
 class Laundry extends StatefulWidget {
   @override
@@ -33,11 +35,11 @@ class _Laundry extends State<Laundry> {
       List<dynamic> data = await json.decode(value)['data'];
       print(data);
       Wash wash;
-      List<Laundries> laundries = List();
+
       for (int i = 0; i < data.length; i++) {
         List<dynamic> laundryData = data[i]['laundries'];
         print("laundryData : $laundryData");
-
+        List<Laundries> laundries = List();
         wash = Wash(
             idx: data[i]['wash']['idx'],
             collectionType: data[i]['wash']['collectionType'],
@@ -92,11 +94,13 @@ class _Laundry extends State<Laundry> {
         appBar: appBar = AppBar(
           backgroundColor: white,
           elevation: 0.0,
+          centerTitle: true,
+          title: mainMoveLogo(context),
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => Home()),
-                  (route) => false);
+                      (route) => false);
             },
             icon: Image.asset(
               "assets/needsclear/resource/public/prev.png",
@@ -110,64 +114,84 @@ class _Laundry extends State<Laundry> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: MediaQuery.of(context).size.width,
-                height: 96,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 padding: EdgeInsets.all(16),
                 color: Color(0xFFF7F7F7),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "세탁서비스",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'noto',
-                                fontSize: 20,
-                                color: black),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "세탁서비스",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'noto',
+                                    fontSize: 20,
+                                    color: black),
+                              ),
+                              whiteSpaceH(5),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => LaundryUseGuide()));
+                                },
+                                child: Text(
+                                  "이용 가이드 >",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: 'noto',
+                                      color: black),
+                                ),
+                              )
+                            ],
                           ),
-                          whiteSpaceH(5),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => LaundrySet()));
-                            },
-                            child: Text(
-                              "신청하기 >",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'noto',
-                                  color: black),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
+                        ),
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 24),
+                          child: Image.asset(
                             "assets/needsclear/resource/service/washer.png",
                             width: 72,
                             height: 72,
                           ),
-                          whiteSpaceW(8),
-//                          InkWell(
-//                            onTap: () {},
-//                            child: Text(
-//                              "이용가이드 >",
-//                              style: TextStyle(
-//                                  color: black,
-//                                  fontFamily: 'noto',
-//                                  fontSize: 14),
-//                            ),
-//                          )
-                        ],
+                        )
+                      ],
+                    ),
+                    whiteSpaceH(22),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: 43,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFFDDDDDD))),
+                      child: RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => LaundrySet()));
+                        },
+                        padding: EdgeInsets.zero,
+                        color: white,
+                        elevation: 0.0,
+                        child: Center(
+                          child: Text(
+                            "신청하기",
+                            style: TextStyle(
+                                color: black, fontFamily: 'noto', fontSize: 14),
+                          ),
+                        ),
                       ),
                     )
                   ],
@@ -249,19 +273,21 @@ class _Laundry extends State<Laundry> {
                       child: ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, idx) {
+                          print("length : " +
+                              washList[idx].laundries.length.toString());
                           if (viewOption) {
                             if (washList[idx].wash.washType == viewType) {
                               return InkWell(
                                 onTap: () {
                                   List<DressSet> addAllDress = List();
                                   for (int i = 0;
-                                      i < washList[idx].laundries.length;
-                                      i++) {
+                                  i < washList[idx].laundries.length;
+                                  i++) {
                                     addAllDress.add(DressSet(
                                         dressName:
-                                            washList[idx].laundries[i].name,
+                                        washList[idx].laundries[i].name,
                                         dressCount:
-                                            washList[idx].laundries[i].count,
+                                        washList[idx].laundries[i].count,
                                         dressPay: washList[idx]
                                             .laundries[i]
                                             .payment));
@@ -278,9 +304,9 @@ class _Laundry extends State<Laundry> {
                                                 addAllDress: addAllDress,
                                                 date: washList[idx].wash.date,
                                                 washType:
-                                                    washList[idx].wash.washType,
+                                                washList[idx].wash.washType,
                                               )),
-                                      (route) => false);
+                                          (route) => false);
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,7 +323,7 @@ class _Laundry extends State<Laundry> {
                                       children: [
                                         washList[idx].wash.washType == 0
                                             ? Image.asset(
-                                                "assets/needsclear/resource/laundry/sending.png",
+                                          "assets/needsclear/resource/laundry/sending.png",
                                           width: 48,
                                           height: 48,
                                         )

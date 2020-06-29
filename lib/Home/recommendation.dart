@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:needsclear/Home/recoterms.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
+import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -27,6 +30,8 @@ class _Recommendation extends State<Recommendation> {
       appBar: AppBar(
         backgroundColor: white,
         elevation: 0.0,
+        centerTitle: true,
+        title: mainMoveLogo(context),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -117,18 +122,40 @@ class _Recommendation extends State<Recommendation> {
                 height: 40,
                 child: RaisedButton(
                   onPressed: () {
-                    User user = DataStorage.dataStorage.user;
-                    print(user.idx);
-                    print(user.recoCode);
-                    Provider().insertReco(user.idx, user.recoCode, nameController.text, contactUsController.text).then((value){
-                      var json = jsonDecode(value);
-                      print(value);
-                      if(json['result'] == 1) {
-                       Navigator.of(context).pop();
-                      }else {
-                        print("안됨");
-                      }
-                    });
+                    if (nameController.text == "" ||
+                        nameController.text == null) {
+                      showToast("이름을 입력해주세요.");
+                    } else if (contactUsController.text == "" ||
+                        contactUsController.text == null) {
+                      showToast("연락처를 입력해주세요.");
+                    } else {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                              builder: (context) => RecoTerms()))
+                          .then((check) {
+                        if (check) {
+                          User user = DataStorage.dataStorage.user;
+                          print(user.idx);
+                          print(user.recoCode);
+                          Provider()
+                              .insertReco(user.idx, user.recoCode,
+                                  nameController.text, contactUsController.text)
+                              .then((value) {
+                            var json = jsonDecode(value);
+                            print(value);
+                            if (json['result'] == 1) {
+                              nameController.text = "";
+                              contactUsController.text = "";
+                              dialog();
+                            } else {
+                              print("안됨");
+                            }
+                          });
+                        } else {
+                          showToast("추천인 등록 약관에 동의되지 않았습니다.");
+                        }
+                      });
+                    }
                   },
                   elevation: 0.0,
                   color: mainColor,
@@ -150,4 +177,83 @@ class _Recommendation extends State<Recommendation> {
       ),
     );
   }
+
+  dialog() {
+    return showDialog(
+        barrierDismissible: false,
+        context: (context),
+        builder: (_) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0),
+            ),
+            backgroundColor: white,
+            child: Container(
+              width: 240,
+              height: 300,
+              decoration: BoxDecoration(
+                  color: white, borderRadius: BorderRadius.circular(0)),
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        whiteSpaceH(20),
+                        Text(
+                          "추천인이 등록되었습니다",
+                          style: TextStyle(
+                              color: black,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'noto',
+                              fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width,
+                              height: 40,
+                              child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                color: mainColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(0)),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "확인",
+                                    style: TextStyle(
+                                        color: white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
 }

@@ -5,10 +5,12 @@ import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/internet.dart' as mIt;
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
 import '../home.dart';
+import 'internetUseGuide.dart';
 import 'internetapply.dart';
 import 'internetbreakdown.dart';
 
@@ -69,6 +71,8 @@ class _Internet extends State<Internet> {
         appBar: AppBar(
           backgroundColor: white,
           elevation: 0.0,
+          centerTitle: true,
+          title: mainMoveLogo(context),
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
@@ -86,46 +90,82 @@ class _Internet extends State<Internet> {
           child: Column(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width,
-                height: 96,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 color: Color(0xFFF7F7F7),
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Row(
+                padding:
+                EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Row(
                       children: [
-                        Text(
-                          "인터넷 가입",
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 20,
-                              fontFamily: 'noto',
-                              fontWeight: FontWeight.w600),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "인터넷 가입",
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 20,
+                                  fontFamily: 'noto',
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => InternetUseGuide()));
+                              },
+                              child: Text(
+                                "이용 가이드 >",
+                                style: TextStyle(
+                                    fontFamily: 'noto',
+                                    fontSize: 14,
+                                    color: black),
+                              ),
+                            ),
+                          ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => InternetApply()));
-                          },
-                          child: Text(
-                            "신청하기 >",
-                            style: TextStyle(
-                                fontFamily: 'noto', fontSize: 14, color: black),
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 24),
+                          child: Image.asset(
+                            "assets/needsclear/resource/service/internet.png",
+                            width: 72,
+                            height: 72,
                           ),
                         )
                       ],
                     ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 24),
-                      child: Image.asset(
-                        "assets/needsclear/resource/service/internet.png",
-                        width: 72,
-                        height: 72,
+                    whiteSpaceH(22),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: 43,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFFDDDDDD))),
+                      child: RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => InternetApply()));
+                        },
+                        padding: EdgeInsets.zero,
+                        color: white,
+                        elevation: 0.0,
+                        child: Center(
+                          child: Text(
+                            "신청하기",
+                            style: TextStyle(
+                                color: black, fontFamily: 'noto', fontSize: 14),
+                          ),
+                        ),
                       ),
                     )
                   ],
@@ -216,13 +256,13 @@ class _Internet extends State<Internet> {
                                           builder: (context) =>
                                               InternetBreakdown(
                                                 type: internets[idx].type,
-                                            name: internets[idx].name,
-                                            phone: internets[idx].phone,
-                                            newsAgency:
-                                            internets[idx].applyNewsAgency,
-                                            selectService:
-                                            internets[idx].applyService,
-                                          )),
+                                                name: internets[idx].name,
+                                                phone: internets[idx].phone,
+                                                newsAgency: internets[idx]
+                                                    .applyNewsAgency,
+                                                selectService:
+                                                internets[idx].applyService,
+                                              )),
                                           (route) => false);
                                 },
                                 child: Column(
@@ -277,8 +317,8 @@ class _Internet extends State<Internet> {
                                                       fontSize: 14,
                                                       fontFamily: 'noto',
                                                       color: black,
-                                                      fontWeight: FontWeight
-                                                          .w600),
+                                                      fontWeight:
+                                                      FontWeight.w600),
                                                 ),
                                                 whiteSpaceW(12),
                                                 Text(
@@ -286,7 +326,9 @@ class _Internet extends State<Internet> {
                                                       ? "접수완료"
                                                       : internets[idx].type == 1
                                                       ? "결제대기"
-                                                      : internets[idx].type == 2
+                                                      : internets[idx]
+                                                      .type ==
+                                                      2
                                                       ? "결제완료"
                                                       : internets[idx]
                                                       .type ==
@@ -296,16 +338,20 @@ class _Internet extends State<Internet> {
                                                   style: internets[idx].type ==
                                                       0
                                                       ? TextStyle(
-                                                      color: Color(0xFFFFCC00),
-                                                      fontFamily: 'noto',
-                                                      fontSize: 12)
-                                                      : internets[idx].type == 1
-                                                      ? TextStyle(
                                                       color:
                                                       Color(0xFFFFCC00),
                                                       fontFamily: 'noto',
                                                       fontSize: 12)
-                                                      : internets[idx].type == 2
+                                                      : internets[idx].type == 1
+                                                      ? TextStyle(
+                                                      color: Color(
+                                                          0xFFFFCC00),
+                                                      fontFamily:
+                                                      'noto',
+                                                      fontSize: 12)
+                                                      : internets[idx]
+                                                      .type ==
+                                                      2
                                                       ? TextStyle(
                                                       color: Color(
                                                           0xFF00AAFF),
@@ -320,13 +366,15 @@ class _Internet extends State<Internet> {
                                                           0xFF888888),
                                                       fontFamily:
                                                       'noto',
-                                                      fontSize: 12)
+                                                      fontSize:
+                                                      12)
                                                       : TextStyle(
                                                       color: Color(
                                                           0xFFFFCC00),
                                                       fontFamily:
                                                       'noto',
-                                                      fontSize: 12),
+                                                      fontSize:
+                                                      12),
                                                 )
                                               ],
                                             ),
@@ -364,8 +412,8 @@ class _Internet extends State<Internet> {
                                               type: internets[idx].type,
                                               name: internets[idx].name,
                                               phone: internets[idx].phone,
-                                              newsAgency:
-                                              internets[idx].applyNewsAgency,
+                                              newsAgency: internets[idx]
+                                                  .applyNewsAgency,
                                               selectService:
                                               internets[idx].applyService,
                                             )),
@@ -423,8 +471,8 @@ class _Internet extends State<Internet> {
                                                     fontSize: 14,
                                                     fontFamily: 'noto',
                                                     color: black,
-                                                    fontWeight: FontWeight
-                                                        .w600),
+                                                    fontWeight:
+                                                    FontWeight.w600),
                                               ),
                                               whiteSpaceW(12),
                                               Text(
@@ -432,7 +480,8 @@ class _Internet extends State<Internet> {
                                                     ? "접수완료"
                                                     : internets[idx].type == 1
                                                     ? "결제대기"
-                                                    : internets[idx].type == 2
+                                                    : internets[idx].type ==
+                                                    2
                                                     ? "결제완료"
                                                     : internets[idx]
                                                     .type ==
@@ -441,16 +490,18 @@ class _Internet extends State<Internet> {
                                                     : "",
                                                 style: internets[idx].type == 0
                                                     ? TextStyle(
-                                                    color: Color(0xFFFFCC00),
-                                                    fontFamily: 'noto',
-                                                    fontSize: 12)
-                                                    : internets[idx].type == 1
-                                                    ? TextStyle(
                                                     color:
                                                     Color(0xFFFFCC00),
                                                     fontFamily: 'noto',
                                                     fontSize: 12)
-                                                    : internets[idx].type == 2
+                                                    : internets[idx].type == 1
+                                                    ? TextStyle(
+                                                    color: Color(
+                                                        0xFFFFCC00),
+                                                    fontFamily: 'noto',
+                                                    fontSize: 12)
+                                                    : internets[idx].type ==
+                                                    2
                                                     ? TextStyle(
                                                     color: Color(
                                                         0xFF00AAFF),
@@ -465,13 +516,15 @@ class _Internet extends State<Internet> {
                                                         0xFF888888),
                                                     fontFamily:
                                                     'noto',
-                                                    fontSize: 12)
+                                                    fontSize:
+                                                    12)
                                                     : TextStyle(
                                                     color: Color(
                                                         0xFFFFCC00),
                                                     fontFamily:
                                                     'noto',
-                                                    fontSize: 12),
+                                                    fontSize:
+                                                    12),
                                               )
                                             ],
                                           ),

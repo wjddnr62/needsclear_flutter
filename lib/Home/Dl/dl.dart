@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/savelog.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -51,13 +52,29 @@ class _Dl extends State<Dl> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: white,
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Image.asset(
+            "assets/needsclear/resource/public/prev.png",
+            width: 24,
+            height: 24,
+          ),
+        ),
+        centerTitle: true,
+        title: mainMoveLogo(context),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              whiteSpaceH(52),
+//              whiteSpaceH(52),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 88,

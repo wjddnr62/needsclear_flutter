@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -24,6 +25,8 @@ class _InquiryRegister extends State<InquiryRegister> {
       appBar: AppBar(
         backgroundColor: white,
         elevation: 0.0,
+        centerTitle: true,
+        title: mainMoveLogo(context),
         leading: IconButton(
           icon: Image.asset(
             "assets/needsclear/resource/home/close.png",

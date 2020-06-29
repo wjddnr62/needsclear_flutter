@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -30,14 +31,7 @@ class _Terms extends State<Terms> {
             height: 24,
           ),
         ),
-        title: Text(
-          "약관 및 정책",
-          style: TextStyle(
-              fontFamily: 'noto',
-              fontSize: 14,
-              color: black,
-              fontWeight: FontWeight.w600),
-        ),
+        title: mainMove("약관 및 정책", context),
       ),
       body: SingleChildScrollView(
         child: Padding(

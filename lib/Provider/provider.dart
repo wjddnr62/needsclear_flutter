@@ -6,9 +6,10 @@ import 'package:needsclear/Util/parameter.dart';
 
 class Provider {
   Client client = Client();
-  final baseUrl = "http://gateway.cashlink.kr/auth_api/";
 
-//  final baseUrl = "http://192.168.100.237/auth_api/";
+//  final baseUrl = "http://auth.cashlink.kr/auth_api/";
+
+  final baseUrl = "http://192.168.100.237/auth_api/";
   final needsUrl = "http://needsclear.kr/needs_api/";
 
   final usersUrl = "api/users";
@@ -23,9 +24,10 @@ class Provider {
   final inquiryUrl = "api/inquiry";
 
   final getToken = "oauth/token";
-  String userCheckUrl = "http://gateway.cashlink.kr/resource_api/api/users/me";
 
-//  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
+//  String userCheckUrl = "http://auth.cashlink.kr/resource_api/api/users/me";
+
+  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
 
   Future<String> selectPremium() async {
     final response = await client.get("${needsUrl}api/admin/select-premium");
@@ -108,6 +110,7 @@ class Provider {
       "grant_type": "authorization_code",
       "code": parameter.oauthCode,
       "redirect_uri": "http://localhost:3000"
+//      "redirect_uri": "http://admin.needsclear.kr/login/index.html"
     });
 
     return utf8.decode(response.bodyBytes);
@@ -175,10 +178,10 @@ class Provider {
   }
 
   Future<String> insertWash(
-      {collectionType, address, washPayment, id, phone, name, code}) async {
+      {collectionType, washType, address, washPayment, id, phone, name, code}) async {
     final response = await client.put(needsUrl +
         laundryUrl +
-        "/apply-wash?collectionType=$collectionType&address=$address&washPayment=$washPayment&id=$id&phone=$phone&name=$name&code=$code");
+        "/apply-wash?collectionType=$collectionType&washType=$washType&address=$address&washPayment=$washPayment&id=$id&phone=$phone&name=$name&code=$code");
 
     return utf8.decode(response.bodyBytes);
   }

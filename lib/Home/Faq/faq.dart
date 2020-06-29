@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:needsclear/Model/faq.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -57,14 +58,7 @@ class _Faq extends State<Faq> {
             height: 24,
           ),
         ),
-        title: Text(
-          "FAQ",
-          style: TextStyle(
-              fontFamily: 'noto',
-              fontSize: 14,
-              color: black,
-              fontWeight: FontWeight.w600),
-        ),
+        title: mainMove("FAQ", context),
       ),
       body: SingleChildScrollView(
         child: ListView.builder(

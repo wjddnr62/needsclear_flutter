@@ -6,6 +6,7 @@ import 'package:needsclear/Home/Phone/phonebreakdown.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -81,14 +82,7 @@ class _PhoneApply extends State<PhoneApply> {
           ),
         ),
         centerTitle: true,
-        title: Text(
-          "휴대폰 신청",
-          style: TextStyle(
-              color: black,
-              fontSize: 14,
-              fontFamily: 'noto',
-              fontWeight: FontWeight.w600),
-        ),
+        title: mainMove("휴대폰 신청", context),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -517,7 +511,7 @@ class _PhoneApply extends State<PhoneApply> {
             backgroundColor: white,
             child: Container(
               width: 240,
-              height: 240,
+              height: 300,
               decoration: BoxDecoration(
                   color: white, borderRadius: BorderRadius.circular(0)),
               child: Stack(

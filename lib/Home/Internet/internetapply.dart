@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -83,14 +84,7 @@ class _InternetApply extends State<InternetApply> {
           ),
         ),
         centerTitle: true,
-        title: Text(
-          "인터넷 신청",
-          style: TextStyle(
-              color: black,
-              fontSize: 14,
-              fontFamily: 'noto',
-              fontWeight: FontWeight.w600),
-        ),
+        title: mainMove("인터넷 신청", context),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -454,7 +448,7 @@ class _InternetApply extends State<InternetApply> {
             backgroundColor: white,
             child: Container(
               width: 240,
-              height: 240,
+              height: 300,
               decoration: BoxDecoration(
                   color: white, borderRadius: BorderRadius.circular(0)),
               child: Stack(

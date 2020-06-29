@@ -221,8 +221,10 @@ class _Permission extends State<Permission> {
 //                        jsonConvert();
 
                         sharedInit();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CombineLogin()));
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => CombineLogin()),
+                                (Route<dynamic> route) => false);
 //                        Navigator.of(context).push(
 //                            MaterialPageRoute(builder: (context) => Login()));
                       } else {

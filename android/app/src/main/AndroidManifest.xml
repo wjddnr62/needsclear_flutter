@@ -15,6 +15,7 @@
         android:label="니즈클리어"
         android:allowBackup="false"
         android:icon="@mipmap/launcher_icon"
+        android:fitsSystemWindows="true"
         android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.kakao.sdk.AppKey"

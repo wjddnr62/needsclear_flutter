@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:needsclear/Home/Phone/phoneUseGuide.dart';
 import 'package:needsclear/Home/Phone/phoneapply.dart';
 import 'package:needsclear/Home/Phone/phonebreakdown.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/phone.dart' as mp;
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -83,51 +85,88 @@ class _Phone extends State<Phone> {
               height: 24,
             ),
           ),
+          centerTitle: true,
+          title: mainMoveLogo(context),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width,
-                height: 96,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 color: Color(0xFFF7F7F7),
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Row(
+                padding: EdgeInsets.only(
+                    left: 16, right: 16, top: 16, bottom: 16),
+                child: Column(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Row(
                       children: [
-                        Text(
-                          "휴대폰 구매",
-                          style: TextStyle(
-                              color: black,
-                              fontSize: 20,
-                              fontFamily: 'noto',
-                              fontWeight: FontWeight.w600),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "휴대폰 구매",
+                              style: TextStyle(
+                                  color: black,
+                                  fontSize: 20,
+                                  fontFamily: 'noto',
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => PhoneUseGuide()));
+                              },
+                              child: Text(
+                                "이용가이드 >",
+                                style: TextStyle(
+                                    fontFamily: 'noto',
+                                    fontSize: 14,
+                                    color: black),
+                              ),
+                            )
+                          ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PhoneApply()));
-                          },
-                          child: Text(
-                            "신청하기 >",
-                            style: TextStyle(
-                                fontFamily: 'noto', fontSize: 14, color: black),
+                        Expanded(
+                          child: Container(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 24),
+                          child: Image.asset(
+                            "assets/needsclear/resource/service/phone.png",
+                            width: 72,
+                            height: 72,
                           ),
                         )
                       ],
                     ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 24),
-                      child: Image.asset(
-                        "assets/needsclear/resource/service/phone.png",
-                        width: 72,
-                        height: 72,
+                    whiteSpaceH(22),
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: 43,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFFDDDDDD))),
+                      child: RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PhoneApply()));
+                        },
+                        padding: EdgeInsets.zero,
+                        color: white,
+                        elevation: 0.0,
+                        child: Center(
+                          child: Text(
+                            "신청하기",
+                            style: TextStyle(
+                                color: black, fontFamily: 'noto', fontSize: 14),
+                          ),
+                        ),
                       ),
                     )
                   ],

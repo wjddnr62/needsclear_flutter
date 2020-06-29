@@ -7,6 +7,7 @@ import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/savedata.dart';
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/text.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
@@ -33,6 +34,8 @@ class _ChauffeurApply extends State<ChauffeurApply> {
       appBar: AppBar(
         backgroundColor: white,
         elevation: 1.0,
+        centerTitle: true,
+        title: mainMoveLogo(context),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -253,7 +256,7 @@ class _ChauffeurApply extends State<ChauffeurApply> {
             backgroundColor: white,
             child: Container(
               width: 240,
-              height: 240,
+              height: 300,
               decoration: BoxDecoration(
                   color: white, borderRadius: BorderRadius.circular(0)),
               child: Stack(

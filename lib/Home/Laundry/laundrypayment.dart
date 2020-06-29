@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:needsclear/Model/dress.dart';
 import 'package:needsclear/Model/savedata.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/numberFormat.dart';
 import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/text.dart';
@@ -79,14 +80,7 @@ class _LaundryPayment extends State<LaundryPayment> {
             ),
           ),
           centerTitle: true,
-          title: Text(
-            "결제하기",
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: black,
-                fontSize: 14,
-                fontFamily: 'noto'),
-          ),
+          title: mainMove("결제하기", context),
         ),
         body: SingleChildScrollView(
           child: Column(

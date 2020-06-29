@@ -6,6 +6,7 @@ import 'package:needsclear/Home/Inquiry/inquiryregister.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/inquirym.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
@@ -64,14 +65,7 @@ class _Inquiry extends State<Inquiry> {
             height: 24,
           ),
         ),
-        title: Text(
-          "서비스 문의",
-          style: TextStyle(
-              fontFamily: 'noto',
-              fontSize: 14,
-              color: black,
-              fontWeight: FontWeight.w600),
-        ),
+        title: mainMove("서비스 문의", context),
         actions: [
           Align(
             alignment: Alignment.centerRight,

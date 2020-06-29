@@ -59,19 +59,24 @@ class _Premium extends State<Premium> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(0),
           child: Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Text(
-              content,
-              style: TextStyle(
-                color: black,
-                fontFamily: 'noto',
-                fontSize: 14,
-              ),
-            ),
+            child: Image.asset(
+                "assets/needsclear/resource/guide/premiumMembership.png"),
           ),
+//          Container(
+//            width: MediaQuery.of(context).size.width,
+//            height: MediaQuery.of(context).size.height,
+//            child: Text(
+//              content,
+//              style: TextStyle(
+//                color: black,
+//                fontFamily: 'noto',
+//                fontSize: 14,
+//              ),
+//            ),
+//          ),
         ),
       ),
     );

@@ -1,13 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:needsclear/Model/users.dart';
-import 'package:needsclear/Provider/userprovider.dart';
 import 'package:needsclear/public/colors.dart';
 import 'package:needsclear/public/routes.dart';
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(MaterialApp(
       home: Splash(),
@@ -33,67 +29,67 @@ class _Splash extends State<Splash> {
     Navigator.of(context).pushReplacementNamed('/Loading');
   }
 
-  UserProvider userProvider = UserProvider();
+//  UserProvider userProvider = UserProvider();
+//
+//  _write(List text) async {
+//    try {
+//      final Directory directory = await getExternalStorageDirectory();
+//      final File file = File('${directory.path}/my_file.json');
+//      print("filePath : ${file.path}");
+//      await file.writeAsString(text.toString());
+//    } catch (e) {
+//      print("catch : " + e.toString());
+//    }
+//  }
 
-  _write(List text) async {
-    try {
-      final Directory directory = await getExternalStorageDirectory();
-      final File file = File('${directory.path}/my_file.json');
-      print("filePath : ${file.path}");
-      await file.writeAsString(text.toString());
-    } catch (e) {
-      print("catch : " + e.toString());
-    }
-  }
-
-  jsonConvert() async {
-    CollectionReference userCollection = Firestore.instance.collection("users");
-    QuerySnapshot userQuery = await userCollection.getDocuments();
-    List<Users> users = List();
-    List jsonList = List();
-
-    if (userQuery.documents.length != 0) {
-      for (int i = 0; i < userQuery.documents.length; i++) {
-        users.add(Users(
-            name: "\"${userQuery.documents[i].data['name']}\"",
-            pass: (userQuery.documents[i].data['pass'] != null &&
-                userQuery.documents[i].data['pass'] != "")
-                ? "\"${userQuery.documents[i].data['pass']}\""
-                : "",
-            phone: "\"${userQuery.documents[i].data['phone']}\"",
-            birthDay: "\"${userQuery.documents[i].data['birthDay']}\"",
-            id: "\"${userQuery.documents[i].data['id']}\"",
-            sex: userQuery.documents[i].data['sex'],
-            signDate: "\"${userQuery.documents[i].data['signDate']}\"",
-            signRoot: "\"${userQuery.documents[i].data['signRoot']}\"",
-            type: userQuery.documents[i].data['type']));
-      }
-
-      for (int i = 0; i < users.length; i++) {
-        print("type: " + users[i].type.toString());
-        if (users[i].type == 0) {
-          jsonList.add(users[i].toJson());
-        }
-      }
-//      users
-//          .map((item) =>
-////        if (item.type == 0) {
-////          print("type : ${item.type}");
-//                  jsonList.add(item.toJson())
-////        }
-//              )
-//          .toList();
-
-//      writeCounter(jsonList).then((value) {
-//        print("finish : $value}");
-//      }).catchError((value) {
-//        print('error : $value');
-//      });
-//      printWrapped(jsonList);
-      _write(jsonList);
-      print("jsonList : $jsonList");
-    }
-  }
+//  jsonConvert() async {
+//    CollectionReference userCollection = Firestore.instance.collection("users");
+//    QuerySnapshot userQuery = await userCollection.getDocuments();
+//    List<Users> users = List();
+//    List jsonList = List();
+//
+//    if (userQuery.documents.length != 0) {
+//      for (int i = 0; i < userQuery.documents.length; i++) {
+//        users.add(Users(
+//            name: "\"${userQuery.documents[i].data['name']}\"",
+//            pass: (userQuery.documents[i].data['pass'] != null &&
+//                userQuery.documents[i].data['pass'] != "")
+//                ? "\"${userQuery.documents[i].data['pass']}\""
+//                : "",
+//            phone: "\"${userQuery.documents[i].data['phone']}\"",
+//            birthDay: "\"${userQuery.documents[i].data['birthDay']}\"",
+//            id: "\"${userQuery.documents[i].data['id']}\"",
+//            sex: userQuery.documents[i].data['sex'],
+//            signDate: "\"${userQuery.documents[i].data['signDate']}\"",
+//            signRoot: "\"${userQuery.documents[i].data['signRoot']}\"",
+//            type: userQuery.documents[i].data['type']));
+//      }
+//
+//      for (int i = 0; i < users.length; i++) {
+//        print("type: " + users[i].type.toString());
+//        if (users[i].type == 0) {
+//          jsonList.add(users[i].toJson());
+//        }
+//      }
+////      users
+////          .map((item) =>
+//////        if (item.type == 0) {
+//////          print("type : ${item.type}");
+////                  jsonList.add(item.toJson())
+//////        }
+////              )
+////          .toList();
+//
+////      writeCounter(jsonList).then((value) {
+////        print("finish : $value}");
+////      }).catchError((value) {
+////        print('error : $value');
+////      });
+////      printWrapped(jsonList);
+//      _write(jsonList);
+//      print("jsonList : $jsonList");
+//    }
+//  }
 
   @override
   void initState() {

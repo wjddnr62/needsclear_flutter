@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:needsclear/Home/BusinessInformation/businessinformation.dart';
 import 'package:needsclear/Home/Chauffeur/chauffeur.dart';
 import 'package:needsclear/Home/Exchange/exchange.dart';
 import 'package:needsclear/Home/Faq/faq.dart';
@@ -9,6 +11,7 @@ import 'package:needsclear/Home/Internet/internet.dart';
 import 'package:needsclear/Home/Laundry/laundry.dart';
 import 'package:needsclear/Home/delivery.dart';
 import 'package:needsclear/Home/invitation.dart';
+import 'package:needsclear/Home/quick/quick.dart';
 import 'package:needsclear/Home/recommendation.dart';
 import 'package:needsclear/Login/combinelogin.dart';
 import 'package:needsclear/Model/datastorage.dart';
@@ -30,6 +33,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'App/app.dart';
 import 'Dl/dl.dart';
+import 'Event/eventdetail.dart';
 import 'Inquiry/inquiry.dart';
 import 'Notice/notice.dart';
 import 'Phone/phone.dart';
@@ -99,9 +103,9 @@ class _Home extends State<Home> {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
             builder: (context) => CombineLogin(
-                  authCheck: 1,
-                )),
-        (route) => false);
+              authCheck: 1,
+            )),
+            (route) => false);
   }
 
   int viewPage = 0;
@@ -271,7 +275,7 @@ class _Home extends State<Home> {
       decoration: BoxDecoration(
           color: white,
           border:
-              Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
+          Border.all(width: 2, color: Color.fromARGB(255, 245, 245, 245))),
       child: Center(
         child: GestureDetector(
           onTap: () async {
@@ -300,7 +304,10 @@ class _Home extends State<Home> {
 //                'call': "15888290",
 //                'type': 1
 //              });
-              await launch("tel:15888290");
+//              await launch("tel:15888290");
+              final page = Quick();
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => page));
             } else if (name == "대리운전") {
 //              userProvider.addCallLog({
 //                'id': saveData.id,
@@ -312,7 +319,7 @@ class _Home extends State<Home> {
             } else if (name == "알라딘박스") {
               setState(() {
                 initialUrl =
-                    "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko";
+                "https://play.google.com/store/apps/details?id=com.apsolution.safebox&hl=ko";
                 viewPage = 4;
               });
 //              await launch(
@@ -448,21 +455,16 @@ class _Home extends State<Home> {
       child: SingleChildScrollView(
         child: Container(
           color: white,
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+//          height: MediaQuery
+//              .of(context)
+//              .size
+//              .height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              whiteSpaceH(MediaQuery
-                  .of(context)
-                  .padding
-                  .top),
+              whiteSpaceH(MediaQuery.of(context).padding.top),
               Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
+                width: MediaQuery.of(context).size
                     .width,
                 height: 52,
                 color: white,
@@ -519,32 +521,42 @@ class _Home extends State<Home> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-//                        Expanded(
-//                          child: Align(
-//                            alignment: Alignment.centerRight,
-//                            child: dataStorage.user.type == 0
-//                                ? Container()
-//                                : Image.asset(
-//                              "assets/needsclear/resource/home/pbm.png",
-//                              width: 24,
-//                              height: 24,
-//                              fit: BoxFit.contain,
-//                            ),
-//                          ),
-//                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: GestureDetector(
-                            onTap: () {
-                              sharedLogout();
-                            },
-                            child: Text(
-                              "로그아웃",
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Color(0xFF888888),
-                                  fontSize: 12),
-                              textAlign: TextAlign.start,
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: dataStorage.user.type == 0
+                                ? Container()
+                                : dataStorage.user.type == 4 ? Image.asset(
+                              "assets/needsclear/resource/public/soleagency.png",
+                              width: 24,
+                              height: 24,
+                              fit: BoxFit.contain,
+                            ) : Image.asset(
+                              "assets/needsclear/resource/public/agency.png",
+                              width: 24,
+                              height: 24,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 50,
+                          height: 20,
+                          color: white,
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: GestureDetector(
+                              onTap: () {
+                                sharedLogout();
+                              },
+                              child: Text(
+                                "로그아웃",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Color(0xFF888888),
+                                    fontSize: 12),
+                                textAlign: TextAlign.start,
+                              ),
                             ),
                           ),
                         ),
@@ -828,7 +840,39 @@ class _Home extends State<Home> {
                     ),
                   ),
                 ),
-              )
+              ),
+              Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: 48,
+                child: RaisedButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                        builder: (context) => BusinessInformation()));
+                  },
+                  color: white,
+                  elevation: 0.0,
+                  padding: EdgeInsets.only(left: 16),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          "사업자 정보",
+                          style: TextStyle(
+                            fontFamily: 'noto',
+                            fontSize: 14,
+                            color: black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -1058,20 +1102,24 @@ class _Home extends State<Home> {
     '세탁',
     '자동차보험',
     '상조',
+    '꽃배달',
     '대리운전',
     '퀵배송',
     '휴대폰 구매',
-    '인터넷가입'
+    '인터넷가입',
+    ''
   ];
   List<String> serviceImage = [
     'assets/needsclear/resource/service/rental.png',
     'assets/needsclear/resource/service/washer.png',
     'assets/needsclear/resource/service/insurance.png',
     'assets/needsclear/resource/service/rip.png',
+    'assets/needsclear/resource/service/flower.png',
     'assets/needsclear/resource/service/driver.png',
     'assets/needsclear/resource/service/quick.png',
     'assets/needsclear/resource/service/phone.png',
-    'assets/needsclear/resource/service/internet.png'
+    'assets/needsclear/resource/service/internet.png',
+    'assets/needsclear/resource/service/notservice.png'
   ];
 
   mainHome() {
@@ -1107,6 +1155,7 @@ class _Home extends State<Home> {
             child: Row(
               children: [
                 Expanded(
+                  flex: 2,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1120,7 +1169,7 @@ class _Home extends State<Home> {
                           ),
                           whiteSpaceW(4),
                           Text(
-                            "적립금",
+                            "포인트",
                             style: TextStyle(
                                 color: mainColor,
                                 fontFamily: 'noto',
@@ -1130,29 +1179,36 @@ class _Home extends State<Home> {
                           whiteSpaceW(4),
                         ],
                       ),
-                      RichText(
-                        text: TextSpan(
-                            text:
-                            "${numberFormat.format(dataStorage.user.point)}",
-                            style: TextStyle(
-                                fontFamily: 'noto',
-                                fontWeight: FontWeight.w600,
-                                color: black,
-                                fontSize: 20),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: " NCP",
-                                  style: TextStyle(
-                                      fontFamily: 'noto',
-                                      fontSize: 14,
-                                      color: black,
-                                      fontWeight: FontWeight.w600))
-                            ]),
-                      )
+                      whiteSpaceH(4),
+                      Row(
+                        children: [
+                          Image.asset(
+                              "assets/needsclear/resource/public/ncp-coin.png"),
+                          whiteSpaceW(4),
+                          Text("${numberFormat.format(dataStorage.user.point)}",
+                              style: TextStyle(
+                                  fontFamily: 'noto',
+                                  fontSize: 14,
+                                  color: black,
+                                  fontWeight: FontWeight.w600)),
+                          whiteSpaceW(4),
+                          Image.asset(
+                              "assets/needsclear/resource/public/dl-coin.png",
+                              width: 24, height: 24),
+                          whiteSpaceW(4),
+                          Text("${numberFormat.format(dataStorage.user.dl)}",
+                              style: TextStyle(
+                                  fontFamily: 'noto',
+                                  fontSize: 14,
+                                  color: black,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
                     ],
                   ),
                 ),
                 Expanded(
+                  flex: 2,
                   child: Row(
                     children: [
                       Expanded(
@@ -1169,7 +1225,7 @@ class _Home extends State<Home> {
                             ),
                             whiteSpaceH(8),
                             Text(
-                              "추천 적립금",
+                              "추천적립",
                               style: TextStyle(
                                   fontFamily: 'noto',
                                   fontSize: 12,
@@ -1222,7 +1278,7 @@ class _Home extends State<Home> {
                   color: black),
             ),
           ),
-          whiteSpaceH(10),
+          whiteSpaceH(20),
           Container(
             child: Column(
               children: [
@@ -1241,7 +1297,7 @@ class _Home extends State<Home> {
                             itemBuilder: (context, idx) {
                               return Padding(
                                 padding:
-                                EdgeInsets.only(right: idx < 3 ? 12 : 0),
+                                EdgeInsets.only(right: idx < 4 ? 18 : 0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1285,6 +1341,12 @@ class _Home extends State<Home> {
                                                 "https://www.dhsangjo.xyz";
                                                 viewPage = 4;
                                               });
+                                            } else
+                                            if (serviceName[idx] == '꽃배달') {
+                                              print("꽃배달");
+                                              flowerPopup("01012345678");
+//                                              flowerDial("tel:01012345678");
+//                                              dialog("01012345678");
                                             }
                                           },
                                           elevation: 0.0,
@@ -1314,9 +1376,9 @@ class _Home extends State<Home> {
                               );
                             },
                             shrinkWrap: true,
-                            itemCount: 4,
+                            itemCount: 5,
                             scrollDirection: Axis.horizontal,
-                            physics: NeverScrollableScrollPhysics(),
+//                            physics: NeverScrollableScrollPhysics(),
                           ),
                         ),
                       ),
@@ -1339,7 +1401,7 @@ class _Home extends State<Home> {
                             itemBuilder: (context, idx) {
                               return Padding(
                                 padding:
-                                EdgeInsets.only(right: idx < 3 ? 12 : 0),
+                                EdgeInsets.only(right: idx < 4 ? 18 : 0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1350,25 +1412,29 @@ class _Home extends State<Home> {
                                         height: 64,
                                         child: RaisedButton(
                                           onPressed: () async {
-                                            if (serviceName[idx + 4] ==
+                                            if (serviceName[idx + 5] ==
                                                 '대리운전') {
                                               print("대리운전");
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           Chauffeur()));
-                                            } else if (serviceName[idx + 4] ==
+                                            } else if (serviceName[idx + 5] ==
                                                 '퀵배송') {
                                               print("퀵배송");
-                                              dialog("15888290");
-                                            } else if (serviceName[idx + 4] ==
+//                                              dialog("15888290");
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Quick()));
+                                            } else if (serviceName[idx + 5] ==
                                                 '휴대폰 구매') {
                                               print("휴대폰 구매");
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           Phone()));
-                                            } else if (serviceName[idx + 4] ==
+                                            } else if (serviceName[idx + 5] ==
                                                 '인터넷가입') {
                                               print("인터넷가입");
                                               Navigator.of(context).push(
@@ -1382,7 +1448,7 @@ class _Home extends State<Home> {
                                           color: Color(0xFFF7F7F7),
                                           child: Center(
                                             child: Image.asset(
-                                              serviceImage[idx + 4],
+                                              serviceImage[idx + 5],
                                               width: 48,
                                               height: 48,
                                               fit: BoxFit.contain,
@@ -1393,7 +1459,7 @@ class _Home extends State<Home> {
                                     ),
                                     whiteSpaceH(8),
                                     Text(
-                                      serviceName[idx + 4],
+                                      serviceName[idx + 5],
                                       style: TextStyle(
                                           fontFamily: 'noto',
                                           fontSize: 12,
@@ -1404,9 +1470,9 @@ class _Home extends State<Home> {
                               );
                             },
                             shrinkWrap: true,
-                            itemCount: 4,
+                            itemCount: 5,
                             scrollDirection: Axis.horizontal,
-                            physics: NeverScrollableScrollPhysics(),
+//                            physics: NeverScrollableScrollPhysics(),
                           ),
                         ),
                       ),
@@ -1447,11 +1513,40 @@ class _Home extends State<Home> {
                     ),
                   ))
             ],
-          )
+          ),
+          whiteSpaceH(20)
         ],
       ),
     );
   }
+
+  flowerDial(phone) async {
+    var _duration = new Duration(seconds: 2);
+    return new Timer(_duration, dialMove);
+  }
+
+  dialMove() async {
+    await launch("tel:01012345678");
+  }
+
+  flowerPopup(phone) async {
+    return showDialog(
+        barrierDismissible: false,
+        context: (context),
+        builder: (_) {
+          flowerDial("01012345678");
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0),
+            ),
+            backgroundColor: white,
+            child: Image.asset(
+              "assets/needsclear/resource/popup/flowerpopup.png",
+              fit: BoxFit.cover,),
+          );
+        });
+  }
+
 
   String recoValue = "최신순";
   String pointValue = "최신순";
@@ -1975,7 +2070,7 @@ class _Home extends State<Home> {
                             ),
                             whiteSpaceW(12),
                             Text(
-                              "- ${numberFormat.format(usePoint)} NCP",
+                              "${numberFormat.format(usePoint)} NCP",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: 'noto',
@@ -2153,65 +2248,77 @@ class _Home extends State<Home> {
                 .size
                 .width,
             height: 88,
-            color: Color(0xFFF7F7F7),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                whiteSpaceW(16),
-                Expanded(
-                  child: Text(
-                    eventList[idx].title,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'noto',
-                        fontSize: 16,
-                        color: black),
+            child: RaisedButton(
+              elevation: 0.0,
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        EventDetail(
+                          eventImage: eventList[idx].image.split(",")[1],
+                          eventTitle: eventList[idx].title,
+                        )
+                ));
+              },
+              color: Color(0xFFF7F7F7),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  whiteSpaceW(16),
+                  Expanded(
+                    child: Text(
+                      eventList[idx].title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'noto',
+                          fontSize: 16,
+                          color: black),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 40),
-                          child: Image.memory(
-                            base64.decode(eventList[idx].image.split(",")[1]),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: Container(
-                          width: 40,
-                          height: 20,
-                          color: white,
-                          child: Center(
-                            child: Text(
-                              eventList[idx]
-                                  .createdAt
-                                  .split(" ")[0]
-                                  .split("-")[1] +
-                                  "." +
-                                  eventList[idx]
-                                      .createdAt
-                                      .split(" ")[0]
-                                      .split("-")[2],
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 11,
-                                  fontFamily: 'noto'),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 40),
+                            child: Image.memory(
+                              base64.decode(eventList[idx].image.split(",")[1]),
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
-                      )
-                    ],
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            width: 40,
+                            height: 20,
+                            color: white,
+                            child: Center(
+                              child: Text(
+                                eventList[idx]
+                                    .createdAt
+                                    .split(" ")[0]
+                                    .split("-")[1] +
+                                    "." +
+                                    eventList[idx]
+                                        .createdAt
+                                        .split(" ")[0]
+                                        .split("-")[2],
+                                style: TextStyle(
+                                    color: black,
+                                    fontSize: 11,
+                                    fontFamily: 'noto'),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                whiteSpaceW(16)
-              ],
+                  whiteSpaceW(16)
+                ],
+              ),
             ),
           );
         },
@@ -2234,7 +2341,7 @@ class _Home extends State<Home> {
             backgroundColor: white,
             child: Container(
               width: 240,
-              height: 240,
+              height: 300,
               decoration: BoxDecoration(
                   color: white, borderRadius: BorderRadius.circular(0)),
               child: Stack(

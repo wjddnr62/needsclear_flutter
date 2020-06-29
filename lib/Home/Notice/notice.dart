@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:needsclear/Model/notice.dart' as No;
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/public/colors.dart';
 
 class Notice extends StatefulWidget {
@@ -58,14 +59,7 @@ class _Notice extends State<Notice> {
             height: 24,
           ),
         ),
-        title: Text(
-          "공지사항",
-          style: TextStyle(
-              fontFamily: 'noto',
-              fontSize: 14,
-              color: black,
-              fontWeight: FontWeight.w600),
-        ),
+        title: mainMove("공지사항", context),
       ),
       body: SingleChildScrollView(
         child: ListView.builder(
