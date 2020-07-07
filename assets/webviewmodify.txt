@@ -1,0 +1,16 @@
+InputAwareWebView
+
+--35 번째줄
+
+    InputAwareWebView(Activity activity, View containerView) {
+        super(activity);
+        this.containerView = containerView;
+    }
+
+
+FlutterWebView
+
+--50 번째줄
+
+//        webView = new InputAwareWebView(context, containerView);
+      webView = new InputAwareWebView(activity, containerView);
