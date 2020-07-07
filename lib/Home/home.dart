@@ -408,6 +408,7 @@ class _Home extends State<Home> {
   }
 
   initManage() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     await provider.pointManageSelect().then((value) async {
       print(json.decode(value)['data']);
       List<dynamic> data = await json.decode(value)['data'];

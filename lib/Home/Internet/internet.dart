@@ -8,6 +8,7 @@ import 'package:needsclear/Provider/provider.dart';
 import 'package:needsclear/Util/mainMove.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../home.dart';
 import 'internetUseGuide.dart';
@@ -25,6 +26,19 @@ class _Internet extends State<Internet> {
   List<mIt.Internet> internets = List();
   bool viewOption = false;
   int viewType = 0;
+  SharedPreferences prefs;
+  bool popupOpen = false;
+
+  popupOpenCheck() async {
+    prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getInt("internetPopup") == 0 ||
+        prefs.getInt("internetPopup") == null) {
+      setState(() {
+        popupOpen = true;
+      });
+    }
+  }
 
   getInternet() {
     Provider provider = Provider();
@@ -57,6 +71,7 @@ class _Internet extends State<Internet> {
   void initState() {
     super.initState();
     getInternet();
+    popupOpenCheck();
   }
 
   @override
@@ -77,7 +92,7 @@ class _Internet extends State<Internet> {
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => Home()),
-                  (route) => false);
+                      (route) => false);
             },
             icon: Image.asset(
               "assets/needsclear/resource/public/prev.png",
@@ -86,323 +101,185 @@ class _Internet extends State<Internet> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
-                color: Color(0xFFF7F7F7),
-                padding:
-                EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    color: Color(0xFFF7F7F7),
+                    padding: EdgeInsets.only(
+                        left: 16, right: 16, bottom: 16, top: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
                           children: [
-                            Text(
-                              "인터넷 가입",
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 20,
-                                  fontFamily: 'noto',
-                                  fontWeight: FontWeight.w600),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "인터넷 가입",
+                                  style: TextStyle(
+                                      color: black,
+                                      fontSize: 20,
+                                      fontFamily: 'noto',
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                InternetUseGuide()));
+                                  },
+                                  child: Text(
+                                    "이용 가이드 >",
+                                    style: TextStyle(
+                                        fontFamily: 'noto',
+                                        fontSize: 14,
+                                        color: black),
+                                  ),
+                                ),
+                              ],
                             ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => InternetUseGuide()));
-                              },
-                              child: Text(
-                                "이용 가이드 >",
-                                style: TextStyle(
-                                    fontFamily: 'noto',
-                                    fontSize: 14,
-                                    color: black),
+                            Expanded(
+                              child: Container(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 24),
+                              child: Image.asset(
+                                "assets/needsclear/resource/service/internet.png",
+                                width: 72,
+                                height: 72,
                               ),
-                            ),
+                            )
                           ],
                         ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 24),
-                          child: Image.asset(
-                            "assets/needsclear/resource/service/internet.png",
-                            width: 72,
-                            height: 72,
+                        whiteSpaceH(22),
+                        Container(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          height: 43,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Color(0xFFDDDDDD))),
+                          child: RaisedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => InternetApply()));
+                            },
+                            padding: EdgeInsets.zero,
+                            color: white,
+                            elevation: 0.0,
+                            child: Center(
+                              child: Text(
+                                "신청하기",
+                                style: TextStyle(
+                                    color: black,
+                                    fontFamily: 'noto',
+                                    fontSize: 14),
+                              ),
+                            ),
                           ),
                         )
                       ],
                     ),
-                    whiteSpaceH(22),
-                    Container(
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    child: Container(
                       width: MediaQuery
                           .of(context)
                           .size
                           .width,
-                      height: 43,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xFFDDDDDD))),
-                      child: RaisedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => InternetApply()));
-                        },
-                        padding: EdgeInsets.zero,
-                        color: white,
-                        elevation: 0.0,
-                        child: Center(
-                          child: Text(
-                            "신청하기",
+                      height: 40,
+                      color: white,
+                      child: Row(
+                        children: [
+                          Text(
+                            "이용내역",
                             style: TextStyle(
-                                color: black, fontFamily: 'noto', fontSize: 14),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'noto',
+                                fontSize: 14,
+                                color: black),
                           ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40,
-                  color: white,
-                  child: Row(
-                    children: [
-                      Text(
-                        "이용내역",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'noto',
-                            fontSize: 14,
-                            color: black),
-                      ),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Container(
-                        width: 80,
-                        padding: EdgeInsets.zero,
-                        child: Padding(
-                          padding: EdgeInsets.zero,
-                          child: DropdownButton<String>(
-                            underline: Container(),
-                            elevation: 0,
-                            style: TextStyle(
-                                color: black, fontSize: 14, fontFamily: 'noto'),
-                            items: <String>['전체', '접수완료', '결제대기', '결제완료', '취소']
-                                .map((value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: TextStyle(
-                                      color: black,
-                                      fontSize: 14,
-                                      fontFamily: 'noto'),
-                                ),
-                              );
-                            }).toList(),
-                            value: internetValue,
-                            onChanged: (value) {
-                              setState(() {
-                                internetValue = value;
-                                if (value == "전체") {
-                                  viewOption = false;
-                                } else {
-                                  viewOption = true;
-                                  if (value == "접수완료") {
-                                    viewType = 0;
-                                  } else if (value == "결제대기") {
-                                    viewType = 1;
-                                  } else if (value == "결제완료") {
-                                    viewType = 2;
-                                  } else if (value == "취소") {
-                                    viewType = 3;
-                                  }
-                                }
-                              });
-                            },
+                          Expanded(
+                            child: Container(),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              whiteSpaceH(16),
-              dataSet
-                  ? Padding(
-                      padding: EdgeInsets.all(16),
-                      child: ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, idx) {
-                          if (viewOption) {
-                            if (internets[idx].type == viewType) {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              InternetBreakdown(
-                                                type: internets[idx].type,
-                                                name: internets[idx].name,
-                                                phone: internets[idx].phone,
-                                                newsAgency: internets[idx]
-                                                    .applyNewsAgency,
-                                                selectService:
-                                                internets[idx].applyService,
-                                              )),
-                                          (route) => false);
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      internets[idx].created_at.split(" ")[0],
+                          Container(
+                            width: 80,
+                            padding: EdgeInsets.zero,
+                            child: Padding(
+                              padding: EdgeInsets.zero,
+                              child: DropdownButton<String>(
+                                underline: Container(),
+                                elevation: 0,
+                                style: TextStyle(
+                                    color: black,
+                                    fontSize: 14,
+                                    fontFamily: 'noto'),
+                                items: <String>[
+                                  '전체',
+                                  '접수완료',
+                                  '결제대기',
+                                  '결제완료',
+                                  '취소'
+                                ].map((value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
                                       style: TextStyle(
-                                          color: Color(0xFF888888),
-                                          fontFamily: 'noto',
-                                          fontSize: 12),
+                                          color: black,
+                                          fontSize: 14,
+                                          fontFamily: 'noto'),
                                     ),
-                                    whiteSpaceH(4),
-                                    Row(
-                                      children: [
-                                        internets[idx].type == 0
-                                            ? Image.asset(
-                                          "assets/needsclear/resource/internet/contract.png",
-                                          width: 48,
-                                          height: 48,
-                                        )
-                                            : internets[idx].type == 1
-                                            ? Image.asset(
-                                          "assets/needsclear/resource/internet/contract.png",
-                                          width: 48,
-                                          height: 48,
-                                        )
-                                            : internets[idx].type == 2
-                                            ? Image.asset(
-                                          "assets/needsclear/resource/internet/end.png",
-                                          width: 48,
-                                          height: 48,
-                                        )
-                                            : internets[idx].type == 3
-                                            ? Image.asset(
-                                          "assets/needsclear/resource/internet/end.png",
-                                          width: 48,
-                                          height: 48,
-                                        )
-                                            : Container(),
-                                        whiteSpaceW(12),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "${internets[idx]
-                                                      .applyNewsAgency}",
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontFamily: 'noto',
-                                                      color: black,
-                                                      fontWeight:
-                                                      FontWeight.w600),
-                                                ),
-                                                whiteSpaceW(12),
-                                                Text(
-                                                  internets[idx].type == 0
-                                                      ? "접수완료"
-                                                      : internets[idx].type == 1
-                                                      ? "결제대기"
-                                                      : internets[idx]
-                                                      .type ==
-                                                      2
-                                                      ? "결제완료"
-                                                      : internets[idx]
-                                                      .type ==
-                                                      3
-                                                      ? "취소"
-                                                      : "",
-                                                  style: internets[idx].type ==
-                                                      0
-                                                      ? TextStyle(
-                                                      color:
-                                                      Color(0xFFFFCC00),
-                                                      fontFamily: 'noto',
-                                                      fontSize: 12)
-                                                      : internets[idx].type == 1
-                                                      ? TextStyle(
-                                                      color: Color(
-                                                          0xFFFFCC00),
-                                                      fontFamily:
-                                                      'noto',
-                                                      fontSize: 12)
-                                                      : internets[idx]
-                                                      .type ==
-                                                      2
-                                                      ? TextStyle(
-                                                      color: Color(
-                                                          0xFF00AAFF),
-                                                      fontFamily:
-                                                      'noto',
-                                                      fontSize: 12)
-                                                      : internets[idx]
-                                                      .type ==
-                                                      3
-                                                      ? TextStyle(
-                                                      color: Color(
-                                                          0xFF888888),
-                                                      fontFamily:
-                                                      'noto',
-                                                      fontSize:
-                                                      12)
-                                                      : TextStyle(
-                                                      color: Color(
-                                                          0xFFFFCC00),
-                                                      fontFamily:
-                                                      'noto',
-                                                      fontSize:
-                                                      12),
-                                                )
-                                              ],
-                                            ),
-                                            Text(
-                                              "${internets[idx].applyService}",
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontFamily: 'noto',
-                                                  color: Color(0xFF888888)),
-                                            ),
-                                          ],
-                                        ),
-                                        Expanded(
-                                          child: Container(),
-                                        ),
-                                        Image.asset(
-                                          "assets/needsclear/resource/public/small-arrow.png",
-                                          width: 24,
-                                          height: 24,
-                                        )
-                                      ],
-                                    ),
-                                    whiteSpaceH(20)
-                                  ],
-                                ),
-                              );
-                            }
-                          } else {
+                                  );
+                                }).toList(),
+                                value: internetValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    internetValue = value;
+                                    if (value == "전체") {
+                                      viewOption = false;
+                                    } else {
+                                      viewOption = true;
+                                      if (value == "접수완료") {
+                                        viewType = 0;
+                                      } else if (value == "결제대기") {
+                                        viewType = 1;
+                                      } else if (value == "결제완료") {
+                                        viewType = 2;
+                                      } else if (value == "취소") {
+                                        viewType = 3;
+                                      }
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  whiteSpaceH(16),
+                  dataSet
+                      ? Padding(
+                    padding: EdgeInsets.all(16),
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, idx) {
+                        if (viewOption) {
+                          if (internets[idx].type == viewType) {
                             return InkWell(
                               onTap: () {
                                 Navigator.of(context).pushAndRemoveUntil(
@@ -415,15 +292,19 @@ class _Internet extends State<Internet> {
                                               newsAgency: internets[idx]
                                                   .applyNewsAgency,
                                               selectService:
-                                              internets[idx].applyService,
+                                              internets[idx]
+                                                  .applyService,
                                             )),
                                         (route) => false);
                               },
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    internets[idx].created_at.split(" ")[0],
+                                    internets[idx]
+                                        .created_at
+                                        .split(" ")[0],
                                     style: TextStyle(
                                         color: Color(0xFF888888),
                                         fontFamily: 'noto',
@@ -450,7 +331,8 @@ class _Internet extends State<Internet> {
                                         width: 48,
                                         height: 48,
                                       )
-                                          : internets[idx].type == 3
+                                          : internets[idx].type ==
+                                          3
                                           ? Image.asset(
                                         "assets/needsclear/resource/internet/end.png",
                                         width: 48,
@@ -478,9 +360,12 @@ class _Internet extends State<Internet> {
                                               Text(
                                                 internets[idx].type == 0
                                                     ? "접수완료"
-                                                    : internets[idx].type == 1
+                                                    : internets[idx]
+                                                    .type ==
+                                                    1
                                                     ? "결제대기"
-                                                    : internets[idx].type ==
+                                                    : internets[idx]
+                                                    .type ==
                                                     2
                                                     ? "결제완료"
                                                     : internets[idx]
@@ -490,24 +375,30 @@ class _Internet extends State<Internet> {
                                                     : "",
                                                 style: internets[idx].type == 0
                                                     ? TextStyle(
-                                                    color:
-                                                    Color(0xFFFFCC00),
-                                                    fontFamily: 'noto',
+                                                    color: Color(
+                                                        0xFFFFCC00),
+                                                    fontFamily:
+                                                    'noto',
                                                     fontSize: 12)
-                                                    : internets[idx].type == 1
+                                                    : internets[idx]
+                                                    .type ==
+                                                    1
                                                     ? TextStyle(
                                                     color: Color(
                                                         0xFFFFCC00),
-                                                    fontFamily: 'noto',
+                                                    fontFamily:
+                                                    'noto',
                                                     fontSize: 12)
-                                                    : internets[idx].type ==
+                                                    : internets[idx]
+                                                    .type ==
                                                     2
                                                     ? TextStyle(
                                                     color: Color(
                                                         0xFF00AAFF),
                                                     fontFamily:
                                                     'noto',
-                                                    fontSize: 12)
+                                                    fontSize:
+                                                    12)
                                                     : internets[idx]
                                                     .type ==
                                                     3
@@ -552,23 +443,270 @@ class _Internet extends State<Internet> {
                               ),
                             );
                           }
-                          return Container();
-                        },
-                        shrinkWrap: true,
-                        itemCount: internets.length,
+                        } else {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InternetBreakdown(
+                                            type: internets[idx].type,
+                                            name: internets[idx].name,
+                                            phone: internets[idx].phone,
+                                            newsAgency: internets[idx]
+                                                .applyNewsAgency,
+                                            selectService: internets[idx]
+                                                .applyService,
+                                          )),
+                                      (route) => false);
+                            },
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  internets[idx].created_at.split(" ")[0],
+                                  style: TextStyle(
+                                      color: Color(0xFF888888),
+                                      fontFamily: 'noto',
+                                      fontSize: 12),
+                                ),
+                                whiteSpaceH(4),
+                                Row(
+                                  children: [
+                                    internets[idx].type == 0
+                                        ? Image.asset(
+                                      "assets/needsclear/resource/internet/contract.png",
+                                      width: 48,
+                                      height: 48,
+                                    )
+                                        : internets[idx].type == 1
+                                        ? Image.asset(
+                                      "assets/needsclear/resource/internet/contract.png",
+                                      width: 48,
+                                      height: 48,
+                                    )
+                                        : internets[idx].type == 2
+                                        ? Image.asset(
+                                      "assets/needsclear/resource/internet/end.png",
+                                      width: 48,
+                                      height: 48,
+                                    )
+                                        : internets[idx].type == 3
+                                        ? Image.asset(
+                                      "assets/needsclear/resource/internet/end.png",
+                                      width: 48,
+                                      height: 48,
+                                    )
+                                        : Container(),
+                                    whiteSpaceW(12),
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "${internets[idx]
+                                                  .applyNewsAgency}",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: 'noto',
+                                                  color: black,
+                                                  fontWeight:
+                                                  FontWeight.w600),
+                                            ),
+                                            whiteSpaceW(12),
+                                            Text(
+                                              internets[idx].type == 0
+                                                  ? "접수완료"
+                                                  : internets[idx].type ==
+                                                  1
+                                                  ? "결제대기"
+                                                  : internets[idx]
+                                                  .type ==
+                                                  2
+                                                  ? "결제완료"
+                                                  : internets[idx]
+                                                  .type ==
+                                                  3
+                                                  ? "취소"
+                                                  : "",
+                                              style: internets[idx].type == 0
+                                                  ? TextStyle(
+                                                  color: Color(
+                                                      0xFFFFCC00),
+                                                  fontFamily: 'noto',
+                                                  fontSize: 12)
+                                                  : internets[idx].type == 1
+                                                  ? TextStyle(
+                                                  color: Color(
+                                                      0xFFFFCC00),
+                                                  fontFamily:
+                                                  'noto',
+                                                  fontSize: 12)
+                                                  : internets[idx]
+                                                  .type ==
+                                                  2
+                                                  ? TextStyle(
+                                                  color: Color(
+                                                      0xFF00AAFF),
+                                                  fontFamily:
+                                                  'noto',
+                                                  fontSize:
+                                                  12)
+                                                  : internets[idx]
+                                                  .type ==
+                                                  3
+                                                  ? TextStyle(
+                                                  color: Color(
+                                                      0xFF888888),
+                                                  fontFamily:
+                                                  'noto',
+                                                  fontSize:
+                                                  12)
+                                                  : TextStyle(
+                                                  color: Color(
+                                                      0xFFFFCC00),
+                                                  fontFamily:
+                                                  'noto',
+                                                  fontSize:
+                                                  12),
+                                            )
+                                          ],
+                                        ),
+                                        Text(
+                                          "${internets[idx].applyService}",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'noto',
+                                              color: Color(0xFF888888)),
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: Container(),
+                                    ),
+                                    Image.asset(
+                                      "assets/needsclear/resource/public/small-arrow.png",
+                                      width: 24,
+                                      height: 24,
+                                    )
+                                  ],
+                                ),
+                                whiteSpaceH(20)
+                              ],
+                            ),
+                          );
+                        }
+                        return Container();
+                      },
+                      shrinkWrap: true,
+                      itemCount: internets.length,
+                    ),
+                  )
+                      : Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    height: 250,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(mainColor),
                       ),
-                    )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 250,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(mainColor),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            popupOpen
+                ? Align(
+              alignment: Alignment.center,
+              child: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height,
+                padding: EdgeInsets.all(40),
+                color: Colors.transparent,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/needsclear/resource/popup/internetpopup.png",
+                      fit: BoxFit.fill,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: 40,
+                            child: RaisedButton(
+                              onPressed: () async {
+                                await prefs.setInt("internetPopup", 1);
+                                setState(() {
+                                  popupOpen = false;
+                                });
+                              },
+                              elevation: 0.0,
+                              color: Color(0xFFCCCCCC),
+                              child: Center(
+                                child: Text(
+                                  "다시보지 않기",
+                                  style: TextStyle(
+                                      fontFamily: 'noto',
+                                      color: white,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        Expanded(
+                          child: Container(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: 40,
+                            child: RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  popupOpen = false;
+                                });
+                              },
+                              color: mainColor,
+                              elevation: 0.0,
+                              child: Center(
+                                child: Text(
+                                  "닫기",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: white,
+                                      fontFamily: 'noto'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     )
-            ],
-          ),
+                  ],
+                ),
+              ),
+            )
+                : Container()
+          ],
         ),
       ),
     );

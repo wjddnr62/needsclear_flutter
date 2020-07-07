@@ -47,6 +47,7 @@ dependencies:
   dotted_border: ^1.0.5
   bubble: ^1.1.9+1
   webview_flutter: ^0.3.22+1
+  flutter_webview_plugin: ^0.3.11
   path_provider: ^1.6.9
   iamport_flutter: ^0.9.10
   date_time_format: ^1.0.0+4

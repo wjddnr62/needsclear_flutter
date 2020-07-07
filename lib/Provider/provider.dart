@@ -7,9 +7,9 @@ import 'package:needsclear/Util/parameter.dart';
 class Provider {
   Client client = Client();
 
-//  final baseUrl = "http://auth.cashlink.kr/auth_api/";
+  final baseUrl = "http://auth.cashlink.kr/auth_api/";
 
-  final baseUrl = "http://192.168.100.237/auth_api/";
+//  final baseUrl = "http://192.168.100.237/auth_api/";
   final needsUrl = "http://needsclear.kr/needs_api/";
 
   final usersUrl = "api/users";
@@ -25,9 +25,9 @@ class Provider {
 
   final getToken = "oauth/token";
 
-//  String userCheckUrl = "http://auth.cashlink.kr/resource_api/api/users/me";
+  String userCheckUrl = "http://auth.cashlink.kr/resource_api/api/users/me";
 
-  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
+//  String userCheckUrl = "http://192.168.100.237/resource_api/api/users/me";
 
   Future<String> selectPremium() async {
     final response = await client.get("${needsUrl}api/admin/select-premium");
@@ -109,8 +109,8 @@ class Provider {
       "client_secret": "Laonpp00..L",
       "grant_type": "authorization_code",
       "code": parameter.oauthCode,
-      "redirect_uri": "http://localhost:3000"
-//      "redirect_uri": "http://admin.needsclear.kr/login/index.html"
+//      "redirect_uri": "http://localhost:3000"
+      "redirect_uri": "http://admin.needsclear.kr/login/index.html"
     });
 
     return utf8.decode(response.bodyBytes);

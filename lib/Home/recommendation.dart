@@ -11,6 +11,8 @@ import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
 
+import 'home.dart';
+
 class Recommendation extends StatefulWidget {
   @override
   _Recommendation createState() => _Recommendation();
@@ -146,7 +148,12 @@ class _Recommendation extends State<Recommendation> {
                             if (json['result'] == 1) {
                               nameController.text = "";
                               contactUsController.text = "";
-                              dialog();
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => Home()),
+                                  (route) => false);
+//                              dialog();
+                              showToast("추천인이 등록되었습니다.");
                             } else {
                               print("안됨");
                             }

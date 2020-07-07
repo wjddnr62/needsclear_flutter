@@ -3,14 +3,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:needsclear/Home/home.dart';
+import 'package:needsclear/Login/combinelogin.dart';
 import 'package:needsclear/Model/datastorage.dart';
 import 'package:needsclear/Model/register.dart';
 import 'package:needsclear/Model/user.dart';
 import 'package:needsclear/Model/usercheck.dart';
 import 'package:needsclear/Provider/provider.dart';
+import 'package:needsclear/Util/showToast.dart';
 import 'package:needsclear/Util/text.dart';
 import 'package:needsclear/Util/whiteSpace.dart';
 import 'package:needsclear/public/colors.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class NewSignUp extends StatefulWidget {
   final UserCheck userCheck;
@@ -39,7 +42,7 @@ class _NewSignUp extends State<NewSignUp> {
 
     userCheck = widget.userCheck;
 
-    registerInit();
+//    registerInit();
   }
 
   registerInit() async {
@@ -49,7 +52,10 @@ class _NewSignUp extends State<NewSignUp> {
         .then((value) async {
       List<dynamic> result = json.decode(value)['data'];
       print('result : $result, value : $value');
+
       if (result.length == 1) {
+        registerList.add(Register(
+            recoCode: result[0]['recoCode'], recoIdx: result[0]['recoIdx']));
         await provider
             .insertUser(userCheck.username, userCheck.name, userCheck.phone,
                 userCheck.birth, userCheck.sex)
@@ -61,12 +67,12 @@ class _NewSignUp extends State<NewSignUp> {
                     id: userCheck.username,
                     name: userCheck.name,
                     phone: userCheck.phone,
-                    type: 0,
-                    point: 10000,
-                    date: DateFormat("yyyy-MM-dd").format(DateTime.now()),
-                    saveMonth: "",
-                    savePlace: 0,
-                    saveType: 0)
+                type: 0,
+                point: 10000,
+                date: DateFormat("yyyy-MM-dd").format(DateTime.now()),
+                saveMonth: "",
+                savePlace: 0,
+                saveType: 0)
                 .then((value) async {
               print("saveLog : $value");
               dynamic result = json.decode(value);
@@ -89,7 +95,7 @@ class _NewSignUp extends State<NewSignUp> {
                       .then((value) {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (context) => Home()),
-                        (Route<dynamic> route) => false);
+                            (Route<dynamic> route) => false);
                   });
                 });
               }
@@ -143,7 +149,7 @@ class _NewSignUp extends State<NewSignUp> {
 
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => Home()),
-                  (Route<dynamic> route) => false);
+                      (Route<dynamic> route) => false);
             });
           }
         });
@@ -152,19 +158,68 @@ class _NewSignUp extends State<NewSignUp> {
     });
   }
 
+  WebViewController _webViewController;
+
+  Future<bool> onWillPop() {
+//      _webViewController.currentUrl().then((value) async {
+//        if (value != "http://admin.needsclear.kr/checkplus_main.php") {
+//          await _webViewController.goBack();
+//        } else {
+//          Navigator.of(context).pushAndRemoveUntil(
+//              MaterialPageRoute(builder: (context) => CombineLogin()),
+//                  (Route<dynamic> route) => false);
+//        }
+//      });
+    _webViewController.currentUrl().then((value) async {
+      print("currentUrl value : $value");
+      if ("http://admin.needsclear.kr/checkplus_main.php" == value) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => CombineLogin()),
+                (Route<dynamic> route) => false);
+      } else
+      if ("https://nice.checkplus.co.kr/CheckPlusSafeModel/checkplus.cb?m=auth_mobile_main" ==
+          value) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => CombineLogin()),
+                (Route<dynamic> route) => false);
+      } else {
+        await _webViewController.goBack();
+      }
+    });
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return WillPopScope(
-      onWillPop: () => null,
+      onWillPop: onWillPop,
       child: SafeArea(
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: white,
-          body: Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(mainColor),
-            ),
+          body: WebView(
+            initialUrl: "http://admin.needsclear.kr/checkplus_main.php",
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (_webController) {
+              _webViewController = _webController;
+            },
+            onPageStarted: (url) {
+              print("start : $url");
+            },
+            onPageFinished: (url) {
+              FocusScope.of(context).requestFocus(FocusNode());
+              print(url);
+              if (url == "http://admin.needsclear.kr/checkplus_success.php") {
+                registerInit();
+              } else if (url ==
+                  "http://admin.needsclear.kr/checkplus_fail.php") {
+                showToast("본인 인증에 실패하였습니다.");
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => CombineLogin()),
+                        (Route<dynamic> route) => false);
+              }
+            },
           ),
         ),
       ),
@@ -211,9 +266,11 @@ class _NewSignUp extends State<NewSignUp> {
                                   onTap: () async {
                                     await provider
                                         .insertUser(
-                                        userCheck.username, userCheck.name,
+                                        userCheck.username,
+                                        userCheck.name,
                                         userCheck.phone,
-                                        userCheck.birth, userCheck.sex)
+                                        userCheck.birth,
+                                        userCheck.sex)
                                         .then((value) {
                                       dynamic result = json.decode(value);
                                       if (result['data'] == "OK") {
@@ -238,26 +295,31 @@ class _NewSignUp extends State<NewSignUp> {
                                               signFinish = true;
                                             });
 
-                                            await provider.selectUser(
-                                                userCheck.username).then((
-                                                value) async {
+                                            await provider
+                                                .selectUser(userCheck.username)
+                                                .then((value) async {
                                               dynamic data = json.decode(value);
-                                              User user = User.fromJson(
-                                                  data['data']);
+                                              User user =
+                                              User.fromJson(data['data']);
 
                                               dataStorage.user = user;
 
-                                              await provider.recoUpdate(user
-                                                  .idx, user.id,
-                                                  registerList[idx].recoCode)
+                                              await provider
+                                                  .recoUpdate(
+                                                  user.idx,
+                                                  user.id,
+                                                  registerList[idx]
+                                                      .recoCode)
                                                   .then((value) {
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(
                                                     MaterialPageRoute(
-                                                        builder: (context) =>
+                                                        builder:
+                                                            (context) =>
                                                             Home()),
-                                                        (Route<
-                                                        dynamic> route) => false);
+                                                        (Route<dynamic>
+                                                    route) =>
+                                                    false);
                                               });
                                             });
                                           }
@@ -275,7 +337,8 @@ class _NewSignUp extends State<NewSignUp> {
                                       ),
                                       whiteSpaceH(4),
                                       Container(
-                                        width: MediaQuery
+                                        width:
+                                        MediaQuery
                                             .of(context)
                                             .size
                                             .width,
@@ -298,10 +361,12 @@ class _NewSignUp extends State<NewSignUp> {
                       left: 0,
                       right: 0,
                       child: Center(
-                        child: Text("※ 선택하지 않을 시\n자동으로 추천인이 매칭됩니다.",
-                          textAlign: TextAlign.center, style: TextStyle(
-                              fontFamily: 'noto', fontSize: 12, color: black
-                          ),),
+                        child: Text(
+                          "※ 선택하지 않을 시\n자동으로 추천인이 매칭됩니다.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'noto', fontSize: 12, color: black),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -321,9 +386,11 @@ class _NewSignUp extends State<NewSignUp> {
                                   onPressed: () async {
                                     await provider
                                         .insertUser(
-                                        userCheck.username, userCheck.name,
+                                        userCheck.username,
+                                        userCheck.name,
                                         userCheck.phone,
-                                        userCheck.birth, userCheck.sex)
+                                        userCheck.birth,
+                                        userCheck.sex)
                                         .then((value) {
                                       dynamic result = json.decode(value);
                                       if (result['data'] == "OK") {
@@ -348,26 +415,28 @@ class _NewSignUp extends State<NewSignUp> {
                                               signFinish = true;
                                             });
 
-                                            await provider.selectUser(
-                                                userCheck.username).then((
-                                                value) async {
+                                            await provider
+                                                .selectUser(userCheck.username)
+                                                .then((value) async {
                                               dynamic data = json.decode(value);
-                                              User user = User.fromJson(
-                                                  data['data']);
+                                              User user =
+                                              User.fromJson(data['data']);
 
                                               dataStorage.user = user;
 
-                                              await provider.recoUpdate(
-                                                  user.idx, user.id,
+                                              await provider
+                                                  .recoUpdate(user.idx, user.id,
                                                   registerList[0].recoCode)
                                                   .then((value) {
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(
                                                     MaterialPageRoute(
-                                                        builder: (context) =>
+                                                        builder:
+                                                            (context) =>
                                                             Home()),
-                                                        (Route<
-                                                        dynamic> route) => false);
+                                                        (Route<dynamic>
+                                                    route) =>
+                                                    false);
                                               });
                                             });
                                           }
